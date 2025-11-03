@@ -15,7 +15,7 @@ export const Route = createRootRoute({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: "RevivalMed",
 			},
 		],
 		links: [
@@ -31,7 +31,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className="h-full">
+		<html lang="en" className="h-full dark bg-secondary text-secondary-foreground">
 			<head>
 				<HeadContent />
 			</head>
