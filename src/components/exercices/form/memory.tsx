@@ -19,13 +19,25 @@ export function MemoryExercice() {
 
   const form = useForm({
     ...formOpts,
-    onSubmit: async (data) => {
+    /*onSubmit: async (data) => {
       const formData = new FormData()
       Object.entries(data.value).forEach(([question, answer]) => {
         formData.append(question, answer as string)
       })
       await handleForm({ data: formData })
-    },
+    },*/
+    validators: {
+      onSubmitAsync: async ({ value }) => {
+        const hasErrors = await handleForm({ data: value })
+        if(hasErrors) {
+          return {
+            fields: {
+
+            }
+          }
+        }
+      }
+    }
   })
 
   const formErrors = useStore(form.store, (formState) => formState.errors)
