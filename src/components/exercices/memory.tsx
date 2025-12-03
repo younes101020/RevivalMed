@@ -1,7 +1,7 @@
 import { useCountdown } from "@/hooks/countdown";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
 import { CardContent, CardFooter } from "../ui/card";
 import { MemoryExercice } from "./form/memory";
 
@@ -38,33 +38,30 @@ export function Memory() {
 function MemoryExercise() {
     const [hasStarted, setHasStarted] = useState(false);
     const [hasFinished, setHasFinished] = useState(false);
-    const { remainingSecond, cancel } = useCountdown(0, () => setHasStarted(true));
+    const { remainingSecond, cancel } = useCountdown(3, () => setHasStarted(true));
 
     if (hasFinished) return <MemoryExercice />;
 
     return (
         <>
-            <DialogHeader>
-                <DialogTitle className="underline underline-offset-4">Exercice de mémoire</DialogTitle>
-            </DialogHeader>
             {hasStarted ?
             <div className="p-4">
                 <p>Pendant son voyage de deux semaines en Australie,Clara a décidé d’aller faire une ballade sur la plage. C’est l’été et il fait très chaud, mais Clara porte un grand chapeau de paille. Elle décide d’aller marcher au bord de l’eau, tout en admirant l’océan d’un bleu éclatant. L’eau est tellement claire que, si elle regarde de plus près, elle pourrait même réussir à percevoir quelques poissons zébrés nager tranquillement sous la surface de l’eau.</p>
             </div>
                 :
-                <p className="py-12 text-center underline underline-offset-8">
+                <p className="py-12 text-center">
                     L'exercice va commencer dans
-                    <span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2">
+                    <span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
                         {remainingSecond}
                     </span>
                 </p>
             }
+            {hasStarted && <Button onClick={() => setHasFinished(true)}>J'ai tout lu</Button>}
             <DialogClose asChild>
-                <Button type="button" variant="outline" onClick={cancel} className=" w-1/3">
+                <Button type="button" variant="outline" onClick={cancel}>
                 Annuler
                 </Button>
             </DialogClose>
-            {hasStarted && <Button onClick={() => setHasFinished(true)}>J'ai tout lu</Button>}
         </>
     );
 }

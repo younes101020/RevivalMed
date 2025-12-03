@@ -61,7 +61,24 @@ const MemorySchema = z.object({
 export const handleForm = createServerFn({
   method: 'POST',
 })
-    .inputValidator(MemorySchema)
+    .inputValidator((answers: {
+      characterName: string;
+      characterCountry: string;
+      seasonStore: string;
+      weather: string;
+      oceanColor: string;
+      inOceanPerceivedObject: string;
+    }) => answers)
     .handler(({ data }) => {
-        return false;;
+        const result = MemorySchema.safeParse(data);
+        const maxScore = Object.entries(MemorySchema.shape).length;
+        console.log("issues", result.error?.issues)
+        return {
+          success: result.success,
+          maxScore,
+          error: result.success ? null : Object.assign({},
+            ...result.error.issues.map((issue) => ({
+              [issue.path[0]]: issue.message,
+          }))),
+        };
     })

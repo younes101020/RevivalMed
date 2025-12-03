@@ -1,5 +1,4 @@
 import { useForm } from '@tanstack/react-form'
-import { useStore } from '@tanstack/react-store'
 import { handleForm } from "@/lib/form"
 import { formOpts } from "@/lib/form-isomorphic"
 import { Input } from '@/components/ui/input'
@@ -19,31 +18,20 @@ export function MemoryExercice() {
 
   const form = useForm({
     ...formOpts,
-    /*onSubmit: async (data) => {
-      const formData = new FormData()
-      Object.entries(data.value).forEach(([question, answer]) => {
-        formData.append(question, answer as string)
-      })
-      await handleForm({ data: formData })
-    },*/
     validators: {
       onSubmitAsync: async ({ value }) => {
-        const hasErrors = await handleForm({ data: value })
-        if(hasErrors) {
+        const result = await handleForm({ data: value })
+        if(result.error) {
           return {
-            fields: {
-
-            }
+            fields: result.error
           }
         }
       }
     }
   })
 
-  const formErrors = useStore(form.store, (formState) => formState.errors)
-
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex flex-col gap-8 max-h-[80vh] overflow-y-auto'>
         <div className='space-y-2'>
             <h3 className='scroll-m-20 text-4xl font-extrabold tracking-tight text-balance underline underline-offset-4'>Questionnaire final</h3>
             <p className='text-xs'>Le résultat de ce questionnaire permettra d'évaluer vos capacités de mémorisation.</p>
@@ -56,9 +44,6 @@ export function MemoryExercice() {
       }}
       className='flex flex-col gap-4'
     >
-      {formErrors.map((error) => (
-        <p key={error as never as string}>{error}</p>
-      ))}
 
       <form.Field
         name="characterName"
@@ -76,7 +61,7 @@ export function MemoryExercice() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error as unknown as string}>{error}</p>
+                <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
@@ -98,7 +83,7 @@ export function MemoryExercice() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error as unknown as string}>{error}</p>
+                <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
@@ -123,7 +108,7 @@ export function MemoryExercice() {
                 </SelectContent>
               </Select>
               {field.state.meta.errors.map((error) => (
-                <p key={error as unknown as string}>{error}</p>
+                <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
@@ -146,7 +131,7 @@ export function MemoryExercice() {
                 onChange={(e) => field.handleChange(e.target.value)}
                 />
               {field.state.meta.errors.map((error) => (
-                <p key={error as unknown as string}>{error}</p>
+                <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
@@ -168,7 +153,7 @@ export function MemoryExercice() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                  <p key={error as unknown as string}>{error}</p>
+                  <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
@@ -190,7 +175,7 @@ export function MemoryExercice() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error as unknown as string}>{error}</p>
+                <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
             </div>
           )
