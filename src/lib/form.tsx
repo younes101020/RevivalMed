@@ -72,10 +72,9 @@ export const handleForm = createServerFn({
     .handler(({ data }) => {
         const result = MemorySchema.safeParse(data);
         const maxScore = Object.entries(MemorySchema.shape).length;
-        console.log("issues", result.error?.issues)
         return {
           success: result.success,
-          maxScore,
+          score: `${maxScore - (result.success ? 0 : result.error.issues.length)}/${maxScore}`,
           error: result.success ? null : Object.assign({},
             ...result.error.issues.map((issue) => ({
               [issue.path[0]]: issue.message,

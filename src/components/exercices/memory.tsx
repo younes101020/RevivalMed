@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
 import { CardContent, CardFooter } from "../ui/card";
 import { MemoryExercice } from "./form/memory";
+import { Separator } from "../ui/separator";
 
 export function Memory() {
     return (
@@ -45,8 +46,11 @@ function MemoryExercise() {
     return (
         <>
             {hasStarted ?
-            <div className="p-4">
-                <p>Pendant son voyage de deux semaines en Australie,Clara a décidé d’aller faire une ballade sur la plage. C’est l’été et il fait très chaud, mais Clara porte un grand chapeau de paille. Elle décide d’aller marcher au bord de l’eau, tout en admirant l’océan d’un bleu éclatant. L’eau est tellement claire que, si elle regarde de plus près, elle pourrait même réussir à percevoir quelques poissons zébrés nager tranquillement sous la surface de l’eau.</p>
+            <div className="p-4 space-y-8 font-semibold text-lg">
+                <p>Pendant son voyage de deux semaines en Australie, Clara a décidé d’aller faire une ballade sur la plage.</p>
+                <p>C’est l’été et il fait très chaud, mais Clara porte un grand chapeau de paille.</p>
+                <p>Elle décide d’aller marcher au bord de l’eau, tout en admirant l’océan d’un bleu éclatant.</p>
+                <p> L’eau est tellement claire que, si elle regarde de plus près, elle pourrait même réussir à percevoir quelques poissons zébrés nager tranquillement sous la surface de l’eau.</p>
             </div>
                 :
                 <p className="py-12 text-center">
@@ -56,6 +60,7 @@ function MemoryExercise() {
                     </span>
                 </p>
             }
+            {hasStarted && <Separator className="my-2" />}
             {hasStarted && <Button onClick={() => setHasFinished(true)}>J'ai tout lu</Button>}
             <DialogClose asChild>
                 <Button type="button" variant="outline" onClick={cancel}>

@@ -13,14 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 
 export function MemoryExercice() {
+  const [score, setScore] = useState("");
 
   const form = useForm({
     ...formOpts,
     validators: {
       onSubmitAsync: async ({ value }) => {
-        const result = await handleForm({ data: value })
+        const result = await handleForm({ data: value });
+        if(result.score) setScore(result.score);
         if(result.error) {
           return {
             fields: result.error
@@ -35,14 +39,18 @@ export function MemoryExercice() {
         <div className='space-y-2'>
             <h3 className='scroll-m-20 text-4xl font-extrabold tracking-tight text-balance underline underline-offset-4'>Questionnaire final</h3>
             <p className='text-xs'>Le résultat de ce questionnaire permettra d'évaluer vos capacités de mémorisation.</p>
+            {score &&
+            <Badge variant={"default"}>
+              Votre score : {score}
+            </Badge>
+            }
         </div>
-    <Separator />
     <form
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
       }}
-      className='flex flex-col gap-4'
+      className='flex flex-col gap-4 px-3'
     >
 
       <form.Field
@@ -98,7 +106,7 @@ export function MemoryExercice() {
               <Label htmlFor="seasonStore">Saison durant laquelle se déroule l'histoire</Label>
               <Select name="seasonStore">
                 <SelectTrigger className='w-full'>
-                    <SelectValue placeholder="Saison" />
+                    <SelectValue placeholder="..." />
                 </SelectTrigger>
                 <SelectContent id="seasonStore" defaultValue={field.state.value}>
                     <SelectItem value="winter">Hiver</SelectItem>
@@ -114,22 +122,25 @@ export function MemoryExercice() {
           )
         }}
       </form.Field>
-      <Separator />
       <form.Field
         name="weather"
       >
         {(field) => {
             return (
             <div className="space-y-2">
-              <Label htmlFor="weather">Météo</Label>
-              <Input
-                name="weather"
-                type="text"
-                value={field.state.value}
-                required={true}
-                id='weather'
-                onChange={(e) => field.handleChange(e.target.value)}
-                />
+              <Label htmlFor="weather">Météo dans laquelle se déroule l'histoire</Label>
+              <Select name="weather">
+                <SelectTrigger className='w-full'>
+                    <SelectValue placeholder="..." />
+                </SelectTrigger>
+                <SelectContent id="weather" defaultValue={field.state.value}>
+                    <SelectItem value="très chaud">Très chaud</SelectItem>
+                    <SelectItem value="chaud">Chaud</SelectItem>
+                    <SelectItem value="tempéré">Tempéré</SelectItem>
+                    <SelectItem value="froid">Froid</SelectItem>
+                    <SelectItem value="très froid">Très froid</SelectItem>
+                </SelectContent>
+              </Select>
               {field.state.meta.errors.map((error) => (
                 <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
@@ -144,14 +155,16 @@ export function MemoryExercice() {
           return (
             <div className="space-y-2">
               <Label htmlFor="oceanColor">Couleur de l'océan</Label>
-              <Input
-                name="oceanColor"
-                type="text"
-                value={field.state.value}
-                required={true}
-                id='oceanColor'
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
+              <Select name="oceanColor">
+                <SelectTrigger className='w-full'>
+                    <SelectValue placeholder="..." />
+                </SelectTrigger>
+                <SelectContent id="oceanColor" defaultValue={field.state.value}>
+                    <SelectItem value="bleu éclatant">Bleu éclatant</SelectItem>
+                    <SelectItem value="rouge éclatant">Rouge éclatant</SelectItem>
+                    <SelectItem value="bleu foncé">Bleu foncé</SelectItem>
+                </SelectContent>
+              </Select>
               {field.state.meta.errors.map((error) => (
                   <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
@@ -166,14 +179,16 @@ export function MemoryExercice() {
           return (
             <div className="space-y-2">
               <Label htmlFor="inOceanPerceivedObject">Objet perçu dans l'océan</Label>
-              <Input
-                name="inOceanPerceivedObject"
-                type="text"
-                value={field.state.value}
-                required={true}
-                id='inOceanPerceivedObject'
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
+              <Select name="inOceanPerceivedObject">
+                <SelectTrigger className='w-full'>
+                    <SelectValue placeholder="..." />
+                </SelectTrigger>
+                <SelectContent id="inOceanPerceivedObject" defaultValue={field.state.value}>
+                    <SelectItem value="algues">Algues</SelectItem>
+                    <SelectItem value="poissons zébré">Poisson zébré</SelectItem>
+                    <SelectItem value="cailloux">Cailloux</SelectItem>
+                </SelectContent>
+              </Select>
               {field.state.meta.errors.map((error) => (
                 <p className='text-red-500' key={error as unknown as string}>{error}</p>
               ))}
