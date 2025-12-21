@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Memory } from "@/components/exercices/memory/index";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Attention } from "@/components/exercices/attention";
 
 export const Route = createFileRoute("/")({
 	component: App,
@@ -33,7 +34,9 @@ function App() {
 					<TabsContent value="memory">
 						<Memory />
 					</TabsContent>
-					<TabsContent value="attention">Change your attention here.</TabsContent>
+					<TabsContent value="attention">
+						<Attention />
+					</TabsContent>
 					<TabsContent value="planning">Plan your tasks here.</TabsContent>
 					<TabsContent value="mental_flexibility">Work on your mental flexibility here.</TabsContent>
 					<TabsContent value="working_memory">Work on your working memory here.</TabsContent>
