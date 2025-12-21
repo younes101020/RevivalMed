@@ -1,10 +1,10 @@
 import { useCountdown } from "@/hooks/countdown";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useState } from "react";
-import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
-import { CardContent, CardFooter } from "../ui/card";
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../../ui/dialog";
+import { CardContent, CardFooter } from "../../ui/card";
 import { MemoryExerciseForm } from "./form/memory";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../ui/separator";
 
 export function Memory() {
     return (
