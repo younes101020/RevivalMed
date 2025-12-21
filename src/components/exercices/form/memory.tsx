@@ -16,7 +16,7 @@ import {
 import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 
-export function MemoryExercice() {
+export function MemoryExerciseForm() {
   const [score, setScore] = useState("");
 
   const form = useForm({

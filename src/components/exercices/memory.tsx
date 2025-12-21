@@ -3,7 +3,7 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog";
 import { CardContent, CardFooter } from "../ui/card";
-import { MemoryExercice } from "./form/memory";
+import { MemoryExerciseForm } from "./form/memory";
 import { Separator } from "../ui/separator";
 
 export function Memory() {
@@ -41,7 +41,7 @@ function MemoryExercise() {
     const [hasFinished, setHasFinished] = useState(false);
     const { remainingSecond, cancel } = useCountdown(3, () => setHasStarted(true));
 
-    if (hasFinished) return <MemoryExercice />;
+    if (hasFinished) return <MemoryExerciseForm />;
 
     return (
         <>
