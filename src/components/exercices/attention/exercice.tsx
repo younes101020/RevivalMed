@@ -1,5 +1,3 @@
-"use client";
-
 import { RotateCcw, Trophy } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
