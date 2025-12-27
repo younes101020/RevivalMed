@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Memory } from "@/components/exercices/memory/index";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Attention } from "@/components/exercices/attention";
+import { Memory } from "@/components/exercices/memory/index";
+import { Planification } from "@/components/exercices/planification";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/")({
 	component: App,
