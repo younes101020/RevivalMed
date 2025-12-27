@@ -20,17 +20,23 @@ function App() {
 						<TabsTrigger value="memory">Mémoire</TabsTrigger>
 						<TabsTrigger value="attention">Attention</TabsTrigger>
 						<TabsTrigger value="planning">Planification</TabsTrigger>
-						<TabsTrigger value="mental_flexibility">Flexibilité mentale</TabsTrigger>
+						<TabsTrigger value="mental_flexibility">
+							Flexibilité mentale
+						</TabsTrigger>
 						<TabsTrigger value="working_memory">Mémoire de travail</TabsTrigger>
 						<TabsTrigger value="language_work">Travail de language</TabsTrigger>
-						<TabsTrigger value="visual_spatial_ability">Capacité visuo-spatiale</TabsTrigger>
-						<TabsTrigger value="information_processing_speed_work">Travail de vitesse de traitement de l'information</TabsTrigger>
+						<TabsTrigger value="visual_spatial_ability">
+							Capacité visuo-spatiale
+						</TabsTrigger>
+						<TabsTrigger value="information_processing_speed_work">
+							Travail de vitesse de traitement de l'information
+						</TabsTrigger>
 					</TabsList>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
 				<Card>
 					<CardHeader>
-						<CardTitle>Exercice</CardTitle>
+						<CardTitle className="scroll-m-20 text-4xl font-bold tracking-tight text-balance">Exercice:</CardTitle>
 					</CardHeader>
 					<TabsContent value="memory">
 						<Memory />
@@ -38,12 +44,24 @@ function App() {
 					<TabsContent value="attention">
 						<Attention />
 					</TabsContent>
-					<TabsContent value="planning">Plan your tasks here.</TabsContent>
-					<TabsContent value="mental_flexibility">Work on your mental flexibility here.</TabsContent>
-					<TabsContent value="working_memory">Work on your working memory here.</TabsContent>
-					<TabsContent value="language_work">Improve your language skills here.</TabsContent>
-					<TabsContent value="visual_spatial_ability">Enhance your visual-spatial ability here.</TabsContent>
-					<TabsContent value="information_processing_speed_work">Boost your information processing speed here.</TabsContent>
+					<TabsContent value="planning">
+						<Planification />
+					</TabsContent>
+					<TabsContent value="mental_flexibility">
+						Work on your mental flexibility here.
+					</TabsContent>
+					<TabsContent value="working_memory">
+						Work on your working memory here.
+					</TabsContent>
+					<TabsContent value="language_work">
+						Improve your language skills here.
+					</TabsContent>
+					<TabsContent value="visual_spatial_ability">
+						Enhance your visual-spatial ability here.
+					</TabsContent>
+					<TabsContent value="information_processing_speed_work">
+						Boost your information processing speed here.
+					</TabsContent>
 				</Card>
 			</Tabs>
 		</section>
