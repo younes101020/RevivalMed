@@ -1,6 +1,7 @@
+import { Expand, Shrink } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
 	Dialog,
 	DialogClose,
@@ -9,9 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
+import { cn } from "@/lib/utils";
 import { WordSearchExercice } from "./exercice";
 
 export function Attention() {
+	const [isFullscreen, setIsFullscreen] = useState(false);
+
 	return (
 		<>
 			<CardContent className="space-y-3">
@@ -26,8 +30,23 @@ export function Attention() {
 					<DialogTrigger asChild>
 						<Button variant="outline">Commencer l'exercice</Button>
 					</DialogTrigger>
-					<DialogContent className="min-w-[90vw] md:min-w-[70vw]">
-						<AttentionExercise />
+					<DialogContent
+						className={cn(
+							"rounded-xl max-h-[80vh] overflow-scroll",
+							isFullscreen && "min-w-[90vw] max-h-screen",
+						)}
+					>
+						<Card className="border-none rounded-lg mt-7 px-4">
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => setIsFullscreen(!isFullscreen)}
+								className="absolute top-1.5 left-1 opacity-70 transition-opacity hover:opacity-100"
+							>
+								{isFullscreen ? <Shrink /> : <Expand />}
+							</Button>
+							<AttentionExercise />
+						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
