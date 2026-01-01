@@ -2,7 +2,6 @@ import { Plus, X } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardHeader } from "@/components/ui/card";
 import {
 	Dialog,
 	DialogContent,
@@ -345,6 +344,10 @@ export function WeeklySchedule() {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+
+			<DialogFooter className="sticky bottom-0">
+				<Button>J'ai terminé</Button>
+			</DialogFooter>
 		</>
 	);
 }

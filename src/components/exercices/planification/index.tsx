@@ -45,7 +45,7 @@ export function Planification() {
 							isFullscreen && "min-w-[90vw] max-h-screen",
 						)}
 					>
-						<Card className="border-none rounded-lg mt-7">
+						<Card className="border-none rounded-lg mt-7 px-2">
 							<Button
 								variant="ghost"
 								size="icon"
@@ -75,10 +75,13 @@ function PlanificationExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<div className="p-4 space-y-8 font-semibold text-lg">
+				<div className="p-4 space-y-8 text-lg max-h-[50vh] overflow-y-auto">
 					<p>
 						Vous habitez à Villeurbanne et avez 30 minutes de trajet pour vous
-						rendre sur votre lieu de travail. Vous travaillez les lundis, mardis
+						rendre sur votre lieu de travail.
+					</p>
+					<p>
+						Vous travaillez les lundis, mardis
 						et jeudis de 8h à 16h et les mercredis et vendredis de 8h à 12h, à
 						Lyon Part-Dieu.
 					</p>

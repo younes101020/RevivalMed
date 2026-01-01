@@ -29,7 +29,28 @@ const WORDS = [
 	"JAVA",
 	"GROENLAND",
 	"ISLANDE",
+	"MADAGASCAR",
+	"FILIPINES",
+	"JAMAIQUE",
+	"HAWAI",
+	"TAHITI",
+	"ZANZIBAR",
+	"SUMATRA",
+	"CEYLON",
+	"BARBADOS",
+	"FIJI",
+	"MAURICE",
+	"SEYCHELLES",
+	"VANUATU",
+	"GUYANE",
 ];
+
+const getRandomWords = (count: number) => {
+	const shuffled = [...FULL_WORDS].sort(() => Math.random() - 0.5);
+	return shuffled.slice(0, count);
+};
+
+const WORDS = getRandomWords(13);
 const GRID_SIZE = 14;
 
 export function WordSearchExercice() {
