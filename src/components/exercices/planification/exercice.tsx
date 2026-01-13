@@ -1,32 +1,94 @@
-import { Plus, X } from "lucide-react";
+import { Info, Plus, RotateCcw } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
-	DialogDescription,
 	DialogFooter,
-	DialogHeader,
 	DialogTitle,
+	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { EventsDescription } from "./components/events-description";
+import { EventsDialog } from "./components/events-dialog";
+import { Event } from "./types/event";
+import { DAYS } from "./const/days";
 
-type Event = {
-	id: string;
-	day: number;
-	startTime: string;
-	endTime: string;
-	title: string;
-	description?: string;
-};
-
-const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 const START_HOUR = 8;
 const END_HOUR = 18;
+
+const DAYS_OFF = [
+		// Lundi (0) de 8h à 16h
+		{ day: 0, time: "08:00" },
+		{ day: 0, time: "08:30" },
+		{ day: 0, time: "09:00" },
+		{ day: 0, time: "09:30" },
+		{ day: 0, time: "10:00" },
+		{ day: 0, time: "10:30" },
+		{ day: 0, time: "11:00" },
+		{ day: 0, time: "11:30" },
+		{ day: 0, time: "12:00" },
+		{ day: 0, time: "12:30" },
+		{ day: 0, time: "13:00" },
+		{ day: 0, time: "13:30" },
+		{ day: 0, time: "14:00" },
+		{ day: 0, time: "14:30" },
+		{ day: 0, time: "15:00" },
+		{ day: 0, time: "15:30" },
+		// Mardi (1) de 8h à 16h
+		{ day: 1, time: "08:00" },
+		{ day: 1, time: "08:30" },
+		{ day: 1, time: "09:00" },
+		{ day: 1, time: "09:30" },
+		{ day: 1, time: "10:00" },
+		{ day: 1, time: "10:30" },
+		{ day: 1, time: "11:00" },
+		{ day: 1, time: "11:30" },
+		{ day: 1, time: "12:00" },
+		{ day: 1, time: "12:30" },
+		{ day: 1, time: "13:00" },
+		{ day: 1, time: "13:30" },
+		{ day: 1, time: "14:00" },
+		{ day: 1, time: "14:30" },
+		{ day: 1, time: "15:00" },
+		{ day: 1, time: "15:30" },
+		// Mercredi (2) de 8h à 12h
+		{ day: 2, time: "08:00" },
+		{ day: 2, time: "08:30" },
+		{ day: 2, time: "09:00" },
+		{ day: 2, time: "09:30" },
+		{ day: 2, time: "10:00" },
+		{ day: 2, time: "10:30" },
+		{ day: 2, time: "11:00" },
+		{ day: 2, time: "11:30" },
+		// Jeudi (3) de 8h à 16h
+		{ day: 3, time: "08:00" },
+		{ day: 3, time: "08:30" },
+		{ day: 3, time: "09:00" },
+		{ day: 3, time: "09:30" },
+		{ day: 3, time: "10:00" },
+		{ day: 3, time: "10:30" },
+		{ day: 3, time: "11:00" },
+		{ day: 3, time: "11:30" },
+		{ day: 3, time: "12:00" },
+		{ day: 3, time: "12:30" },
+		{ day: 3, time: "13:00" },
+		{ day: 3, time: "13:30" },
+		{ day: 3, time: "14:00" },
+		{ day: 3, time: "14:30" },
+		{ day: 3, time: "15:00" },
+		{ day: 3, time: "15:30" },
+		// Vendredi (4) de 8h à 12h
+		{ day: 4, time: "08:00" },
+		{ day: 4, time: "08:30" },
+		{ day: 4, time: "09:00" },
+		{ day: 4, time: "09:30" },
+		{ day: 4, time: "10:00" },
+		{ day: 4, time: "10:30" },
+		{ day: 4, time: "11:00" },
+		{ day: 4, time: "11:30" },
+	];
 
 function generateTimeSlots() {
 	const slots: string[] = [];
@@ -53,8 +115,23 @@ export function WeeklySchedule() {
 		startTime: "",
 		endTime: "",
 	});
+	// Définir les slots désactivés (jour: 0=Lundi, 1=Mardi, 2=Mercredi, 3=Jeudi, 4=Vendredi, 5=Samedi)
+	const [daysOffSlots, setDaysOffSlots] = useState(DAYS_OFF);
+	const [remainingDayOff, setRemainingDayOff] = useState(3);
 
 	const timeSlots = generateTimeSlots();
+
+	const setDayOff = (day: number) => {
+		setDaysOffSlots((prev) => {
+			return prev.filter((d) => d.day !== day);
+		});
+		setRemainingDayOff((prev) => prev - 1);
+	}
+
+	const resetDayOffs = () => {
+		setDaysOffSlots(DAYS_OFF);
+		setRemainingDayOff(3);
+	};
 
 	const handleSlotClick = (day: number, time: string) => {
 		const endTimeIndex = timeSlots.indexOf(time) + 1;
@@ -70,6 +147,10 @@ export function WeeklySchedule() {
 		});
 		setEditingEvent(null);
 		setIsDialogOpen(true);
+	};
+
+	const handleSubmit = () => {
+		console.log("Planning soumis :", events);
 	};
 
 	const handleEventClick = (event: Event, e: React.MouseEvent) => {
@@ -159,22 +240,37 @@ export function WeeklySchedule() {
 		return endIndex - startIndex;
 	};
 
+	const isSlotDisabled = (day: number, time: string) => {
+		return daysOffSlots.some(
+			(slot) => slot.day === day && slot.time === time,
+		);
+	};
+
 	return (
 		<>
 			<div className="overflow-x-auto">
-				<div className="min-w-[800px]">
+				<dl className="bg-primary rounded px-1 text-sm my-2 py-2">
+					<dt>Jours de congé restants</dt>
+					<dd className="flex justify-between gap-2 items-center">
+						{remainingDayOff}
+						{
+							remainingDayOff < 3 && (
+							<Button
+								className="text-xs"
+								onClick={resetDayOffs}
+							>
+								<RotateCcw /> Réinitialiser
+							</Button>
+							)
+						}
+					</dd>
+				</dl>
+				<div>
 					<div className="grid grid-cols-[80px_repeat(6,1fr)] border-b border-border bg-muted/30">
 						<div className="p-4 text-sm font-medium text-muted-foreground">
 							Heure
 						</div>
-						{DAYS.map((day) => (
-							<div
-								key={day}
-								className="p-4 text-center text-sm font-semibold uppercase tracking-wide border-l border-border"
-							>
-								{day}
-							</div>
-						))}
+						<ColumnsHeader />
 					</div>
 
 					<div className="relative">
@@ -189,8 +285,18 @@ export function WeeklySchedule() {
 								{DAYS.map((_, dayIndex) => {
 									const event = getEventForSlot(dayIndex, time);
 									const isContinuation = isEventContinuation(dayIndex, time);
+							const disabled = isSlotDisabled(dayIndex, time);
 
-									if (isContinuation) return null;
+							if (isContinuation) return null;
+
+							// Slot désactivé
+							if (disabled) {
+								return <DayOffCell
+											key={`${dayIndex}-${time}`}
+											remainingDayOff={remainingDayOff}
+											handleDayOff={() => setDayOff(dayIndex)}
+										/>
+							}
 
 									if (event) {
 										const span = getEventSpan(event);
@@ -222,17 +328,7 @@ export function WeeklySchedule() {
 										);
 									}
 
-									return (
-										<div
-											key={`${dayIndex}-${time}`}
-											className="border-l border-border p-2 min-h-[60px] hover:bg-accent/30 cursor-pointer transition-colors group/cell"
-											onClick={() => handleSlotClick(dayIndex, time)}
-										>
-											<div className="h-full flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-opacity">
-												<Plus className="w-4 h-4 text-muted-foreground" />
-											</div>
-										</div>
-									);
+									return <AvailableDayCell key={`${dayIndex}-${time}`} handleSlotClick={() => handleSlotClick(dayIndex, time)} />
 								})}
 							</div>
 						))}
@@ -241,97 +337,91 @@ export function WeeklySchedule() {
 			</div>
 
 			<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-				<DialogContent className="sm:max-w-[500px]">
-					<DialogHeader>
-						<DialogTitle>
-							{editingEvent ? "Modifier l'événement" : "Nouvel événement"}
-						</DialogTitle>
-						<DialogDescription>
-							{selectedSlot &&
-								`${DAYS[selectedSlot.day]} à ${selectedSlot.time} - (30 minutes)`}
-						</DialogDescription>
-					</DialogHeader>
-
-					<div className="space-y-4 py-4">
-						<div className="space-y-2">
-							<Label htmlFor="title">Titre *</Label>
-							<Input
-								id="title"
-								value={formData.title}
-								onChange={(e) =>
-									setFormData({ ...formData, title: e.target.value })
-								}
-								placeholder="Nom de l'événement"
-							/>
-						</div>
-
-						<div className="grid-cols-2 gap-4 hidden">
-								<select
-									id="startTime"
-									value={formData.startTime}
-								>
-									{timeSlots.map((time) => (
-										<option key={time} value={time}>
-											{time}
-										</option>
-									))}
-								</select>
-							<select
-								id="endTime"
-								value={formData.endTime}
-							>
-								{timeSlots
-									.filter((time) => time > formData.startTime)
-									.map((time) => (
-										<option key={time} value={time}>
-											{time}
-										</option>
-									))}
-							</select>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="description">Description</Label>
-							<Textarea
-								id="description"
-								value={formData.description}
-								onChange={(e) =>
-									setFormData({ ...formData, description: e.target.value })
-								}
-								placeholder="Ajouter des détails..."
-								rows={3}
-							/>
-						</div>
-					</div>
-
-					<DialogFooter className="flex-col sm:flex-row gap-2">
-						{editingEvent && (
-							<Button
-								variant="destructive"
-								onClick={handleDelete}
-								className="sm:mr-auto"
-							>
-								<X className="w-4 h-4 mr-2" />
-								Supprimer
-							</Button>
-						)}
-						<Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-							Annuler
-						</Button>
-						<Button
-							onClick={handleSave}
-							disabled={
-								!formData.title || !formData.startTime || !formData.endTime
-							}
-						>
-							{editingEvent ? "Enregistrer" : "Créer"}
-						</Button>
-					</DialogFooter>
-				</DialogContent>
+				<EventsDialog
+					editingEvent={editingEvent}
+					selectedSlot={selectedSlot}
+					formData={formData}
+					setFormData={setFormData}
+					timeSlots={timeSlots}
+					handleDelete={handleDelete}
+					setIsDialogOpen={setIsDialogOpen}
+					handleSave={handleSave}
+				/>
 			</Dialog>
 
 			<DialogFooter className="sticky bottom-0">
-				<Button>J'ai terminé</Button>
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button variant={"link"}>
+							<Info />
+							Récap. des événements
+						</Button>
+					</DialogTrigger>
+					<DialogContent className="max-w-lg">
+						<DialogTitle>Événements à planifier</DialogTitle>
+						<EventsDescription />
+					</DialogContent>
+				</Dialog>
+				<Button onClick={handleSubmit}>J'ai terminé</Button>
 			</DialogFooter>
 		</>
 	);
+}
+
+function AvailableDayCell({ handleSlotClick }: { handleSlotClick: () => void }) {
+	return (
+		<div
+			className="border-l border-border p-2 min-h-[60px] hover:bg-accent/30 cursor-pointer transition-colors group/cell"
+			onClick={handleSlotClick}
+		>
+			<div className="h-full flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-opacity">
+				<Plus className="w-4 h-4 text-muted-foreground" />
+			</div>
+		</div>
+	)
+}
+
+interface DayOffCellProps {
+	remainingDayOff: number;
+	handleDayOff: () => void;
+}
+
+function DayOffCell({ remainingDayOff, handleDayOff }: DayOffCellProps) {
+	return (
+		<div
+			className={cn(
+				"border-l border-border p-2 min-h-[60px] bg-muted/50 group/disabled",
+				remainingDayOff <= 0 ? "cursor-not-allowed" : "cursor-pointer hover:border-2",
+			)}
+			onClick={() => {
+				if (remainingDayOff > 0) {
+					handleDayOff();
+				}
+			}}
+		>
+			<div className="relative h-full flex items-center justify-center">
+				<span className="text-muted-foreground/50">
+					Travail
+				</span>
+				{remainingDayOff > 0 && (
+					<span className="hidden group-hover/disabled:block text-xs absolute bottom-[-.5rem] bg-primary text-primary-foreground pl-1 pr-4 left-[-.5rem] rounded-tr-2xl ">
+						+ Congé
+					</span>
+				)}
+			</div>
+		</div>
+	)
+}
+
+function ColumnsHeader() {
+	return (
+		DAYS.map((day) => (
+				<div
+					key={day}
+					className="p-4 text-center text-sm font-semibold uppercase tracking-wide border-l border-border"
+				>
+					{day}
+				</div>
+		))
+	)
 }
