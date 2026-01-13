@@ -48,7 +48,7 @@ const MemorySchema = z.object({
     }
   })),
   inOceanPerceivedObject: z.string().pipe(z.transform((val, ctx) => {
-    if(val.trim().toLowerCase() !== "poissons zébrés") {
+    if(val.trim().toLowerCase() !== "poissons zébré") {
       ctx.issues.push({
         code: "custom",
         message: "Mauvaise réponse, les objets perçus dans l'océan sont des poissons zébrés.",

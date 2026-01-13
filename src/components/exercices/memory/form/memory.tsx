@@ -100,21 +100,21 @@ export function MemoryExerciseForm() {
 					{(field) => {
 						return (
 							<div className="space-y-2">
-								<Label htmlFor="seasonStore">
+								<Label htmlFor={field.name}>
 									Saison durant laquelle se déroule l'histoire
 								</Label>
-								<Select name="seasonStore">
+								<Select name={field.name} value={field.state.value} onValueChange={field.handleChange}>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="..." />
 									</SelectTrigger>
 									<SelectContent
-										id="seasonStore"
+										id={field.name}
 										defaultValue={field.state.value}
 									>
-										<SelectItem value="winter">Hiver</SelectItem>
-										<SelectItem value="spring">Printemps</SelectItem>
-										<SelectItem value="summer">Été</SelectItem>
-										<SelectItem value="autumn">Automne</SelectItem>
+										<SelectItem value="hiver">Hiver</SelectItem>
+										<SelectItem value="printemps">Printemps</SelectItem>
+										<SelectItem value="été">Été</SelectItem>
+										<SelectItem value="automne">Automne</SelectItem>
 									</SelectContent>
 								</Select>
 								{field.state.meta.errors.map((error) => (
@@ -133,11 +133,11 @@ export function MemoryExerciseForm() {
 								<Label htmlFor="weather">
 									Météo dans laquelle se déroule l'histoire
 								</Label>
-								<Select name="weather">
+								<Select name={field.name} value={field.state.value} onValueChange={field.handleChange}>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="..." />
 									</SelectTrigger>
-									<SelectContent id="weather" defaultValue={field.state.value}>
+									<SelectContent id={field.name} defaultValue={field.state.value}>
 										<SelectItem value="très chaud">Très chaud</SelectItem>
 										<SelectItem value="chaud">Chaud</SelectItem>
 										<SelectItem value="tempéré">Tempéré</SelectItem>
@@ -159,12 +159,12 @@ export function MemoryExerciseForm() {
 						return (
 							<div className="space-y-2">
 								<Label htmlFor="oceanColor">Couleur de l'océan</Label>
-								<Select name="oceanColor">
+								<Select name={field.name} value={field.state.value} onValueChange={field.handleChange}>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="..." />
 									</SelectTrigger>
 									<SelectContent
-										id="oceanColor"
+										id={field.name}
 										defaultValue={field.state.value}
 									>
 										<SelectItem value="bleu éclatant">Bleu éclatant</SelectItem>
@@ -190,12 +190,12 @@ export function MemoryExerciseForm() {
 								<Label htmlFor="inOceanPerceivedObject">
 									Objet perçu dans l'océan
 								</Label>
-								<Select name="inOceanPerceivedObject">
+								<Select name={field.name} value={field.state.value} onValueChange={field.handleChange}>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="..." />
 									</SelectTrigger>
 									<SelectContent
-										id="inOceanPerceivedObject"
+										id={field.name}
 										defaultValue={field.state.value}
 									>
 										<SelectItem value="algues">Algues</SelectItem>

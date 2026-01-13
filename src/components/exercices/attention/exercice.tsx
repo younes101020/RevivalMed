@@ -15,7 +15,7 @@ interface WordPlacement {
 	positions: Position[];
 }
 
-const WORDS = [
+const FULL_WORDS = [
 	"SARDAIGNE",
 	"CORSE",
 	"CUBA",

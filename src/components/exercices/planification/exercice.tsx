@@ -248,7 +248,7 @@ export function WeeklySchedule() {
 						</DialogTitle>
 						<DialogDescription>
 							{selectedSlot &&
-								`${DAYS[selectedSlot.day]} à ${selectedSlot.time}`}
+								`${DAYS[selectedSlot.day]} à ${selectedSlot.time} - (30 minutes)`}
 						</DialogDescription>
 					</DialogHeader>
 
@@ -265,16 +265,10 @@ export function WeeklySchedule() {
 							/>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
-							<div className="space-y-2">
-								<Label htmlFor="startTime">Début *</Label>
+						<div className="grid-cols-2 gap-4 hidden">
 								<select
 									id="startTime"
 									value={formData.startTime}
-									onChange={(e) =>
-										setFormData({ ...formData, startTime: e.target.value })
-									}
-									className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
 									{timeSlots.map((time) => (
 										<option key={time} value={time}>
@@ -282,29 +276,19 @@ export function WeeklySchedule() {
 										</option>
 									))}
 								</select>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="endTime">Fin *</Label>
-								<select
-									id="endTime"
-									value={formData.endTime}
-									onChange={(e) =>
-										setFormData({ ...formData, endTime: e.target.value })
-									}
-									className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-								>
-									{timeSlots
-										.filter((time) => time > formData.startTime)
-										.map((time) => (
-											<option key={time} value={time}>
-												{time}
-											</option>
-										))}
-								</select>
-							</div>
+							<select
+								id="endTime"
+								value={formData.endTime}
+							>
+								{timeSlots
+									.filter((time) => time > formData.startTime)
+									.map((time) => (
+										<option key={time} value={time}>
+											{time}
+										</option>
+									))}
+							</select>
 						</div>
-
 						<div className="space-y-2">
 							<Label htmlFor="description">Description</Label>
 							<Textarea
