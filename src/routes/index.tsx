@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Attention } from "@/components/exercices/attention";
+import { InformationProcessing } from "@/components/exercices/information processing";
 import { Memory } from "@/components/exercices/memory/index";
 import { Planification } from "@/components/exercices/planification";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,7 +61,7 @@ function App() {
 						Enhance your visual-spatial ability here.
 					</TabsContent>
 					<TabsContent value="information_processing_speed_work">
-						Boost your information processing speed here.
+						<InformationProcessing />
 					</TabsContent>
 				</Card>
 			</Tabs>
