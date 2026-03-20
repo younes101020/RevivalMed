@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Attention } from "@/components/exercices/attention";
 import { InformationProcessing } from "@/components/exercices/information processing";
+import { Langage } from "@/components/exercices/langage";
 import { Memory } from "@/components/exercices/memory/index";
 import { Planification } from "@/components/exercices/planification";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +38,9 @@ function App() {
 				</ScrollArea>
 				<Card>
 					<CardHeader>
-						<CardTitle className="scroll-m-20 text-4xl font-bold tracking-tight text-balance">Exercice:</CardTitle>
+						<CardTitle className="scroll-m-20 text-4xl font-bold tracking-tight text-balance">
+							Exercice:
+						</CardTitle>
 					</CardHeader>
 					<TabsContent value="memory">
 						<Memory />
@@ -55,7 +58,7 @@ function App() {
 						Work on your working memory here.
 					</TabsContent>
 					<TabsContent value="language_work">
-						Improve your language skills here.
+						<Langage />
 					</TabsContent>
 					<TabsContent value="visual_spatial_ability">
 						Enhance your visual-spatial ability here.
