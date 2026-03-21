@@ -4,6 +4,7 @@ import { InformationProcessing } from "@/components/exercices/information proces
 import { Langage } from "@/components/exercices/langage";
 import { Memory } from "@/components/exercices/memory/index";
 import { Planification } from "@/components/exercices/planification";
+import { VisiuoSpatial } from "@/components/exercices/visuo-spatial";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -61,7 +62,7 @@ function App() {
 						<Langage />
 					</TabsContent>
 					<TabsContent value="visual_spatial_ability">
-						Enhance your visual-spatial ability here.
+						<VisiuoSpatial />
 					</TabsContent>
 					<TabsContent value="information_processing_speed_work">
 						<InformationProcessing />
