@@ -5,6 +5,7 @@ import { Langage } from "@/components/exercices/langage";
 import { Memory } from "@/components/exercices/memory/index";
 import { Planification } from "@/components/exercices/planification";
 import { VisiuoSpatial } from "@/components/exercices/visuo-spatial";
+import { VitesseTraitement } from "@/components/exercices/vitesse traitement";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -33,6 +34,9 @@ function App() {
 						</TabsTrigger>
 						<TabsTrigger value="information_processing_speed_work">
 							Travail de vitesse de traitement de l'information
+						</TabsTrigger>
+						<TabsTrigger value="processing_speed">
+							Vitesse de traitement
 						</TabsTrigger>
 					</TabsList>
 					<ScrollBar orientation="horizontal" />
@@ -66,7 +70,10 @@ function App() {
 					</TabsContent>
 					<TabsContent value="information_processing_speed_work">
 						<InformationProcessing />
-					</TabsContent>
+					</TabsContent>{" "}
+					<TabsContent value="processing_speed">
+						<VitesseTraitement />
+					</TabsContent>{" "}
 				</Card>
 			</Tabs>
 		</section>
