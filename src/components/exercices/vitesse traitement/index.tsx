@@ -1,5 +1,6 @@
+import { useStore } from "@tanstack/react-store";
 import { Expand, Shrink } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -11,10 +12,48 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { levelStore, updateRating } from "@/store/level";
+import type { VitesseConfig } from "./exercice";
 import { VitesseTraitementExercise } from "./exercice";
+
+function getVitesseConfig(rating: number): VitesseConfig {
+	switch (true) {
+		case rating < 25:
+			return {
+				pairCount: 15,
+				letters: ["A", "T"],
+				hint: "15 paires avec 2 lettres.",
+			};
+		case rating < 50:
+			return {
+				pairCount: 20,
+				letters: ["A", "T"],
+				hint: "20 paires avec 2 lettres.",
+			};
+		case rating < 75:
+			return {
+				pairCount: 30,
+				letters: ["A", "T", "L"],
+				hint: "30 paires avec 3 lettres.",
+			};
+		default:
+			return {
+				pairCount: 45,
+				letters: ["A", "T", "L", "C"],
+				hint: "45 paires avec 4 lettres.",
+			};
+	}
+}
 
 export function VitesseTraitement() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
+	const rating = useStore(
+		levelStore,
+		(s) => s.exercises.processingSpeed.rating,
+	);
+	const config = getVitesseConfig(rating);
+	const handleComplete = (scorePercent: number) =>
+		updateRating("processingSpeed", scorePercent);
 
 	return (
 		<>
@@ -37,6 +76,7 @@ export function VitesseTraitement() {
 					temps que vous avez mis en bas de la feuille.
 				</p>
 				<p>Vous êtes prêts ? ... C'est parti !</p>
+				<p className="text-xs text-muted-foreground italic">{config.hint}</p>
 			</CardContent>
 			<CardFooter className="mt-4">
 				<Dialog>
@@ -69,9 +109,9 @@ export function VitesseTraitement() {
 
 function VitesseTraitementCountdown() {
 	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
-		setHasStarted(true),
-	);
+	const { remainingSecond, cancel } = useCountdown(3, () => {
+		setHasStarted(true);
+	});
 
 	return (
 		<>

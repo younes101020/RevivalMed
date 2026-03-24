@@ -15,6 +15,13 @@ interface WordPlacement {
 	positions: Position[];
 }
 
+export interface AttentionConfig {
+	wordCount: number;
+	gridSize: number;
+	directions: Direction[];
+	hint: string;
+}
+
 const FULL_WORDS = [
 	"SARDAIGNE",
 	"CORSE",
@@ -50,10 +57,16 @@ const getRandomWords = (count: number) => {
 	return shuffled.slice(0, count);
 };
 
-const WORDS = getRandomWords(13);
-const GRID_SIZE = 14;
+export function WordSearchExercice({
+	config,
+	onComplete,
+}: {
+	config: AttentionConfig;
+	onComplete: (scorePercent: number) => void;
+}) {
+	const [WORDS] = useState<string[]>(() => getRandomWords(config.wordCount));
+	const GRID_SIZE = config.gridSize;
 
-export function WordSearchExercice() {
 	const [grid, setGrid] = useState<string[][]>([]);
 	const [wordPlacements, setWordPlacements] = useState<WordPlacement[]>([]);
 	const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
@@ -124,12 +137,7 @@ export function WordSearchExercice() {
 			return true;
 		};
 
-		const directions: Direction[] = [
-			"horizontal",
-			"vertical",
-			"diagonal",
-			"diagonal-reverse",
-		];
+		const directions: Direction[] = config.directions;
 
 		for (const word of WORDS) {
 			let placed = false;
@@ -162,7 +170,7 @@ export function WordSearchExercice() {
 		setSelectedCells(new Set());
 		setCurrentSelection([]);
 		setIsComplete(false);
-	}, []);
+	}, [WORDS, GRID_SIZE, config.directions]);
 
 	useEffect(() => {
 		generateGrid();
@@ -235,6 +243,7 @@ export function WordSearchExercice() {
 
 					if (newFoundWords.size === WORDS.length) {
 						setIsComplete(true);
+						onComplete(100);
 					}
 					break;
 				}

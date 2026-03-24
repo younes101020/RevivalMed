@@ -1,5 +1,6 @@
 import { Expand, Shrink } from "lucide-react";
 import { useState } from "react";
+import { useStore } from "@tanstack/react-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -11,19 +12,60 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { levelStore, updateRating } from "@/store/level";
+import type { AttentionConfig } from "./exercice";
 import { WordSearchExercice } from "./exercice";
 
+function getAttentionConfig(rating: number): AttentionConfig {
+	switch (true) {
+		case rating < 25:
+			return {
+				wordCount: 5,
+				gridSize: 10,
+				directions: ["horizontal", "vertical"],
+				hint: "5 mots sur une grille 10×10, horizontaux et verticaux.",
+			};
+		case rating < 50:
+			return {
+				wordCount: 8,
+				gridSize: 12,
+				directions: ["horizontal", "vertical", "diagonal"],
+				hint: "8 mots sur une grille 12×12, avec diagonales.",
+			};
+		case rating < 75:
+			return {
+				wordCount: 13,
+				gridSize: 14,
+				directions: ["horizontal", "vertical", "diagonal", "diagonal-reverse"],
+				hint: "13 mots sur une grille 14×14, toutes directions.",
+			};
+		default:
+			return {
+				wordCount: 18,
+				gridSize: 17,
+				directions: ["horizontal", "vertical", "diagonal", "diagonal-reverse"],
+				hint: "18 mots sur une grille 17×17, toutes directions.",
+			};
+	}
+}
+
 export function Attention() {
+	const rating = useStore(levelStore, (s) => s.exercises.attention.rating);
+	const config = getAttentionConfig(rating);
 	const [isFullscreen, setIsFullscreen] = useState(false);
+
+	const handleComplete = (scorePercent: number) =>
+		updateRating("attention", scorePercent);
 
 	return (
 		<>
 			<CardContent className="space-y-3">
 				<p>
-					Des mots mêlés ca vous dis ? Retrouver les 13 îles du monde cachées
-					dans la grille
+					Des mots mêlés ca vous dis ? Retrouvez {config.wordCount} îles du
+					monde cachées dans la grille.
 				</p>
-				<p>Vous êtes prêts ? ... C’est parti !</p>
+				<p className="text-sm text-muted-foreground">{config.hint}</p>
+				<p>Vous êtes prêts ? ... C'est parti !</p>
 			</CardContent>
 			<CardFooter className="mt-4">
 				<Dialog>
@@ -45,7 +87,7 @@ export function Attention() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<AttentionExercise />
+							<AttentionExercise config={config} onComplete={handleComplete} />
 						</Card>
 					</DialogContent>
 				</Dialog>
@@ -54,7 +96,13 @@ export function Attention() {
 	);
 }
 
-function AttentionExercise() {
+function AttentionExercise({
+	config,
+	onComplete,
+}: {
+	config: AttentionConfig;
+	onComplete: (scorePercent: number) => void;
+}) {
 	const [hasStarted, setHasStarted] = useState(false);
 	const { remainingSecond, cancel } = useCountdown(3, () =>
 		setHasStarted(true),
@@ -63,7 +111,7 @@ function AttentionExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<WordSearchExercice />
+				<WordSearchExercice config={config} onComplete={onComplete} />
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans

@@ -45,6 +45,12 @@ const PAIRS: Pair[] = [
 	{ id: "R15", left: "T", right: "T", correct: "identique" },
 ];
 
+export interface VitesseConfig {
+	pairCount: number;
+	letters: string[];
+	hint: string;
+}
+
 function formatTime(seconds: number): string {
 	const m = Math.floor(seconds / 60);
 	const s = seconds % 60;

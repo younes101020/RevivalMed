@@ -1,30 +1,28 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const INITIAL_ITEMS = [
-	"Avril",
-	"Septembre",
-	"Juillet",
-	"Janvier",
-	"Mai",
-	"Décembre",
-	"Mars",
-];
+export interface InfoProcessingConfig {
+	sortedItems: string[];
+	instruction: string;
+	hint: string;
+}
 
-const CORRECT_ORDER = [
-	"Janvier",
-	"Mars",
-	"Avril",
-	"Mai",
-	"Juillet",
-	"Septembre",
-	"Décembre",
-];
+function shuffle<T>(arr: T[]): T[] {
+	return [...arr].sort(() => Math.random() - 0.5);
+}
 
-export function SortingExercice() {
-	const [items, setItems] = useState<string[]>(INITIAL_ITEMS);
+export function SortingExercice({
+	config,
+	onComplete,
+}: {
+	config: InfoProcessingConfig;
+	onComplete: (scorePercent: number) => void;
+}) {
+	const CORRECT_ORDER = config.sortedItems;
+	const hasReportedRef = useRef(false);
+	const [items, setItems] = useState<string[]>(() => shuffle(CORRECT_ORDER));
 	const [checked, setChecked] = useState(false);
 	const [dragIndex, setDragIndex] = useState<number | null>(null);
 	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -64,10 +62,7 @@ export function SortingExercice() {
 
 	return (
 		<div className="p-4 space-y-6">
-			<p className="text-sm text-muted-foreground">
-				Glissez-déposez les mois pour les classer dans l'ordre chronologique
-				d'une même année (du plus ancien au plus récent).
-			</p>
+			<p className="text-sm text-muted-foreground">{config.instruction}</p>
 
 			<ol className="space-y-2">
 				{items.map((item, index) => {
@@ -138,7 +133,16 @@ export function SortingExercice() {
 
 			<div className="flex gap-2">
 				<Button
-					onClick={() => setChecked(true)}
+					onClick={() => {
+						setChecked(true);
+						if (!hasReportedRef.current) {
+							hasReportedRef.current = true;
+							const s = items.filter(
+								(item, i) => item === CORRECT_ORDER[i],
+							).length;
+							onComplete((s / CORRECT_ORDER.length) * 100);
+						}
+					}}
 					disabled={checked && score === CORRECT_ORDER.length}
 				>
 					Vérifier
@@ -146,8 +150,9 @@ export function SortingExercice() {
 				<Button
 					variant="outline"
 					onClick={() => {
-						setItems(INITIAL_ITEMS);
+						setItems(shuffle(CORRECT_ORDER));
 						setChecked(false);
+						hasReportedRef.current = false;
 					}}
 				>
 					Recommencer
