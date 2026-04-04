@@ -1,6 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { Expand, Shrink } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -81,11 +82,19 @@ function getInfoProcessingConfig(rating: number): InfoProcessingConfig {
 	}
 }
 
+function getLevelFromRating(rating: number): number {
+	if (rating < 25) return 1;
+	if (rating < 50) return 2;
+	if (rating < 75) return 3;
+	return 4;
+}
+
 export function InformationProcessing() {
 	const rating = useStore(
 		levelStore,
 		(s) => s.exercises.informationProcessing.rating,
 	);
+	const level = getLevelFromRating(rating);
 	const config = getInfoProcessingConfig(rating);
 	const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -95,6 +104,10 @@ export function InformationProcessing() {
 	return (
 		<>
 			<CardContent className="space-y-3">
+				<div className="flex items-center gap-2">
+					<span className="text-sm text-muted-foreground">Niveau actuel :</span>
+					<Badge variant="outline">{level} / 4</Badge>
+				</div>
 				<p>
 					Vous devez ranger ces informations en les classant dans l'ordre
 					chronologique (du plus ancien au plus récent) ou alphabétique, selon

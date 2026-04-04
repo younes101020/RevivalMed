@@ -1,6 +1,7 @@
 import { useStore } from "@tanstack/react-store";
 import { Expand, Shrink } from "lucide-react";
 import { useCallback, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
@@ -66,9 +67,17 @@ function ReadingCountdown({
 	);
 }
 
+function getLevelFromRating(rating: number): number {
+	if (rating < 25) return 1;
+	if (rating < 50) return 2;
+	if (rating < 75) return 3;
+	return 4;
+}
+
 export function Memory() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
 	const rating = useStore(levelStore, (s) => s.exercises.memory.rating);
+	const level = getLevelFromRating(rating);
 	const config = getMemoryConfig(rating);
 	const handleComplete = useCallback(
 		(scorePercent: number) => updateRating("memory", scorePercent),
@@ -78,6 +87,10 @@ export function Memory() {
 	return (
 		<>
 			<CardContent className="space-y-3">
+				<div className="flex items-center gap-2">
+					<span className="text-sm text-muted-foreground">Niveau actuel :</span>
+					<Badge variant="outline">{level} / 4</Badge>
+				</div>
 				<p>
 					Lisez l'histoire suivante à voix haute ou dans votre tête, selon votre
 					préférence. Ne lisez cette histoire qu'une seule fois, puis cacher le
@@ -177,7 +190,9 @@ function MemoryExercise({
 				</p>
 			)}
 			{hasStarted && <Separator className="my-2" />}
-			{hasStarted && <Button onClick={() => setHasFinished(true)}>J'ai tout lu</Button>}
+			{hasStarted && (
+				<Button onClick={() => setHasFinished(true)}>J'ai tout lu</Button>
+			)}
 			<DialogClose asChild>
 				<Button type="button" variant="outline" onClick={cancel}>
 					Annuler

@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Attention } from "@/components/exercices/attention";
+import { Flexibilite } from "@/components/exercices/flexibilite";
 import { InformationProcessing } from "@/components/exercices/information processing";
 import { Langage } from "@/components/exercices/langage";
 import { Memory } from "@/components/exercices/memory/index";
+import { MemoryWork } from "@/components/exercices/memory work";
 import { Planification } from "@/components/exercices/planification";
 import { VisiuoSpatial } from "@/components/exercices/visuo-spatial";
 import { VitesseTraitement } from "@/components/exercices/vitesse traitement";
@@ -57,10 +59,10 @@ function App() {
 						<Planification />
 					</TabsContent>
 					<TabsContent value="mental_flexibility">
-						Work on your mental flexibility here.
+						<Flexibilite />
 					</TabsContent>
 					<TabsContent value="working_memory">
-						Work on your working memory here.
+						<MemoryWork />
 					</TabsContent>
 					<TabsContent value="language_work">
 						<Langage />
