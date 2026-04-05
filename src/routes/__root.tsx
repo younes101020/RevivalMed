@@ -1,31 +1,28 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
-import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import {
+	createRootRouteWithContext,
+	HeadContent,
+	Scripts,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { getSession } from "@/lib/session";
+import type { RouterContext } from "@/router";
 
 import appCss from "../styles.css?url";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
 	head: () => ({
 		meta: [
-			{
-				charSet: "utf-8",
-			},
-			{
-				name: "viewport",
-				content: "width=device-width, initial-scale=1",
-			},
-			{
-				title: "RevivalMed",
-			},
+			{ charSet: "utf-8" },
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ title: "RevivalMed" },
 		],
-		links: [
-			{
-				rel: "stylesheet",
-				href: appCss,
-			},
-		],
+		links: [{ rel: "stylesheet", href: appCss }],
 	}),
-
+	beforeLoad: async () => {
+		const session = await getSession();
+		return { user: session?.user ?? null };
+	},
 	shellComponent: RootDocument,
 });
 
@@ -39,9 +36,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				{children}
 				{import.meta.env.DEV && (
 					<TanStackDevtools
-						config={{
-							position: "bottom-right",
-						}}
+						config={{ position: "bottom-right" }}
 						plugins={[
 							{
 								name: "Tanstack Router",

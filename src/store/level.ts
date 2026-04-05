@@ -15,12 +15,14 @@ export interface ExerciseRating {
 }
 
 export interface LevelState {
+	userId: string | null;
 	exercises: Record<ExerciseKey, ExerciseRating>;
 }
 
 const DEFAULT_RATING: ExerciseRating = { rating: 30, sessions: 0 };
 
 const defaultState: LevelState = {
+	userId: null,
 	exercises: {
 		memory: { ...DEFAULT_RATING },
 		attention: { ...DEFAULT_RATING },
@@ -32,24 +34,22 @@ const defaultState: LevelState = {
 	},
 };
 
-const STORAGE_KEY = "revivalmed_levels";
+export const levelStore = new Store<LevelState>(defaultState);
 
-function loadInitialState(): LevelState {
-	if (typeof window === "undefined") return defaultState;
-	try {
-		const saved = localStorage.getItem(STORAGE_KEY);
-		if (!saved) return defaultState;
-		return JSON.parse(saved) as LevelState;
-	} catch {
-		return defaultState;
+/** Called from the patient route loader after fetching progress from the DB. */
+export function initLevelStore(
+	userId: string,
+	rows: { exerciseKey: string; rating: number; sessions: number }[],
+): void {
+	const exercises = { ...defaultState.exercises };
+	for (const row of rows) {
+		const key = row.exerciseKey as ExerciseKey;
+		if (key in exercises) {
+			exercises[key] = { rating: row.rating, sessions: row.sessions };
+		}
 	}
+	levelStore.setState(() => ({ userId, exercises }));
 }
-
-export const levelStore = new Store<LevelState>(loadInitialState());
-
-levelStore.subscribe(() => {
-	localStorage.setItem(STORAGE_KEY, JSON.stringify(levelStore.state));
-});
 
 export function updateRating(
 	exercise: ExerciseKey,
