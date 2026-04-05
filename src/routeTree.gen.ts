@@ -9,38 +9,127 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthTherapistIndexRouteImport } from './routes/_auth/therapist/index'
+import { Route as AuthPatientIndexRouteImport } from './routes/_auth/patient/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthTherapistPatientsPatientIdRouteImport } from './routes/_auth/therapist/patients/$patientId'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthTherapistIndexRoute = AuthTherapistIndexRouteImport.update({
+  id: '/therapist/',
+  path: '/therapist/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthPatientIndexRoute = AuthPatientIndexRouteImport.update({
+  id: '/patient/',
+  path: '/patient/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthTherapistPatientsPatientIdRoute =
+  AuthTherapistPatientsPatientIdRouteImport.update({
+    id: '/therapist/patients/$patientId',
+    path: '/therapist/patients/$patientId',
+    getParentRoute: () => AuthRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/patient': typeof AuthPatientIndexRoute
+  '/therapist': typeof AuthTherapistIndexRoute
+  '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/patient': typeof AuthPatientIndexRoute
+  '/therapist': typeof AuthTherapistIndexRoute
+  '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_auth/patient/': typeof AuthPatientIndexRoute
+  '/_auth/therapist/': typeof AuthTherapistIndexRoute
+  '/_auth/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/api/auth/$'
+    | '/patient'
+    | '/therapist'
+    | '/therapist/patients/$patientId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/login'
+    | '/api/auth/$'
+    | '/patient'
+    | '/therapist'
+    | '/therapist/patients/$patientId'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/login'
+    | '/api/auth/$'
+    | '/_auth/patient/'
+    | '/_auth/therapist/'
+    | '/_auth/therapist/patients/$patientId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +137,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/therapist/': {
+      id: '/_auth/therapist/'
+      path: '/therapist'
+      fullPath: '/therapist'
+      preLoaderRoute: typeof AuthTherapistIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/patient/': {
+      id: '/_auth/patient/'
+      path: '/patient'
+      fullPath: '/patient'
+      preLoaderRoute: typeof AuthPatientIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/therapist/patients/$patientId': {
+      id: '/_auth/therapist/patients/$patientId'
+      path: '/therapist/patients/$patientId'
+      fullPath: '/therapist/patients/$patientId'
+      preLoaderRoute: typeof AuthTherapistPatientsPatientIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
+interface AuthRouteChildren {
+  AuthPatientIndexRoute: typeof AuthPatientIndexRoute
+  AuthTherapistIndexRoute: typeof AuthTherapistIndexRoute
+  AuthTherapistPatientsPatientIdRoute: typeof AuthTherapistPatientsPatientIdRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthPatientIndexRoute: AuthPatientIndexRoute,
+  AuthTherapistIndexRoute: AuthTherapistIndexRoute,
+  AuthTherapistPatientsPatientIdRoute: AuthTherapistPatientsPatientIdRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
