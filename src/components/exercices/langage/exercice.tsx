@@ -25,7 +25,7 @@ function initAnswers(): Answers {
 	);
 }
 
-export function PetitBacExercice() {
+export function PetitBacExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [answers, setAnswers] = useState<Answers>(initAnswers);
 	const [checked, setChecked] = useState(false);
 
@@ -123,7 +123,18 @@ export function PetitBacExercice() {
 				</table>
 			</div>
 			<div className="flex gap-2">
-				<Button onClick={() => setChecked(true)} disabled={checked}>
+				<Button
+					onClick={() => {
+						const s = LETTERS.reduce(
+							(acc, letter) =>
+								acc + CATEGORIES.filter((cat) => isCorrect(letter, cat)).length,
+							0,
+						);
+						setChecked(true);
+						onComplete?.(Math.round((s / (LETTERS.length * CATEGORIES.length)) * 100));
+					}}
+					disabled={checked}
+				>
 					Vérifier
 				</Button>
 				<Button variant="outline" onClick={reset}>

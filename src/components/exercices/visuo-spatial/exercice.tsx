@@ -68,7 +68,7 @@ function initAnswers(): Answers {
 	return ITEMS.map(() => ({ word: "", drawing: "" }));
 }
 
-export function JeVoisDoubleExercice() {
+export function JeVoisDoubleExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [answers, setAnswers] = useState<Answers>(initAnswers);
 	const [checked, setChecked] = useState(false);
 	const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
@@ -202,7 +202,19 @@ export function JeVoisDoubleExercice() {
 
 			<div className="flex gap-2 pt-2">
 				{!checked ? (
-					<Button onClick={() => setChecked(true)}>Vérifier</Button>
+					<Button
+						onClick={() => {
+							const s = ITEMS.reduce(
+								(acc, _, i) =>
+									acc + (isWordCorrect(i) ? 1 : 0) + (isDrawingCorrect(i) ? 1 : 0),
+								0,
+							);
+							setChecked(true);
+							onComplete?.(Math.round((s / (ITEMS.length * 2)) * 100));
+						}}
+					>
+						Vérifier
+					</Button>
 				) : (
 					<Button variant="outline" onClick={reset}>
 						<RotateCcw className="mr-2 h-4 w-4" />

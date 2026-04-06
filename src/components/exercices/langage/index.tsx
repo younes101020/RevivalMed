@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { updateRating } from "@/store/level";
 import { PetitBacExercice } from "./exercice";
 
 export function Langage() {
@@ -66,7 +67,7 @@ function LangageExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<PetitBacExercice />
+				<PetitBacExercice onComplete={(s) => updateRating("language", s)} />
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans

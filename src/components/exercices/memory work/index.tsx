@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { updateRating } from "@/store/level";
 import { RangerDansLOrdreExercice } from "./exercice";
 
 export function MemoryWork() {
@@ -69,7 +70,7 @@ function MemoryWorkExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<RangerDansLOrdreExercice />
+				<RangerDansLOrdreExercice onComplete={(s) => updateRating("workingMemory", s)} />
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans

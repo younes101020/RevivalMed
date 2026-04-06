@@ -56,7 +56,7 @@ function initState(): QuestionState[] {
 	}));
 }
 
-export function RangerDansLOrdreExercice() {
+export function RangerDansLOrdreExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [questions, setQuestions] = useState<QuestionState[]>(initState);
 	const [checked, setChecked] = useState(false);
 	const dragRef = useRef<{ qIdx: number; wIdx: number } | null>(null);
@@ -199,7 +199,16 @@ export function RangerDansLOrdreExercice() {
 			</div>
 
 			<div className="flex gap-2 pt-2">
-				<Button onClick={() => setChecked(true)} disabled={checked}>
+				<Button
+					onClick={() => {
+						const s = questions.filter((q) =>
+							q.words.every((w, i) => w === q.correct[i]),
+						).length;
+						setChecked(true);
+						onComplete?.(Math.round((s / QUESTIONS.length) * 100));
+					}}
+					disabled={checked}
+				>
 					Vérifier
 				</Button>
 				<Button variant="outline" onClick={reset}>

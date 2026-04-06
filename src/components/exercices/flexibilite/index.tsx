@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { updateRating } from "@/store/level";
 import { FlexibiliteExercice } from "./exercice";
 
 export function Flexibilite() {
@@ -73,7 +74,7 @@ function FlexibiliteExercise() {
 	return (
 <>
 			{hasStarted ? (
-<FlexibiliteExercice />
+<FlexibiliteExercice onComplete={(s) => updateRating("mentalFlexibility", s)} />
 			) : (
 <p className="py-12 text-center">
 					L'exercice va commencer dans

@@ -17,6 +17,8 @@ const EXERCISE_LABELS: Record<ExerciseKey, string> = {
 	visuoSpatial: "Visuo-spatial",
 	processingSpeed: "Vitesse de traitement",
 	informationProcessing: "Traitement de l'information",
+	mentalFlexibility: "Flexibilité mentale",
+	workingMemory: "Mémoire de travail",
 };
 
 export const Route = createFileRoute("/_auth/therapist/patients/$patientId")({

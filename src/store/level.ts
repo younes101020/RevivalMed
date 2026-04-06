@@ -1,4 +1,5 @@
 import { Store } from "@tanstack/react-store";
+import { upsertProgress } from "@/lib/progress";
 
 export type ExerciseKey =
 	| "memory"
@@ -7,7 +8,9 @@ export type ExerciseKey =
 	| "language"
 	| "visuoSpatial"
 	| "processingSpeed"
-	| "informationProcessing";
+	| "informationProcessing"
+	| "mentalFlexibility"
+	| "workingMemory";
 
 export interface ExerciseRating {
 	rating: number; // 0–100, starts at 30
@@ -31,6 +34,8 @@ const defaultState: LevelState = {
 		visuoSpatial: { ...DEFAULT_RATING },
 		processingSpeed: { ...DEFAULT_RATING },
 		informationProcessing: { ...DEFAULT_RATING },
+		mentalFlexibility: { ...DEFAULT_RATING },
+		workingMemory: { ...DEFAULT_RATING },
 	},
 };
 
@@ -67,4 +72,17 @@ export function updateRating(
 			},
 		};
 	});
+
+	// Persist to DB (fire-and-forget)
+	const { userId, exercises } = levelStore.state;
+	if (userId) {
+		upsertProgress({
+			data: {
+				userId,
+				exerciseKey: exercise,
+				rating: exercises[exercise].rating,
+				sessions: exercises[exercise].sessions,
+			},
+		});
+	}
 }

@@ -18,6 +18,7 @@ import {
 } from "../../ui/dialog";
 import { Separator } from "../../ui/separator";
 import { WeeklySchedule } from "./exercice";
+import { updateRating } from "@/store/level";
 import { EventsDescription } from "./components/events-description";
 
 export function Planification() {
@@ -71,7 +72,7 @@ function PlanificationExercise() {
 		setHasStarted(true),
 	);
 
-	if (hasFinished) return <WeeklySchedule />;
+	if (hasFinished) return <WeeklySchedule onComplete={(s) => updateRating("planning", s)} />;
 
 	return (
 		<>

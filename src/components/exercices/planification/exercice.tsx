@@ -101,7 +101,7 @@ function generateTimeSlots() {
 	return slots;
 }
 
-export function WeeklySchedule() {
+export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [events, setEvents] = useState<Event[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedSlot, setSelectedSlot] = useState<{
@@ -150,7 +150,7 @@ export function WeeklySchedule() {
 	};
 
 	const handleSubmit = () => {
-		console.log("Planning soumis :", events);
+		onComplete?.(75);
 	};
 
 	const handleEventClick = (event: Event, e: React.MouseEvent) => {

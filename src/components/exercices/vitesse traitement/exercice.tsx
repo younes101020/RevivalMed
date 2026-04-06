@@ -57,7 +57,7 @@ function formatTime(seconds: number): string {
 	return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
-export function VitesseTraitementExercise() {
+export function VitesseTraitementExercise({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [answers, setAnswers] = useState<Answer[]>(
 		Array(PAIRS.length).fill(null),
 	);
@@ -82,6 +82,8 @@ export function VitesseTraitementExercise() {
 		if (newAnswers.every((a) => a !== null)) {
 			if (intervalRef.current) clearInterval(intervalRef.current);
 			setIsComplete(true);
+			const finalScore = newAnswers.filter((a, i) => a === PAIRS[i].correct).length;
+			onComplete?.(Math.round((finalScore / PAIRS.length) * 100));
 		}
 	};
 

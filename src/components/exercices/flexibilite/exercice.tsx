@@ -133,7 +133,7 @@ const TOTAL_CORRECT = ROWS.flatMap((r) => r.words).filter(
 (w) => w.isCorrect,
 ).length;
 
-export function FlexibiliteExercice() {
+export function FlexibiliteExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
 	const [selected, setSelected] = useState<Record<string, boolean>>({});
 	const [checked, setChecked] = useState(false);
 
@@ -242,7 +242,16 @@ score === TOTAL_CORRECT ? "text-green-600" : "text-orange-500",
 )}
 
 <div className="flex gap-2">
-<Button onClick={() => setChecked(true)} disabled={checked}>
+<Button
+	onClick={() => {
+		const correctCount = ROWS.flatMap((row, ri) =>
+			row.words.map((w, wi) => (isSelected(ri, wi) && w.isCorrect ? 1 : 0)),
+		).reduce((a: number, b: number) => a + b, 0);
+		setChecked(true);
+		onComplete?.(Math.round((correctCount / TOTAL_CORRECT) * 100));
+	}}
+	disabled={checked}
+>
 Vérifier
 </Button>
 <Button

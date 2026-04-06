@@ -1,6 +1,6 @@
 import { useStore } from "@tanstack/react-store";
 import { Expand, Shrink } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -61,8 +61,6 @@ export function VitesseTraitement() {
 	);
 	const level = getLevelFromRating(rating);
 	const config = getVitesseConfig(rating);
-	const handleComplete = (scorePercent: number) =>
-		updateRating("processingSpeed", scorePercent);
 
 	return (
 		<>
@@ -111,7 +109,7 @@ export function VitesseTraitement() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<VitesseTraitementCountdown />
+							<VitesseTraitementCountdown onComplete={(s) => updateRating("processingSpeed", s)} />
 						</Card>
 					</DialogContent>
 				</Dialog>
@@ -120,7 +118,7 @@ export function VitesseTraitement() {
 	);
 }
 
-function VitesseTraitementCountdown() {
+function VitesseTraitementCountdown({ onComplete }: { onComplete?: (score: number) => void }) {
 	const [hasStarted, setHasStarted] = useState(false);
 	const { remainingSecond, cancel } = useCountdown(3, () => {
 		setHasStarted(true);
@@ -129,7 +127,7 @@ function VitesseTraitementCountdown() {
 	return (
 		<>
 			{hasStarted ? (
-				<VitesseTraitementExercise />
+				<VitesseTraitementExercise onComplete={onComplete} />
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans

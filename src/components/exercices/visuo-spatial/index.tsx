@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { updateRating } from "@/store/level";
 import { JeVoisDoubleExercice } from "./exercice";
 
 export function VisiuoSpatial() {
@@ -68,7 +69,7 @@ function VisiuoSpatialExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<JeVoisDoubleExercice />
+				<JeVoisDoubleExercice onComplete={(s) => updateRating("visuoSpatial", s)} />
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans
