@@ -109,7 +109,9 @@ export function VitesseTraitement() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<VitesseTraitementCountdown onComplete={(s) => updateRating("processingSpeed", s)} />
+							<VitesseTraitementCountdown
+								onComplete={(s) => updateRating("processingSpeed", s)}
+							/>
 						</Card>
 					</DialogContent>
 				</Dialog>
@@ -118,7 +120,11 @@ export function VitesseTraitement() {
 	);
 }
 
-function VitesseTraitementCountdown({ onComplete }: { onComplete?: (score: number) => void }) {
+function VitesseTraitementCountdown({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+}) {
 	const [hasStarted, setHasStarted] = useState(false);
 	const { remainingSecond, cancel } = useCountdown(3, () => {
 		setHasStarted(true);

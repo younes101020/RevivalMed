@@ -18,14 +18,14 @@ export function Flexibilite() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
 
 	return (
-<>
+		<>
 			<CardContent className="space-y-3">
 				<p>
 					Vous devez entourer (ou barrer) tous les noms d'animaux qui sont plus
-grand ou plus petit que le chat, en alternant une ligne sur deux.
-</p>
-<p>
-On commence par les noms d'animaux qui sont plus grand que le chat, la
+					grand ou plus petit que le chat, en alternant une ligne sur deux.
+				</p>
+				<p>
+					On commence par les noms d'animaux qui sont plus grand que le chat, la
 					ligne suivante avec les noms qui sont plus petit que le chat et on
 					recommence avec les noms qui sont plus grand que le chat, etc.
 				</p>
@@ -35,16 +35,16 @@ On commence par les noms d'animaux qui sont plus grand que le chat, la
 					feuille de suivi pour voir votre progression !
 				</p>
 				<p>Vous êtes prêts ? ... C'est parti !</p>
-</CardContent>
-<CardFooter className="mt-4">
-<Dialog>
-<DialogTrigger asChild>
-<Button variant="outline">Commencer l'exercice</Button>
+			</CardContent>
+			<CardFooter className="mt-4">
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button variant="outline">Commencer l'exercice</Button>
 					</DialogTrigger>
 					<DialogContent
 						className={cn(
-"rounded-xl max-h-[80vh] overflow-scroll",
-isFullscreen && "min-w-[90vw] max-h-screen",
+							"rounded-xl max-h-[80vh] overflow-scroll",
+							isFullscreen && "min-w-[90vw] max-h-screen",
 						)}
 					>
 						<Card className="border-none rounded-lg mt-7 px-4">
@@ -72,23 +72,25 @@ function FlexibiliteExercise() {
 	);
 
 	return (
-<>
+		<>
 			{hasStarted ? (
-<FlexibiliteExercice onComplete={(s) => updateRating("mentalFlexibility", s)} />
+				<FlexibiliteExercice
+					onComplete={(s) => updateRating("mentalFlexibility", s)}
+				/>
 			) : (
-<p className="py-12 text-center">
+				<p className="py-12 text-center">
 					L'exercice va commencer dans
-<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-{remainingSecond}
-</span>
-</p>
-)}
-{hasStarted && <Separator className="my-2" />}
-<DialogClose asChild>
-<Button type="button" variant="outline" onClick={cancel}>
-Annuler
-</Button>
-</DialogClose>
-</>
-);
+					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
+						{remainingSecond}
+					</span>
+				</p>
+			)}
+			{hasStarted && <Separator className="my-2" />}
+			<DialogClose asChild>
+				<Button type="button" variant="outline" onClick={cancel}>
+					Annuler
+				</Button>
+			</DialogClose>
+		</>
+	);
 }

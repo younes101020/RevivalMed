@@ -25,7 +25,11 @@ function initAnswers(): Answers {
 	);
 }
 
-export function PetitBacExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
+export function PetitBacExercice({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+} = {}) {
 	const [answers, setAnswers] = useState<Answers>(initAnswers);
 	const [checked, setChecked] = useState(false);
 
@@ -131,7 +135,9 @@ export function PetitBacExercice({ onComplete }: { onComplete?: (score: number) 
 							0,
 						);
 						setChecked(true);
-						onComplete?.(Math.round((s / (LETTERS.length * CATEGORIES.length)) * 100));
+						onComplete?.(
+							Math.round((s / (LETTERS.length * CATEGORIES.length)) * 100),
+						);
 					}}
 					disabled={checked}
 				>

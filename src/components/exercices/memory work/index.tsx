@@ -70,7 +70,9 @@ function MemoryWorkExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<RangerDansLOrdreExercice onComplete={(s) => updateRating("workingMemory", s)} />
+				<RangerDansLOrdreExercice
+					onComplete={(s) => updateRating("workingMemory", s)}
+				/>
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans

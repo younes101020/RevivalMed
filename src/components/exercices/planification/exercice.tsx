@@ -12,83 +12,83 @@ import {
 import { cn } from "@/lib/utils";
 import { EventsDescription } from "./components/events-description";
 import { EventsDialog } from "./components/events-dialog";
-import { Event } from "./types/event";
 import { DAYS } from "./const/days";
+import { Event } from "./types/event";
 
 const START_HOUR = 8;
 const END_HOUR = 18;
 
 const DAYS_OFF = [
-		// Lundi (0) de 8h à 16h
-		{ day: 0, time: "08:00" },
-		{ day: 0, time: "08:30" },
-		{ day: 0, time: "09:00" },
-		{ day: 0, time: "09:30" },
-		{ day: 0, time: "10:00" },
-		{ day: 0, time: "10:30" },
-		{ day: 0, time: "11:00" },
-		{ day: 0, time: "11:30" },
-		{ day: 0, time: "12:00" },
-		{ day: 0, time: "12:30" },
-		{ day: 0, time: "13:00" },
-		{ day: 0, time: "13:30" },
-		{ day: 0, time: "14:00" },
-		{ day: 0, time: "14:30" },
-		{ day: 0, time: "15:00" },
-		{ day: 0, time: "15:30" },
-		// Mardi (1) de 8h à 16h
-		{ day: 1, time: "08:00" },
-		{ day: 1, time: "08:30" },
-		{ day: 1, time: "09:00" },
-		{ day: 1, time: "09:30" },
-		{ day: 1, time: "10:00" },
-		{ day: 1, time: "10:30" },
-		{ day: 1, time: "11:00" },
-		{ day: 1, time: "11:30" },
-		{ day: 1, time: "12:00" },
-		{ day: 1, time: "12:30" },
-		{ day: 1, time: "13:00" },
-		{ day: 1, time: "13:30" },
-		{ day: 1, time: "14:00" },
-		{ day: 1, time: "14:30" },
-		{ day: 1, time: "15:00" },
-		{ day: 1, time: "15:30" },
-		// Mercredi (2) de 8h à 12h
-		{ day: 2, time: "08:00" },
-		{ day: 2, time: "08:30" },
-		{ day: 2, time: "09:00" },
-		{ day: 2, time: "09:30" },
-		{ day: 2, time: "10:00" },
-		{ day: 2, time: "10:30" },
-		{ day: 2, time: "11:00" },
-		{ day: 2, time: "11:30" },
-		// Jeudi (3) de 8h à 16h
-		{ day: 3, time: "08:00" },
-		{ day: 3, time: "08:30" },
-		{ day: 3, time: "09:00" },
-		{ day: 3, time: "09:30" },
-		{ day: 3, time: "10:00" },
-		{ day: 3, time: "10:30" },
-		{ day: 3, time: "11:00" },
-		{ day: 3, time: "11:30" },
-		{ day: 3, time: "12:00" },
-		{ day: 3, time: "12:30" },
-		{ day: 3, time: "13:00" },
-		{ day: 3, time: "13:30" },
-		{ day: 3, time: "14:00" },
-		{ day: 3, time: "14:30" },
-		{ day: 3, time: "15:00" },
-		{ day: 3, time: "15:30" },
-		// Vendredi (4) de 8h à 12h
-		{ day: 4, time: "08:00" },
-		{ day: 4, time: "08:30" },
-		{ day: 4, time: "09:00" },
-		{ day: 4, time: "09:30" },
-		{ day: 4, time: "10:00" },
-		{ day: 4, time: "10:30" },
-		{ day: 4, time: "11:00" },
-		{ day: 4, time: "11:30" },
-	];
+	// Lundi (0) de 8h à 16h
+	{ day: 0, time: "08:00" },
+	{ day: 0, time: "08:30" },
+	{ day: 0, time: "09:00" },
+	{ day: 0, time: "09:30" },
+	{ day: 0, time: "10:00" },
+	{ day: 0, time: "10:30" },
+	{ day: 0, time: "11:00" },
+	{ day: 0, time: "11:30" },
+	{ day: 0, time: "12:00" },
+	{ day: 0, time: "12:30" },
+	{ day: 0, time: "13:00" },
+	{ day: 0, time: "13:30" },
+	{ day: 0, time: "14:00" },
+	{ day: 0, time: "14:30" },
+	{ day: 0, time: "15:00" },
+	{ day: 0, time: "15:30" },
+	// Mardi (1) de 8h à 16h
+	{ day: 1, time: "08:00" },
+	{ day: 1, time: "08:30" },
+	{ day: 1, time: "09:00" },
+	{ day: 1, time: "09:30" },
+	{ day: 1, time: "10:00" },
+	{ day: 1, time: "10:30" },
+	{ day: 1, time: "11:00" },
+	{ day: 1, time: "11:30" },
+	{ day: 1, time: "12:00" },
+	{ day: 1, time: "12:30" },
+	{ day: 1, time: "13:00" },
+	{ day: 1, time: "13:30" },
+	{ day: 1, time: "14:00" },
+	{ day: 1, time: "14:30" },
+	{ day: 1, time: "15:00" },
+	{ day: 1, time: "15:30" },
+	// Mercredi (2) de 8h à 12h
+	{ day: 2, time: "08:00" },
+	{ day: 2, time: "08:30" },
+	{ day: 2, time: "09:00" },
+	{ day: 2, time: "09:30" },
+	{ day: 2, time: "10:00" },
+	{ day: 2, time: "10:30" },
+	{ day: 2, time: "11:00" },
+	{ day: 2, time: "11:30" },
+	// Jeudi (3) de 8h à 16h
+	{ day: 3, time: "08:00" },
+	{ day: 3, time: "08:30" },
+	{ day: 3, time: "09:00" },
+	{ day: 3, time: "09:30" },
+	{ day: 3, time: "10:00" },
+	{ day: 3, time: "10:30" },
+	{ day: 3, time: "11:00" },
+	{ day: 3, time: "11:30" },
+	{ day: 3, time: "12:00" },
+	{ day: 3, time: "12:30" },
+	{ day: 3, time: "13:00" },
+	{ day: 3, time: "13:30" },
+	{ day: 3, time: "14:00" },
+	{ day: 3, time: "14:30" },
+	{ day: 3, time: "15:00" },
+	{ day: 3, time: "15:30" },
+	// Vendredi (4) de 8h à 12h
+	{ day: 4, time: "08:00" },
+	{ day: 4, time: "08:30" },
+	{ day: 4, time: "09:00" },
+	{ day: 4, time: "09:30" },
+	{ day: 4, time: "10:00" },
+	{ day: 4, time: "10:30" },
+	{ day: 4, time: "11:00" },
+	{ day: 4, time: "11:30" },
+];
 
 function generateTimeSlots() {
 	const slots: string[] = [];
@@ -101,7 +101,11 @@ function generateTimeSlots() {
 	return slots;
 }
 
-export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) => void } = {}) {
+export function WeeklySchedule({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+} = {}) {
 	const [events, setEvents] = useState<Event[]>([]);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedSlot, setSelectedSlot] = useState<{
@@ -126,7 +130,7 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 			return prev.filter((d) => d.day !== day);
 		});
 		setRemainingDayOff((prev) => prev - 1);
-	}
+	};
 
 	const resetDayOffs = () => {
 		setDaysOffSlots(DAYS_OFF);
@@ -241,9 +245,7 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 	};
 
 	const isSlotDisabled = (day: number, time: string) => {
-		return daysOffSlots.some(
-			(slot) => slot.day === day && slot.time === time,
-		);
+		return daysOffSlots.some((slot) => slot.day === day && slot.time === time);
 	};
 
 	return (
@@ -253,16 +255,11 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 					<dt>Jours de congé restants</dt>
 					<dd className="flex justify-between gap-2 items-center">
 						{remainingDayOff}
-						{
-							remainingDayOff < 3 && (
-							<Button
-								className="text-xs"
-								onClick={resetDayOffs}
-							>
+						{remainingDayOff < 3 && (
+							<Button className="text-xs" onClick={resetDayOffs}>
 								<RotateCcw /> Réinitialiser
 							</Button>
-							)
-						}
+						)}
 					</dd>
 				</dl>
 				<div>
@@ -285,18 +282,20 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 								{DAYS.map((_, dayIndex) => {
 									const event = getEventForSlot(dayIndex, time);
 									const isContinuation = isEventContinuation(dayIndex, time);
-							const disabled = isSlotDisabled(dayIndex, time);
+									const disabled = isSlotDisabled(dayIndex, time);
 
-							if (isContinuation) return null;
+									if (isContinuation) return null;
 
-							// Slot désactivé
-							if (disabled) {
-								return <DayOffCell
-											key={`${dayIndex}-${time}`}
-											remainingDayOff={remainingDayOff}
-											handleDayOff={() => setDayOff(dayIndex)}
-										/>
-							}
+									// Slot désactivé
+									if (disabled) {
+										return (
+											<DayOffCell
+												key={`${dayIndex}-${time}`}
+												remainingDayOff={remainingDayOff}
+												handleDayOff={() => setDayOff(dayIndex)}
+											/>
+										);
+									}
 
 									if (event) {
 										const span = getEventSpan(event);
@@ -328,7 +327,12 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 										);
 									}
 
-									return <AvailableDayCell key={`${dayIndex}-${time}`} handleSlotClick={() => handleSlotClick(dayIndex, time)} />
+									return (
+										<AvailableDayCell
+											key={`${dayIndex}-${time}`}
+											handleSlotClick={() => handleSlotClick(dayIndex, time)}
+										/>
+									);
 								})}
 							</div>
 						))}
@@ -368,7 +372,11 @@ export function WeeklySchedule({ onComplete }: { onComplete?: (score: number) =>
 	);
 }
 
-function AvailableDayCell({ handleSlotClick }: { handleSlotClick: () => void }) {
+function AvailableDayCell({
+	handleSlotClick,
+}: {
+	handleSlotClick: () => void;
+}) {
 	return (
 		<div
 			className="border-l border-border p-2 min-h-[60px] hover:bg-accent/30 cursor-pointer transition-colors group/cell"
@@ -378,7 +386,7 @@ function AvailableDayCell({ handleSlotClick }: { handleSlotClick: () => void }) 
 				<Plus className="w-4 h-4 text-muted-foreground" />
 			</div>
 		</div>
-	)
+	);
 }
 
 interface DayOffCellProps {
@@ -391,7 +399,9 @@ function DayOffCell({ remainingDayOff, handleDayOff }: DayOffCellProps) {
 		<div
 			className={cn(
 				"border-l border-border p-2 min-h-[60px] bg-muted/50 group/disabled",
-				remainingDayOff <= 0 ? "cursor-not-allowed" : "cursor-pointer hover:border-2",
+				remainingDayOff <= 0
+					? "cursor-not-allowed"
+					: "cursor-pointer hover:border-2",
 			)}
 			onClick={() => {
 				if (remainingDayOff > 0) {
@@ -400,9 +410,7 @@ function DayOffCell({ remainingDayOff, handleDayOff }: DayOffCellProps) {
 			}}
 		>
 			<div className="relative h-full flex items-center justify-center">
-				<span className="text-muted-foreground/50">
-					Travail
-				</span>
+				<span className="text-muted-foreground/50">Travail</span>
 				{remainingDayOff > 0 && (
 					<span className="hidden group-hover/disabled:block text-xs absolute bottom-[-.5rem] bg-primary text-primary-foreground pl-1 pr-4 left-[-.5rem] rounded-tr-2xl ">
 						+ Congé
@@ -410,18 +418,16 @@ function DayOffCell({ remainingDayOff, handleDayOff }: DayOffCellProps) {
 				)}
 			</div>
 		</div>
-	)
+	);
 }
 
 function ColumnsHeader() {
-	return (
-		DAYS.map((day) => (
-				<div
-					key={day}
-					className="p-4 text-center text-sm font-semibold uppercase tracking-wide border-l border-border"
-				>
-					{day}
-				</div>
-		))
-	)
+	return DAYS.map((day) => (
+		<div
+			key={day}
+			className="p-4 text-center text-sm font-semibold uppercase tracking-wide border-l border-border"
+		>
+			{day}
+		</div>
+	));
 }

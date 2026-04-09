@@ -174,3 +174,40 @@ export const upsertAssignment = createServerFn({ method: "POST" })
 			});
 		}
 	});
+
+export const deleteAssignment = createServerFn({ method: "POST" })
+	.inputValidator(
+		(input: {
+			therapistId: string;
+			patientId: string;
+			exerciseKey: ExerciseKey;
+		}) => input,
+	)
+	.handler(async ({ data }) => {
+		const { therapistId, patientId, exerciseKey } = data;
+
+		const link = await db
+			.select({ id: therapistPatients.id })
+			.from(therapistPatients)
+			.where(
+				and(
+					eq(therapistPatients.therapistId, therapistId),
+					eq(therapistPatients.patientId, patientId),
+				),
+			)
+			.limit(1);
+
+		if (link.length === 0) {
+			throw new Error("Access denied");
+		}
+
+		await db
+			.delete(exerciseAssignments)
+			.where(
+				and(
+					eq(exerciseAssignments.therapistId, therapistId),
+					eq(exerciseAssignments.patientId, patientId),
+					eq(exerciseAssignments.exerciseKey, exerciseKey),
+				),
+			);
+	});

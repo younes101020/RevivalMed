@@ -68,7 +68,11 @@ function initAnswers(): Answers {
 	return ITEMS.map(() => ({ word: "", drawing: "" }));
 }
 
-export function JeVoisDoubleExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
+export function JeVoisDoubleExercice({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+} = {}) {
 	const [answers, setAnswers] = useState<Answers>(initAnswers);
 	const [checked, setChecked] = useState(false);
 	const [failedImages, setFailedImages] = useState<Set<number>>(new Set());
@@ -206,7 +210,9 @@ export function JeVoisDoubleExercice({ onComplete }: { onComplete?: (score: numb
 						onClick={() => {
 							const s = ITEMS.reduce(
 								(acc, _, i) =>
-									acc + (isWordCorrect(i) ? 1 : 0) + (isDrawingCorrect(i) ? 1 : 0),
+									acc +
+									(isWordCorrect(i) ? 1 : 0) +
+									(isDrawingCorrect(i) ? 1 : 0),
 								0,
 							);
 							setChecked(true);

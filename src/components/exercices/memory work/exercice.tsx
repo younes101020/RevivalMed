@@ -56,7 +56,11 @@ function initState(): QuestionState[] {
 	}));
 }
 
-export function RangerDansLOrdreExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
+export function RangerDansLOrdreExercice({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+} = {}) {
 	const [questions, setQuestions] = useState<QuestionState[]>(initState);
 	const [checked, setChecked] = useState(false);
 	const dragRef = useRef<{ qIdx: number; wIdx: number } | null>(null);

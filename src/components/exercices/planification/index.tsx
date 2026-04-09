@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
+import { updateRating } from "@/store/level";
 import {
 	Dialog,
 	DialogClose,
@@ -17,9 +18,8 @@ import {
 	DialogTrigger,
 } from "../../ui/dialog";
 import { Separator } from "../../ui/separator";
-import { WeeklySchedule } from "./exercice";
-import { updateRating } from "@/store/level";
 import { EventsDescription } from "./components/events-description";
+import { WeeklySchedule } from "./exercice";
 
 export function Planification() {
 	const [isFullscreen, setIsFullscreen] = useState(false);
@@ -72,11 +72,14 @@ function PlanificationExercise() {
 		setHasStarted(true),
 	);
 
-	if (hasFinished) return <WeeklySchedule onComplete={(s) => updateRating("planning", s)} />;
+	if (hasFinished)
+		return <WeeklySchedule onComplete={(s) => updateRating("planning", s)} />;
 
 	return (
 		<>
-			{hasStarted ? <EventsDescription /> : (
+			{hasStarted ? (
+				<EventsDescription />
+			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans
 					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">

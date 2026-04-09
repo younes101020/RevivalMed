@@ -11,8 +11,21 @@ import { VitesseTraitement } from "@/components/exercices/vitesse traitement";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getProgress } from "@/lib/progress";
+import { getAssignmentsForPatient, getProgress } from "@/lib/progress";
+import type { ExerciseKey } from "@/store/level";
 import { initLevelStore } from "@/store/level";
+
+const EXERCISE_TAB_CONFIG: { key: ExerciseKey; label: string; component: React.ReactNode }[] = [
+	{ key: "memory", label: "Mémoire", component: <Memory /> },
+	{ key: "attention", label: "Attention", component: <Attention /> },
+	{ key: "planning", label: "Planification", component: <Planification /> },
+	{ key: "mentalFlexibility", label: "Flexibilité mentale", component: <Flexibilite /> },
+	{ key: "workingMemory", label: "Mémoire de travail", component: <MemoryWork /> },
+	{ key: "language", label: "Langage", component: <Langage /> },
+	{ key: "visuoSpatial", label: "Visuo-spatial", component: <VisiuoSpatial /> },
+	{ key: "informationProcessing", label: "Traitement de l'information", component: <InformationProcessing /> },
+	{ key: "processingSpeed", label: "Vitesse de traitement", component: <VitesseTraitement /> },
+];
 
 export const Route = createFileRoute("/_auth/patient/")({
 	beforeLoad: ({ context }) => {
@@ -21,37 +34,40 @@ export const Route = createFileRoute("/_auth/patient/")({
 		}
 	},
 	loader: async ({ context }) => {
-		const rows = await getProgress({ data: context.user!.id });
+		const [rows, assignments] = await Promise.all([
+			getProgress({ data: context.user!.id }),
+			getAssignmentsForPatient({ data: context.user!.id }),
+		]);
 		initLevelStore(context.user!.id, rows);
-		return rows;
+		return { rows, assignments };
 	},
 	ssr: false,
 	component: PatientDashboard,
 });
 
 function PatientDashboard() {
+	const { assignments } = Route.useLoaderData();
+	const assignedKeys = new Set(assignments.map((a) => a.exerciseKey as ExerciseKey));
+	const visibleTabs = EXERCISE_TAB_CONFIG.filter((t) => assignedKeys.has(t.key));
+
+	if (visibleTabs.length === 0) {
+		return (
+			<section className="h-full container mx-auto p-4 flex items-center justify-center">
+				<p className="text-muted-foreground text-center">
+					Votre thérapeute n'a pas encore assigné d'exercices.
+				</p>
+			</section>
+		);
+	}
+
 	return (
 		<section className="h-full container mx-auto p-4 flex items-center">
-			<Tabs defaultValue="memory" className="space-y-4 container">
+			<Tabs defaultValue={visibleTabs[0].key} className="space-y-4 container">
 				<ScrollArea className="w-full whitespace-nowrap rounded-md">
 					<TabsList className="flex justify-center mx-auto">
-						<TabsTrigger value="memory">Mémoire</TabsTrigger>
-						<TabsTrigger value="attention">Attention</TabsTrigger>
-						<TabsTrigger value="planning">Planification</TabsTrigger>
-						<TabsTrigger value="mental_flexibility">
-							Flexibilité mentale
-						</TabsTrigger>
-						<TabsTrigger value="working_memory">Mémoire de travail</TabsTrigger>
-						<TabsTrigger value="language_work">Travail de language</TabsTrigger>
-						<TabsTrigger value="visual_spatial_ability">
-							Capacité visuo-spatiale
-						</TabsTrigger>
-						<TabsTrigger value="information_processing_speed_work">
-							Travail de vitesse de traitement de l'information
-						</TabsTrigger>
-						<TabsTrigger value="processing_speed">
-							Vitesse de traitement
-						</TabsTrigger>
+						{visibleTabs.map((t) => (
+							<TabsTrigger key={t.key} value={t.key}>{t.label}</TabsTrigger>
+						))}
 					</TabsList>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
@@ -61,33 +77,11 @@ function PatientDashboard() {
 							Exercice:
 						</CardTitle>
 					</CardHeader>
-					<TabsContent value="memory">
-						<Memory />
-					</TabsContent>
-					<TabsContent value="attention">
-						<Attention />
-					</TabsContent>
-					<TabsContent value="planning">
-						<Planification />
-					</TabsContent>
-					<TabsContent value="mental_flexibility">
-						<Flexibilite />
-					</TabsContent>
-					<TabsContent value="working_memory">
-						<MemoryWork />
-					</TabsContent>
-					<TabsContent value="language_work">
-						<Langage />
-					</TabsContent>
-					<TabsContent value="visual_spatial_ability">
-						<VisiuoSpatial />
-					</TabsContent>
-					<TabsContent value="information_processing_speed_work">
-						<InformationProcessing />
-					</TabsContent>
-					<TabsContent value="processing_speed">
-						<VitesseTraitement />
-					</TabsContent>
+					{visibleTabs.map((t) => (
+						<TabsContent key={t.key} value={t.key}>
+							{t.component}
+						</TabsContent>
+					))}
 				</Card>
 			</Tabs>
 		</section>

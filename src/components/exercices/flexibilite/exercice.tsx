@@ -130,10 +130,14 @@ const ROWS: Row[] = [
 ];
 
 const TOTAL_CORRECT = ROWS.flatMap((r) => r.words).filter(
-(w) => w.isCorrect,
+	(w) => w.isCorrect,
 ).length;
 
-export function FlexibiliteExercice({ onComplete }: { onComplete?: (score: number) => void } = {}) {
+export function FlexibiliteExercice({
+	onComplete,
+}: {
+	onComplete?: (score: number) => void;
+} = {}) {
 	const [selected, setSelected] = useState<Record<string, boolean>>({});
 	const [checked, setChecked] = useState(false);
 
@@ -154,116 +158,121 @@ export function FlexibiliteExercice({ onComplete }: { onComplete?: (score: numbe
 		: null;
 
 	return (
-<div className="p-4 space-y-6">
+		<div className="p-4 space-y-6">
 			<p className="text-sm text-muted-foreground">
 				Cliquez sur tous les noms d'animaux qui sont{" "}
-<strong>plus grand ou plus petit que le chat</strong> selon la consigne
-de chaque ligne.
-</p>
+				<strong>plus grand ou plus petit que le chat</strong> selon la consigne
+				de chaque ligne.
+			</p>
 
-<div className="space-y-2">
-{ROWS.map((row, rowIdx) => (
-<div key={`${row.category}-${rowIdx}`} className="flex items-center gap-3">
-<Badge
-variant="outline"
-className={cn(
-"shrink-0 text-xs w-24 justify-center",
-row.category === "plus_grand"
-? "border-blue-400 text-blue-600"
-: "border-purple-400 text-purple-600",
-)}
->
-{row.category === "plus_grand" ? "Plus grand" : "Plus petit"}
-</Badge>
+			<div className="space-y-2">
+				{ROWS.map((row, rowIdx) => (
+					<div
+						key={`${row.category}-${rowIdx}`}
+						className="flex items-center gap-3"
+					>
+						<Badge
+							variant="outline"
+							className={cn(
+								"shrink-0 text-xs w-24 justify-center",
+								row.category === "plus_grand"
+									? "border-blue-400 text-blue-600"
+									: "border-purple-400 text-purple-600",
+							)}
+						>
+							{row.category === "plus_grand" ? "Plus grand" : "Plus petit"}
+						</Badge>
 
-<div className="flex gap-2 flex-wrap">
-{row.words.map((w, wordIdx) => {
-const sel = isSelected(rowIdx, wordIdx);
-const correctlySelected = checked && sel && w.isCorrect;
-const wronglySelected = checked && sel && !w.isCorrect;
-const missed = checked && !sel && w.isCorrect;
+						<div className="flex gap-2 flex-wrap">
+							{row.words.map((w, wordIdx) => {
+								const sel = isSelected(rowIdx, wordIdx);
+								const correctlySelected = checked && sel && w.isCorrect;
+								const wronglySelected = checked && sel && !w.isCorrect;
+								const missed = checked && !sel && w.isCorrect;
 
-return (
-<button
-type="button"
-key={w.word}
-onClick={() => toggleWord(rowIdx, wordIdx)}
-className={cn(
-"px-3 py-1.5 rounded-md border-2 font-semibold text-sm transition-colors select-none",
-!checked &&
-!sel &&
-"border-border bg-card hover:bg-accent cursor-pointer",
-!checked &&
-sel &&
-"border-primary bg-primary/15 cursor-pointer",
-correctlySelected &&
-"border-green-500 bg-green-500/15 text-green-700 cursor-default",
-wronglySelected &&
-"border-red-500 bg-red-500/15 text-red-700 line-through cursor-default",
-missed &&
-"border-orange-400 bg-orange-400/15 text-orange-700 cursor-default",
-checked &&
-!sel &&
-!w.isCorrect &&
-"border-border bg-card opacity-50 cursor-default",
-)}
->
-{w.word}
-{correctlySelected && " ✓"}
-{wronglySelected && " ✗"}
-{missed && " ○"}
-</button>
-);
-})}
-</div>
-</div>
-))}
-</div>
+								return (
+									<button
+										type="button"
+										key={w.word}
+										onClick={() => toggleWord(rowIdx, wordIdx)}
+										className={cn(
+											"px-3 py-1.5 rounded-md border-2 font-semibold text-sm transition-colors select-none",
+											!checked &&
+												!sel &&
+												"border-border bg-card hover:bg-accent cursor-pointer",
+											!checked &&
+												sel &&
+												"border-primary bg-primary/15 cursor-pointer",
+											correctlySelected &&
+												"border-green-500 bg-green-500/15 text-green-700 cursor-default",
+											wronglySelected &&
+												"border-red-500 bg-red-500/15 text-red-700 line-through cursor-default",
+											missed &&
+												"border-orange-400 bg-orange-400/15 text-orange-700 cursor-default",
+											checked &&
+												!sel &&
+												!w.isCorrect &&
+												"border-border bg-card opacity-50 cursor-default",
+										)}
+									>
+										{w.word}
+										{correctlySelected && " ✓"}
+										{wronglySelected && " ✗"}
+										{missed && " ○"}
+									</button>
+								);
+							})}
+						</div>
+					</div>
+				))}
+			</div>
 
-{checked && score !== null && (
-<div className="space-y-1">
-<p className="text-center font-semibold text-lg">
-Score :{" "}
-<span
-className={cn(
-score === TOTAL_CORRECT ? "text-green-600" : "text-orange-500",
-)}
->
-{score}/{TOTAL_CORRECT}
-</span>
-{score === TOTAL_CORRECT && (
-<span className="ml-2">🎉 Félicitations !</span>
-)}
-</p>
-<p className="text-center text-xs text-muted-foreground">
-✓ correct · ✗ erreur · ○ manqué
-</p>
-</div>
-)}
+			{checked && score !== null && (
+				<div className="space-y-1">
+					<p className="text-center font-semibold text-lg">
+						Score :{" "}
+						<span
+							className={cn(
+								score === TOTAL_CORRECT ? "text-green-600" : "text-orange-500",
+							)}
+						>
+							{score}/{TOTAL_CORRECT}
+						</span>
+						{score === TOTAL_CORRECT && (
+							<span className="ml-2">🎉 Félicitations !</span>
+						)}
+					</p>
+					<p className="text-center text-xs text-muted-foreground">
+						✓ correct · ✗ erreur · ○ manqué
+					</p>
+				</div>
+			)}
 
-<div className="flex gap-2">
-<Button
-	onClick={() => {
-		const correctCount = ROWS.flatMap((row, ri) =>
-			row.words.map((w, wi) => (isSelected(ri, wi) && w.isCorrect ? 1 : 0)),
-		).reduce((a: number, b: number) => a + b, 0);
-		setChecked(true);
-		onComplete?.(Math.round((correctCount / TOTAL_CORRECT) * 100));
-	}}
-	disabled={checked}
->
-Vérifier
-</Button>
-<Button
-variant="outline"
-onClick={() => {
-setSelected({});
-setChecked(false);
-}}
->
-Recommencer
-</Button>
-</div>
-</div>
-);
+			<div className="flex gap-2">
+				<Button
+					onClick={() => {
+						const correctCount = ROWS.flatMap((row, ri) =>
+							row.words.map((w, wi) =>
+								isSelected(ri, wi) && w.isCorrect ? 1 : 0,
+							),
+						).reduce((a: number, b: number) => a + b, 0);
+						setChecked(true);
+						onComplete?.(Math.round((correctCount / TOTAL_CORRECT) * 100));
+					}}
+					disabled={checked}
+				>
+					Vérifier
+				</Button>
+				<Button
+					variant="outline"
+					onClick={() => {
+						setSelected({});
+						setChecked(false);
+					}}
+				>
+					Recommencer
+				</Button>
+			</div>
+		</div>
+	);
 }

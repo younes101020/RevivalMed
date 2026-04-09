@@ -69,7 +69,9 @@ function VisiuoSpatialExercise() {
 	return (
 		<>
 			{hasStarted ? (
-				<JeVoisDoubleExercice onComplete={(s) => updateRating("visuoSpatial", s)} />
+				<JeVoisDoubleExercice
+					onComplete={(s) => updateRating("visuoSpatial", s)}
+				/>
 			) : (
 				<p className="py-12 text-center">
 					L'exercice va commencer dans
