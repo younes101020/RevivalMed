@@ -1,11 +1,25 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { useId, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	createMission,
+	deleteMission,
+	getMissionsForTherapistPatient,
+	updateMission,
+} from "@/lib/missions";
 import { deleteAssignment, getPatientDetail, upsertAssignment } from "@/lib/therapist";
 import type { ExerciseKey } from "@/store/level";
 
@@ -28,19 +42,34 @@ export const Route = createFileRoute("/_auth/therapist/patients/$patientId")({
 		}
 	},
 	loader: async ({ context, params }) => {
-		return getPatientDetail({
-			data: { therapistId: context.user!.id, patientId: params.patientId },
-		});
+		const [detail, patientMissions] = await Promise.all([
+			getPatientDetail({
+				data: { therapistId: context.user!.id, patientId: params.patientId },
+			}),
+			getMissionsForTherapistPatient({
+				data: { therapistId: context.user!.id, patientId: params.patientId },
+			}),
+		]);
+		return { ...detail, patientMissions };
 	},
 	component: PatientDetail,
 });
 
+type MissionForm = {
+	title: string;
+	description: string;
+	cognitiveFunctions: ExerciseKey[];
+};
+
+const EMPTY_FORM: MissionForm = { title: "", description: "", cognitiveFunctions: [] };
+
 function PatientDetail() {
-	const { patient, progress, assignments } = Route.useLoaderData();
+	const { patient, progress, assignments, patientMissions } = Route.useLoaderData();
 	const { user } = Route.useRouteContext();
 	const { patientId } = Route.useParams();
+	const router = useRouter();
 
-	// Track which exercises have a row (= assigned)
+	// ── Exercise state ───────────────────────────────────────────────────────
 	const [assigned, setAssigned] = useState<Set<ExerciseKey>>(
 		() => new Set(assignments.map((a) => a.exerciseKey as ExerciseKey)),
 	);
@@ -82,6 +111,82 @@ function PatientDetail() {
 			await upsertAssignment({ data: { therapistId: user!.id, patientId, exerciseKey, difficultyOverride: val } });
 		} finally {
 			setSaving(null);
+		}
+	};
+
+	// ── Mission state ────────────────────────────────────────────────────────
+	const missionTitleId = useId();
+	const missionDescId = useId();
+	const [missionDialogOpen, setMissionDialogOpen] = useState(false);
+	const [editingMissionId, setEditingMissionId] = useState<string | null>(null);
+	const [missionForm, setMissionForm] = useState<MissionForm>(EMPTY_FORM);
+	const [missionSaving, setMissionSaving] = useState(false);
+	const [missionDeleting, setMissionDeleting] = useState<string | null>(null);
+
+	const openNewMission = () => {
+		setEditingMissionId(null);
+		setMissionForm(EMPTY_FORM);
+		setMissionDialogOpen(true);
+	};
+
+	const openEditMission = (m: (typeof patientMissions)[number]) => {
+		setEditingMissionId(m.id);
+		setMissionForm({
+			title: m.title,
+			description: m.description,
+			cognitiveFunctions: m.cognitiveFunctions as ExerciseKey[],
+		});
+		setMissionDialogOpen(true);
+	};
+
+	const toggleCognitiveFunction = (key: ExerciseKey) => {
+		setMissionForm((prev) => ({
+			...prev,
+			cognitiveFunctions: prev.cognitiveFunctions.includes(key)
+				? prev.cognitiveFunctions.filter((k) => k !== key)
+				: [...prev.cognitiveFunctions, key],
+		}));
+	};
+
+	const handleSaveMission = async () => {
+		if (!missionForm.title.trim()) return;
+		setMissionSaving(true);
+		try {
+			if (editingMissionId) {
+				await updateMission({
+					data: {
+						missionId: editingMissionId,
+						therapistId: user!.id,
+						title: missionForm.title,
+						description: missionForm.description,
+						cognitiveFunctions: missionForm.cognitiveFunctions,
+					},
+				});
+			} else {
+				await createMission({
+					data: {
+						therapistId: user!.id,
+						patientId,
+						title: missionForm.title,
+						description: missionForm.description,
+						cognitiveFunctions: missionForm.cognitiveFunctions,
+					},
+				});
+			}
+			setMissionDialogOpen(false);
+			router.invalidate();
+		} finally {
+			setMissionSaving(false);
+		}
+	};
+
+	const handleDeleteMission = async (missionId: string) => {
+		setMissionDeleting(missionId);
+		try {
+			await deleteMission({ data: { missionId, therapistId: user!.id } });
+			router.invalidate();
+		} finally {
+			setMissionDeleting(null);
 		}
 	};
 
@@ -175,6 +280,134 @@ function PatientDetail() {
 					})}
 				</div>
 			</section>
+
+			<Separator />
+
+			<section className="space-y-4">
+				<div className="flex items-center justify-between">
+					<div>
+						<h2 className="text-xl font-semibold">Missions</h2>
+						<p className="text-sm text-muted-foreground">
+							Les missions sont accessibles au patient une fois tous ses exercices au niveau maximum (4/4).
+						</p>
+					</div>
+					<Button onClick={openNewMission}>Nouvelle mission</Button>
+				</div>
+
+				{patientMissions.length === 0 ? (
+					<p className="text-sm text-muted-foreground">Aucune mission assignée pour l'instant.</p>
+				) : (
+					<div className="grid gap-3 sm:grid-cols-2">
+						{patientMissions.map((m) => (
+							<Card key={m.id}>
+								<CardHeader className="pb-2">
+									<CardTitle className="text-base flex items-start justify-between gap-2">
+										<span>{m.title}</span>
+										<div className="flex gap-1 shrink-0">
+											{m.completedAt && (
+												<Badge variant="secondary" className="text-green-600">
+													Terminée
+												</Badge>
+											)}
+											<Button
+												size="sm"
+												variant="ghost"
+												className="h-7 px-2 text-xs"
+												onClick={() => openEditMission(m)}
+											>
+												Modifier
+											</Button>
+											<Button
+												size="sm"
+												variant="ghost"
+												className="h-7 px-2 text-xs text-destructive hover:text-destructive"
+												disabled={missionDeleting === m.id}
+												onClick={() => handleDeleteMission(m.id)}
+											>
+												{missionDeleting === m.id ? "..." : "Supprimer"}
+											</Button>
+										</div>
+									</CardTitle>
+								</CardHeader>
+								<CardContent className="space-y-2">
+									<p className="text-sm text-muted-foreground">{m.description}</p>
+									{m.cognitiveFunctions.length > 0 && (
+										<div className="flex flex-wrap gap-1">
+											{(m.cognitiveFunctions as ExerciseKey[]).map((fn) => (
+												<Badge key={fn} variant="outline" className="text-xs">
+													{EXERCISE_LABELS[fn]}
+												</Badge>
+											))}
+										</div>
+									)}
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				)}
+			</section>
+
+			{/* Mission dialog (create / edit) */}
+			<Dialog open={missionDialogOpen} onOpenChange={setMissionDialogOpen}>
+				<DialogContent className="sm:max-w-lg">
+					<DialogHeader>
+						<DialogTitle>
+							{editingMissionId ? "Modifier la mission" : "Nouvelle mission"}
+						</DialogTitle>
+					</DialogHeader>
+					<div className="space-y-4 py-2">
+						<div className="space-y-1">
+							<Label htmlFor={missionTitleId}>Titre</Label>
+							<Input
+								id={missionTitleId}
+								value={missionForm.title}
+								onChange={(e) => setMissionForm((p) => ({ ...p, title: e.target.value }))}
+								placeholder="Ex : Promenade quotidienne"
+							/>
+						</div>
+						<div className="space-y-1">
+							<Label htmlFor={missionDescId}>Description</Label>
+							<Textarea
+								id={missionDescId}
+								value={missionForm.description}
+								onChange={(e) => setMissionForm((p) => ({ ...p, description: e.target.value }))}
+								placeholder="Décrivez la mission en détail…"
+								rows={3}
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label>Fonctions cognitives ciblées</Label>
+							<div className="grid grid-cols-2 gap-2">
+								{(Object.keys(EXERCISE_LABELS) as ExerciseKey[]).map((key) => (
+									<label
+										key={key}
+										className="flex items-center gap-2 cursor-pointer select-none text-sm"
+									>
+										<input
+											type="checkbox"
+											className="accent-primary h-4 w-4"
+											checked={missionForm.cognitiveFunctions.includes(key)}
+											onChange={() => toggleCognitiveFunction(key)}
+										/>
+										{EXERCISE_LABELS[key]}
+									</label>
+								))}
+							</div>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setMissionDialogOpen(false)}>
+							Annuler
+						</Button>
+						<Button
+							disabled={missionSaving || !missionForm.title.trim()}
+							onClick={handleSaveMission}
+						>
+							{missionSaving ? "Sauvegarde…" : "Sauvegarder"}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	);
 }

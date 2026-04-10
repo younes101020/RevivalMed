@@ -8,6 +8,13 @@
       "when": 1775506613886,
       "tag": "0000_heavy_fantastic_four",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1775856087317,
+      "tag": "0001_amazing_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

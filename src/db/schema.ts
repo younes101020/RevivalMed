@@ -99,6 +99,33 @@ export const exerciseAssignments = pgTable("exercise_assignments", {
 	updatedAt: timestamp("updated_at").notNull(),
 });
 
+export const missions = pgTable("missions", {
+	id: text("id").primaryKey(),
+	therapistId: text("therapist_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	title: text("title").notNull(),
+	description: text("description").notNull(),
+	cognitiveFunctions: text("cognitive_functions").array().notNull().default([]),
+	createdAt: timestamp("created_at").notNull(),
+});
+
+export const missionCompletions = pgTable("mission_completions", {
+	id: text("id").primaryKey(),
+	missionId: text("mission_id")
+		.notNull()
+		.references(() => missions.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	completedAt: timestamp("completed_at").notNull(),
+});
+
 export type UserRole = "therapist" | "patient";
 export type ExerciseProgressRow = typeof exerciseProgress.$inferSelect;
 export type ExerciseAssignmentRow = typeof exerciseAssignments.$inferSelect;
+export type MissionRow = typeof missions.$inferSelect;
+export type MissionCompletionRow = typeof missionCompletions.$inferSelect;
