@@ -1,5 +1,6 @@
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useId, useState } from "react";
+import { ChevronLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -193,6 +194,12 @@ function PatientDetail() {
 	return (
 		<div className="container mx-auto p-6 space-y-6">
 			<div>
+				<Button variant="ghost" size="sm" className="mb-2 -ml-2" asChild>
+					<Link to="/therapist">
+						<ChevronLeft className="h-4 w-4" />
+						Retour
+					</Link>
+				</Button>
 				<h1 className="text-3xl font-bold">{patient.name}</h1>
 				<p className="text-muted-foreground">{patient.email}</p>
 			</div>
