@@ -1,26 +1,12 @@
+import type {
+	ExerciseKey,
+	ExerciseRating,
+	LevelState,
+} from "@revivalmed/types";
 import { Store } from "@tanstack/react-store";
 import { upsertProgress } from "@/lib/progress";
 
-export type ExerciseKey =
-	| "memory"
-	| "attention"
-	| "planning"
-	| "language"
-	| "visuoSpatial"
-	| "processingSpeed"
-	| "informationProcessing"
-	| "mentalFlexibility"
-	| "workingMemory";
-
-export interface ExerciseRating {
-	rating: number; // 0–100, starts at 30
-	sessions: number;
-}
-
-export interface LevelState {
-	userId: string | null;
-	exercises: Record<ExerciseKey, ExerciseRating>;
-}
+export type { ExerciseKey, ExerciseRating, LevelState };
 
 const DEFAULT_RATING: ExerciseRating = { rating: 30, sessions: 0 };
 
