@@ -31,6 +31,10 @@ export const auth = betterAuth({
 			},
 		},
 	},
+	trustedOrigins: [
+		"http://localhost:8081",
+		"exp://localhost:8081",
+	],
 });
 
 export type Auth = typeof auth;
