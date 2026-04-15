@@ -3,7 +3,8 @@
 	"tasks": {
 		"dev": {
 			"persistent": true,
-			"cache": false
+			"cache": false,
+			"env": ["DATABASE_URL", "BETTER_AUTH_SECRET", "BETTER_AUTH_URL"]
 		},
 		"build": {
 			"outputs": [".output/**", "dist/**"]
