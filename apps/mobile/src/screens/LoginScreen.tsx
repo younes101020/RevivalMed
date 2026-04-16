@@ -33,9 +33,9 @@ export default function LoginScreen({ navigation }: Props) {
     }
 
     if (user.role === "therapist") {
-      navigation.replace("Therapist");
+      navigation.replace("TherapistTabs");
     } else {
-      navigation.replace("Patient", { name: user.name });
+      navigation.replace("PatientTabs", { name: user.name });
     }
   }
 

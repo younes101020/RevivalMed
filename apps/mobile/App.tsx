@@ -1,13 +1,13 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/LoginScreen";
-import TherapistScreen from "./src/screens/TherapistScreen";
-import PatientScreen from "./src/screens/PatientScreen";
+import TherapistTabs from "./src/navigation/TherapistTabs";
+import PatientTabs from "./src/navigation/PatientTabs";
 
 export type RootStackParamList = {
   Login: undefined;
-  Therapist: undefined;
-  Patient: { name: string };
+  TherapistTabs: undefined;
+  PatientTabs: { name: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -17,8 +17,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Therapist" component={TherapistScreen} />
-        <Stack.Screen name="Patient" component={PatientScreen} />
+        <Stack.Screen name="TherapistTabs" component={TherapistTabs} />
+        <Stack.Screen name="PatientTabs" component={PatientTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );
