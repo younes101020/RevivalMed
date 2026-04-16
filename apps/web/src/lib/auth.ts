@@ -31,10 +31,9 @@ export const auth = betterAuth({
 			},
 		},
 	},
-	trustedOrigins: [
-		"http://localhost:8081",
-		"exp://localhost:8081",
-	],
+	advanced: {
+		disableOriginCheck: process.env.NODE_ENV !== "production",
+	},
 });
 
 export type Auth = typeof auth;
