@@ -4,12 +4,11 @@ import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	account,
-	exerciseAssignments,
 	exerciseProgress,
+	programs,
 	therapistPatients,
 	user,
 } from "@/db/schema";
-import type { ExerciseKey } from "@/store/level";
 
 export const getPatients = createServerFn({ method: "GET" })
 	.inputValidator((therapistId: string) => therapistId)
@@ -103,111 +102,20 @@ export const getPatientDetail = createServerFn({ method: "GET" })
 			.from(exerciseProgress)
 			.where(eq(exerciseProgress.userId, patientId));
 
-		const assignments = await db
-			.select()
-			.from(exerciseAssignments)
+		const patientPrograms = await db
+			.select({
+				id: programs.id,
+				startDate: programs.startDate,
+				createdAt: programs.createdAt,
+			})
+			.from(programs)
 			.where(
 				and(
-					eq(exerciseAssignments.therapistId, therapistId),
-					eq(exerciseAssignments.patientId, patientId),
-				),
-			);
-
-		return { patient: patientUser, progress, assignments };
-	});
-
-export const upsertAssignment = createServerFn({ method: "POST" })
-	.inputValidator(
-		(input: {
-			therapistId: string;
-			patientId: string;
-			exerciseKey: ExerciseKey;
-			difficultyOverride: number | null;
-		}) => input,
-	)
-	.handler(async ({ data }) => {
-		const { therapistId, patientId, exerciseKey, difficultyOverride } = data;
-
-		// Verify ownership before modifying
-		const link = await db
-			.select({ id: therapistPatients.id })
-			.from(therapistPatients)
-			.where(
-				and(
-					eq(therapistPatients.therapistId, therapistId),
-					eq(therapistPatients.patientId, patientId),
+					eq(programs.therapistId, therapistId),
+					eq(programs.patientId, patientId),
 				),
 			)
-			.limit(1);
+			.orderBy(programs.createdAt);
 
-		if (link.length === 0) {
-			throw new Error("Access denied");
-		}
-
-		const existing = await db
-			.select({ id: exerciseAssignments.id })
-			.from(exerciseAssignments)
-			.where(
-				and(
-					eq(exerciseAssignments.therapistId, therapistId),
-					eq(exerciseAssignments.patientId, patientId),
-					eq(exerciseAssignments.exerciseKey, exerciseKey),
-				),
-			)
-			.limit(1);
-
-		const now = new Date();
-		if (existing.length > 0) {
-			await db
-				.update(exerciseAssignments)
-				.set({ difficultyOverride, updatedAt: now })
-				.where(eq(exerciseAssignments.id, existing[0].id));
-		} else {
-			await db.insert(exerciseAssignments).values({
-				id: crypto.randomUUID(),
-				therapistId,
-				patientId,
-				exerciseKey,
-				difficultyOverride,
-				createdAt: now,
-				updatedAt: now,
-			});
-		}
-	});
-
-export const deleteAssignment = createServerFn({ method: "POST" })
-	.inputValidator(
-		(input: {
-			therapistId: string;
-			patientId: string;
-			exerciseKey: ExerciseKey;
-		}) => input,
-	)
-	.handler(async ({ data }) => {
-		const { therapistId, patientId, exerciseKey } = data;
-
-		const link = await db
-			.select({ id: therapistPatients.id })
-			.from(therapistPatients)
-			.where(
-				and(
-					eq(therapistPatients.therapistId, therapistId),
-					eq(therapistPatients.patientId, patientId),
-				),
-			)
-			.limit(1);
-
-		if (link.length === 0) {
-			throw new Error("Access denied");
-		}
-
-		await db
-			.delete(exerciseAssignments)
-			.where(
-				and(
-					eq(exerciseAssignments.therapistId, therapistId),
-					eq(exerciseAssignments.patientId, patientId),
-					eq(exerciseAssignments.exerciseKey, exerciseKey),
-				),
-			);
+		return { patient: patientUser, progress, programs: patientPrograms };
 	});

@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { completeMission, getMissionsForPatient } from "@/lib/missions";
-import { getAssignmentsForPatient, getProgress } from "@/lib/progress";
+import { getActiveWeekForPatient, completeWeekMission } from "@/lib/programs";
+import { getProgress } from "@/lib/progress";
 import type { ExerciseKey } from "@/store/level";
 import { initLevelStore } from "@/store/level";
 
@@ -51,37 +51,52 @@ export const Route = createFileRoute("/_auth/patient/")({
 		}
 	},
 	loader: async ({ context }) => {
-		const [rows, assignments, missionsData] = await Promise.all([
+		const [rows, weekData] = await Promise.all([
 			getProgress({ data: context.user!.id }),
-			getAssignmentsForPatient({ data: context.user!.id }),
-			getMissionsForPatient({ data: context.user!.id }),
+			getActiveWeekForPatient({ data: context.user!.id }),
 		]);
 		initLevelStore(context.user!.id, rows);
-		return { rows, assignments, missionsData };
+		return { rows, weekData };
 	},
 	ssr: false,
 	component: PatientDashboard,
 });
 
 function PatientDashboard() {
-	const { assignments, missionsData } = Route.useLoaderData();
+	const { weekData } = Route.useLoaderData();
 	const { user } = Route.useRouteContext();
-	const assignedKeys = new Set(assignments.map((a) => a.exerciseKey as ExerciseKey));
+
+	// No active program
+	if (!weekData.active) {
+		return (
+			<section className="h-full container mx-auto p-4 flex items-center justify-center">
+				<div className="text-center space-y-2">
+					<p className="text-muted-foreground">
+						Votre thérapeute n'a pas encore créé de programme, ou aucun programme n'est actif cette semaine.
+					</p>
+				</div>
+			</section>
+		);
+	}
+
+	const assignedKeys = new Set(
+		weekData.exercises.map((e) => e.exerciseKey as ExerciseKey),
+	);
 	const visibleTabs = EXERCISE_TAB_CONFIG.filter((t) => assignedKeys.has(t.key));
 
 	// Optimistic completion state
-	const [completedIds, setCompletedIds] = useState<Set<string>>(
-		() => new Set(missionsData.missions.filter((m) => m.completedAt).map((m) => m.id)),
-	);
-	const [completing, setCompleting] = useState<string | null>(null);
+	const [completed, setCompleted] = useState(weekData.missionCompleted);
+	const [completing, setCompleting] = useState(false);
 
-	const handleComplete = async (missionId: string) => {
-		setCompleting(missionId);
+	const handleComplete = async () => {
+		setCompleting(true);
 		try {
-			await completeMission({ data: { missionId, patientId: user!.id } });
-			setCompletedIds((prev) => new Set([...prev, missionId]));
+			await completeWeekMission({
+				data: { programWeekId: weekData.week.id, patientId: user!.id },
+			});
+			setCompleted(true);
 		} finally {
-			setCompleting(null);
+			setCompleting(false);
 		}
 	};
 
@@ -89,7 +104,7 @@ function PatientDashboard() {
 		return (
 			<section className="h-full container mx-auto p-4 flex items-center justify-center">
 				<p className="text-muted-foreground text-center">
-					Votre thérapeute n'a pas encore assigné d'exercices.
+					Aucun exercice assigné pour cette semaine.
 				</p>
 			</section>
 		);
@@ -98,12 +113,17 @@ function PatientDashboard() {
 	return (
 		<section className="h-full container mx-auto p-4 flex items-center">
 			<Tabs defaultValue={visibleTabs[0].key} className="space-y-4 container">
+				<div className="text-center">
+					<Badge variant="outline" className="text-sm px-3 py-1">
+						Semaine {weekData.weekNumber} / {weekData.totalWeeks}
+					</Badge>
+				</div>
 				<ScrollArea className="w-full whitespace-nowrap rounded-md">
 					<TabsList className="flex justify-center mx-auto">
 						{visibleTabs.map((t) => (
 							<TabsTrigger key={t.key} value={t.key}>{t.label}</TabsTrigger>
 						))}
-						<TabsTrigger value="missions">Missions</TabsTrigger>
+						<TabsTrigger value="mission">Mission</TabsTrigger>
 					</TabsList>
 					<ScrollBar orientation="horizontal" />
 				</ScrollArea>
@@ -119,64 +139,57 @@ function PatientDashboard() {
 						</TabsContent>
 					))}
 				</Card>
-				<TabsContent value="missions">
-					{!missionsData.unlocked ? (
+				<TabsContent value="mission">
+					{!weekData.missionUnlocked ? (
 						<Card>
 							<CardContent className="py-8 flex flex-col items-center gap-2 text-center">
 								<span className="text-2xl">🔒</span>
-								<p className="font-semibold">Missions verrouillées</p>
+								<p className="font-semibold">Mission verrouillée</p>
 								<p className="text-sm text-muted-foreground max-w-sm">
-									Terminez tous vos exercices au niveau maximum (4/4) pour débloquer vos missions.
+									Terminez tous les exercices de cette semaine au niveau maximum (4/4) pour débloquer la mission.
 								</p>
 							</CardContent>
 						</Card>
-					) : missionsData.missions.length === 0 ? (
+					) : (
 						<Card>
-							<CardContent className="py-8 text-center text-sm text-muted-foreground">
-								Aucune mission assignée pour l'instant.
+							<CardHeader className="pb-2">
+								<CardTitle className="text-base flex items-start justify-between gap-2">
+									<span>{weekData.week.missionTitle}</span>
+									{completed && (
+										<Badge variant="secondary" className="text-green-600 shrink-0">
+											Terminée ✓
+										</Badge>
+									)}
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-3">
+								{weekData.week.missionDescription && (
+									<p className="text-sm text-muted-foreground">
+										{weekData.week.missionDescription}
+									</p>
+								)}
+								{weekData.week.missionCognitiveFunctions.length > 0 && (
+									<div className="flex flex-wrap gap-1">
+										{(weekData.week.missionCognitiveFunctions as ExerciseKey[]).map(
+											(fn) => (
+												<Badge key={fn} variant="outline" className="text-xs">
+													{EXERCISE_LABELS[fn]}
+												</Badge>
+											),
+										)}
+									</div>
+								)}
+								{!completed && (
+									<Button
+										size="sm"
+										disabled={completing}
+										onClick={handleComplete}
+									>
+										{completing ? "En cours…" : "Marquer comme terminée"}
+									</Button>
+								)}
 							</CardContent>
 						</Card>
-					) : (
-						<div className="grid gap-3 sm:grid-cols-2">
-							{missionsData.missions.map((m) => {
-								const done = completedIds.has(m.id);
-								return (
-									<Card key={m.id}>
-										<CardHeader className="pb-2">
-											<CardTitle className="text-base flex items-start justify-between gap-2">
-												<span>{m.title}</span>
-												{done && (
-													<Badge variant="secondary" className="text-green-600 shrink-0">
-														Terminée ✓
-													</Badge>
-												)}
-											</CardTitle>
-										</CardHeader>
-										<CardContent className="space-y-3">
-											<p className="text-sm text-muted-foreground">{m.description}</p>
-											{m.cognitiveFunctions.length > 0 && (
-												<div className="flex flex-wrap gap-1">
-													{(m.cognitiveFunctions as ExerciseKey[]).map((fn) => (
-														<Badge key={fn} variant="outline" className="text-xs">
-															{EXERCISE_LABELS[fn]}
-														</Badge>
-													))}
-												</div>
-											)}
-											{!done && (
-												<Button
-													size="sm"
-													disabled={completing === m.id}
-													onClick={() => handleComplete(m.id)}
-												>
-													{completing === m.id ? "En cours…" : "Marquer comme terminée"}
-												</Button>
-											)}
-										</CardContent>
-									</Card>
-								);
-							})}
-						</div>
 					)}
 				</TabsContent>
 			</Tabs>

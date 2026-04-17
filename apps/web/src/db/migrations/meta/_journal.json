@@ -15,6 +15,13 @@
       "when": 1775856087317,
       "tag": "0001_amazing_roland_deschain",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776462934797,
+      "tag": "0002_lame_sandman",
+      "breakpoints": true
     }
   ]
 }

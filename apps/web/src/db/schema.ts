@@ -4,6 +4,7 @@ import {
 	pgTable,
 	text,
 	timestamp,
+	date,
 } from "drizzle-orm/pg-core";
 
 // ─── Better Auth core tables ────────────────────────────────────────────────
@@ -85,7 +86,9 @@ export const exerciseProgress = pgTable("exercise_progress", {
 	updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const exerciseAssignments = pgTable("exercise_assignments", {
+// ─── Programme tables ─────────────────────────────────────────────────────────
+
+export const programs = pgTable("programs", {
 	id: text("id").primaryKey(),
 	therapistId: text("therapist_id")
 		.notNull()
@@ -93,31 +96,38 @@ export const exerciseAssignments = pgTable("exercise_assignments", {
 	patientId: text("patient_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
+	startDate: date("start_date").notNull(),
+	createdAt: timestamp("created_at").notNull(),
+});
+
+export const programWeeks = pgTable("program_weeks", {
+	id: text("id").primaryKey(),
+	programId: text("program_id")
+		.notNull()
+		.references(() => programs.id, { onDelete: "cascade" }),
+	weekNumber: integer("week_number").notNull(),
+	missionTitle: text("mission_title").notNull(),
+	missionDescription: text("mission_description").notNull().default(""),
+	missionCognitiveFunctions: text("mission_cognitive_functions")
+		.array()
+		.notNull()
+		.default([]),
+});
+
+export const programWeekExercises = pgTable("program_week_exercises", {
+	id: text("id").primaryKey(),
+	programWeekId: text("program_week_id")
+		.notNull()
+		.references(() => programWeeks.id, { onDelete: "cascade" }),
 	exerciseKey: text("exercise_key").notNull(),
 	difficultyOverride: integer("difficulty_override"),
-	createdAt: timestamp("created_at").notNull(),
-	updatedAt: timestamp("updated_at").notNull(),
 });
 
-export const missions = pgTable("missions", {
+export const programWeekCompletions = pgTable("program_week_completions", {
 	id: text("id").primaryKey(),
-	therapistId: text("therapist_id")
+	programWeekId: text("program_week_id")
 		.notNull()
-		.references(() => user.id, { onDelete: "cascade" }),
-	patientId: text("patient_id")
-		.notNull()
-		.references(() => user.id, { onDelete: "cascade" }),
-	title: text("title").notNull(),
-	description: text("description").notNull(),
-	cognitiveFunctions: text("cognitive_functions").array().notNull().default([]),
-	createdAt: timestamp("created_at").notNull(),
-});
-
-export const missionCompletions = pgTable("mission_completions", {
-	id: text("id").primaryKey(),
-	missionId: text("mission_id")
-		.notNull()
-		.references(() => missions.id, { onDelete: "cascade" }),
+		.references(() => programWeeks.id, { onDelete: "cascade" }),
 	patientId: text("patient_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
@@ -126,6 +136,7 @@ export const missionCompletions = pgTable("mission_completions", {
 
 export type UserRole = "therapist" | "patient";
 export type ExerciseProgressRow = typeof exerciseProgress.$inferSelect;
-export type ExerciseAssignmentRow = typeof exerciseAssignments.$inferSelect;
-export type MissionRow = typeof missions.$inferSelect;
-export type MissionCompletionRow = typeof missionCompletions.$inferSelect;
+export type ProgramRow = typeof programs.$inferSelect;
+export type ProgramWeekRow = typeof programWeeks.$inferSelect;
+export type ProgramWeekExerciseRow = typeof programWeekExercises.$inferSelect;
+export type ProgramWeekCompletionRow = typeof programWeekCompletions.$inferSelect;
