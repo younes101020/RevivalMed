@@ -4,6 +4,7 @@
 	"packageManager": "pnpm@10.12.3",
 	"scripts": {
 		"dev": "turbo dev",
+		"dev:web": "turbo run dev --filter=@revivalmed/web",
 		"build": "turbo build"
 	},
 	"devDependencies": {

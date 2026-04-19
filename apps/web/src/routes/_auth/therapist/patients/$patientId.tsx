@@ -4,13 +4,6 @@ import { ChevronDown, ChevronLeft, ChevronUp, Copy, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-	Dialog,
-	DialogContent,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -21,6 +14,12 @@ import {
 	getProgram,
 	type WeekInput,
 } from "@/lib/programs";
+import {
+	createObservationGrid,
+	deleteObservationGrid,
+	getObservationGrid,
+	type ObservationGridItemInput,
+} from "@/lib/observation-grids";
 import { getPatientDetail } from "@/lib/therapist";
 import type { ExerciseKey } from "@/store/level";
 
@@ -96,7 +95,7 @@ function formatDate(dateStr: string) {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 function PatientDetail() {
-	const { patient, progress, programs: patientPrograms } = Route.useLoaderData();
+	const { patient, progress, programs: patientPrograms, grids } = Route.useLoaderData();
 	const { user } = Route.useRouteContext();
 	const { patientId } = Route.useParams();
 	const router = useRouter();
@@ -104,6 +103,20 @@ function PatientDetail() {
 	const [showCreator, setShowCreator] = useState(false);
 	const [viewingProgramId, setViewingProgramId] = useState<string | null>(null);
 	const [deleting, setDeleting] = useState<string | null>(null);
+
+	const [showGridCreator, setShowGridCreator] = useState(false);
+	const [viewingGridId, setViewingGridId] = useState<string | null>(null);
+	const [deletingGrid, setDeletingGrid] = useState<string | null>(null);
+
+	const handleDeleteGrid = async (gridId: string) => {
+		setDeletingGrid(gridId);
+		try {
+			await deleteObservationGrid({ data: { therapistId: user!.id, gridId } });
+			router.invalidate();
+		} finally {
+			setDeletingGrid(null);
+		}
+	};
 
 	const progressMap = Object.fromEntries(
 		progress.map((p) => [p.exerciseKey, p]),
@@ -248,6 +261,82 @@ function PatientDetail() {
 							router.invalidate();
 						}}
 						onCancel={() => setShowCreator(false)}
+					/>
+				)}
+			</section>
+
+			<Separator />
+
+			{/* Observation grids section */}
+			<section className="space-y-4">
+				<div className="flex items-center justify-between">
+					<div>
+						<h2 className="text-xl font-semibold">Grilles d'observation</h2>
+						<p className="text-sm text-muted-foreground">
+							Évaluation des fonctions cognitives du patient (échelle 1-5).
+						</p>
+					</div>
+					{!showGridCreator && (
+						<Button onClick={() => setShowGridCreator(true)}>Nouvelle grille</Button>
+					)}
+				</div>
+
+				{grids.length === 0 && !showGridCreator && (
+					<p className="text-sm text-muted-foreground">Aucune grille d'observation pour l'instant.</p>
+				)}
+
+				{grids.map((grid) => (
+					<Card key={grid.id}>
+						<CardHeader className="pb-2">
+							<CardTitle className="text-base flex items-center justify-between gap-2">
+								<span>{formatDate(grid.createdAt.toString())}</span>
+								<div className="flex items-center gap-2">
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() =>
+											setViewingGridId(
+												viewingGridId === grid.id ? null : grid.id,
+											)
+										}
+									>
+										{viewingGridId === grid.id ? "Masquer" : "Détails"}
+									</Button>
+									<Button
+										size="sm"
+										variant="ghost"
+										className="text-destructive hover:text-destructive"
+										disabled={deletingGrid === grid.id}
+										onClick={() => handleDeleteGrid(grid.id)}
+									>
+										{deletingGrid === grid.id ? "..." : <Trash2 className="h-4 w-4" />}
+									</Button>
+								</div>
+							</CardTitle>
+							{grid.globalComment && (
+								<p className="text-sm text-muted-foreground line-clamp-2">{grid.globalComment}</p>
+							)}
+						</CardHeader>
+						{viewingGridId === grid.id && (
+							<CardContent>
+								<ObservationGridDetail
+									therapistId={user!.id}
+									gridId={grid.id}
+								/>
+							</CardContent>
+						)}
+					</Card>
+				))}
+
+				{showGridCreator && (
+					<ObservationGridCreator
+						therapistId={user!.id}
+						patientId={patientId}
+						onDone={() => {
+							setShowGridCreator(false);
+							router.invalidate();
+						}}
+						onCancel={() => setShowGridCreator(false)}
 					/>
 				)}
 			</section>
@@ -648,6 +737,234 @@ function ProgramCreator({
 					</Button>
 					<Button disabled={saving} onClick={handleSubmit}>
 						{saving ? "Création…" : "Créer le programme"}
+					</Button>
+				</div>
+			</CardContent>
+		</Card>
+	);
+}
+
+// ─── Observation grid detail viewer ──────────────────────────────────────────
+
+const SCORE_LABELS = ["", "Très faible", "Faible", "Moyen", "Bon", "Excellent"];
+
+function ObservationGridDetail({
+	therapistId,
+	gridId,
+}: { therapistId: string; gridId: string }) {
+	const [data, setData] = useState<Awaited<
+		ReturnType<typeof getObservationGrid>
+	> | null>(null);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const load = async () => {
+		if (data) return;
+		setLoading(true);
+		try {
+			const result = await getObservationGrid({ data: { therapistId, gridId } });
+			setData(result);
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Erreur");
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	if (!data && !loading && !error) {
+		load();
+	}
+
+	if (loading) return <p className="text-sm text-muted-foreground py-2">Chargement…</p>;
+	if (error) return <p className="text-sm text-destructive py-2">{error}</p>;
+	if (!data) return null;
+
+	return (
+		<div className="space-y-3">
+			{ALL_EXERCISE_KEYS.map((key) => {
+				const item = data.items.find((i) => i.cognitiveFunction === key);
+				if (!item) return null;
+				return (
+					<div key={key} className="border rounded-lg p-3 space-y-1">
+						<div className="flex items-center justify-between">
+							<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
+							<div className="flex items-center gap-1.5">
+								{[1, 2, 3, 4, 5].map((s) => (
+									<div
+										key={s}
+										className={`h-5 w-5 rounded-full text-xs flex items-center justify-center font-medium ${
+											s <= item.score
+												? "bg-primary text-primary-foreground"
+												: "bg-secondary text-muted-foreground"
+										}`}
+									>
+										{s}
+									</div>
+								))}
+								<span className="text-xs text-muted-foreground ml-1">
+									{SCORE_LABELS[item.score]}
+								</span>
+							</div>
+						</div>
+						{item.comment && (
+							<p className="text-xs text-muted-foreground">{item.comment}</p>
+						)}
+					</div>
+				);
+			})}
+			{data.globalComment && (
+				<div className="border-t pt-3 mt-3">
+					<span className="text-sm font-medium">Commentaire global</span>
+					<p className="text-sm text-muted-foreground mt-1">{data.globalComment}</p>
+				</div>
+			)}
+		</div>
+	);
+}
+
+// ─── Observation grid creator ────────────────────────────────────────────────
+
+type GridFormScores = Record<ExerciseKey, { score: number; comment: string }>;
+
+function emptyGridScores(): GridFormScores {
+	return Object.fromEntries(
+		ALL_EXERCISE_KEYS.map((key) => [key, { score: 0, comment: "" }]),
+	) as GridFormScores;
+}
+
+function ObservationGridCreator({
+	therapistId,
+	patientId,
+	onDone,
+	onCancel,
+}: {
+	therapistId: string;
+	patientId: string;
+	onDone: () => void;
+	onCancel: () => void;
+}) {
+	const [scores, setScores] = useState<GridFormScores>(emptyGridScores);
+	const [globalComment, setGlobalComment] = useState("");
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+
+	const updateScore = (key: ExerciseKey, score: number) => {
+		setScores((prev) => ({
+			...prev,
+			[key]: { ...prev[key], score },
+		}));
+	};
+
+	const updateComment = (key: ExerciseKey, comment: string) => {
+		setScores((prev) => ({
+			...prev,
+			[key]: { ...prev[key], comment },
+		}));
+	};
+
+	const handleSubmit = async () => {
+		setError(null);
+
+		for (const key of ALL_EXERCISE_KEYS) {
+			if (scores[key].score === 0) {
+				setError(`Veuillez attribuer un score pour : ${EXERCISE_LABELS[key]}`);
+				return;
+			}
+		}
+
+		setSaving(true);
+		try {
+			const items: ObservationGridItemInput[] = ALL_EXERCISE_KEYS.map((key) => ({
+				cognitiveFunction: key,
+				score: scores[key].score,
+				comment: scores[key].comment || undefined,
+			}));
+
+			await createObservationGrid({
+				data: {
+					therapistId,
+					patientId,
+					globalComment: globalComment || undefined,
+					items,
+				},
+			});
+			onDone();
+		} catch (e) {
+			setError(e instanceof Error ? e.message : "Erreur lors de la création");
+		} finally {
+			setSaving(false);
+		}
+	};
+
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle className="text-lg flex items-center justify-between">
+					Nouvelle grille d'observation
+					<Button variant="ghost" size="sm" onClick={onCancel}>
+						Annuler
+					</Button>
+				</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				{ALL_EXERCISE_KEYS.map((key) => (
+					<div key={key} className="space-y-2 border rounded-lg p-3">
+						<div className="flex items-center justify-between">
+							<Label className="text-sm font-medium">{EXERCISE_LABELS[key]}</Label>
+							<div className="flex items-center gap-1">
+								{[1, 2, 3, 4, 5].map((s) => (
+									<button
+										key={s}
+										type="button"
+										onClick={() => updateScore(key, s)}
+										className={`h-8 w-8 rounded-full text-sm font-medium transition-colors ${
+											scores[key].score === s
+												? "bg-primary text-primary-foreground"
+												: scores[key].score > 0 && s <= scores[key].score
+													? "bg-primary/60 text-primary-foreground"
+													: "bg-secondary text-muted-foreground hover:bg-secondary/80"
+										}`}
+									>
+										{s}
+									</button>
+								))}
+								{scores[key].score > 0 && (
+									<span className="text-xs text-muted-foreground ml-2">
+										{SCORE_LABELS[scores[key].score]}
+									</span>
+								)}
+							</div>
+						</div>
+						<Textarea
+							value={scores[key].comment}
+							onChange={(e) => updateComment(key, e.target.value)}
+							placeholder="Commentaire (optionnel)"
+							rows={1}
+							className="text-sm"
+						/>
+					</div>
+				))}
+
+				<Separator />
+
+				<div className="space-y-1">
+					<Label className="text-sm">Commentaire global (optionnel)</Label>
+					<Textarea
+						value={globalComment}
+						onChange={(e) => setGlobalComment(e.target.value)}
+						placeholder="Observations générales sur le patient…"
+						rows={3}
+					/>
+				</div>
+
+				{error && <p className="text-sm text-destructive">{error}</p>}
+
+				<div className="flex justify-end gap-2">
+					<Button variant="outline" onClick={onCancel}>
+						Annuler
+					</Button>
+					<Button disabled={saving} onClick={handleSubmit}>
+						{saving ? "Création…" : "Créer la grille"}
 					</Button>
 				</div>
 			</CardContent>

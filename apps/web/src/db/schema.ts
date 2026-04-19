@@ -134,9 +134,35 @@ export const programWeekCompletions = pgTable("program_week_completions", {
 	completedAt: timestamp("completed_at").notNull(),
 });
 
+// ─── Observation grid tables ──────────────────────────────────────────────────
+
+export const observationGrids = pgTable("observation_grids", {
+	id: text("id").primaryKey(),
+	therapistId: text("therapist_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	globalComment: text("global_comment"),
+	createdAt: timestamp("created_at").notNull(),
+});
+
+export const observationGridItems = pgTable("observation_grid_items", {
+	id: text("id").primaryKey(),
+	gridId: text("grid_id")
+		.notNull()
+		.references(() => observationGrids.id, { onDelete: "cascade" }),
+	cognitiveFunction: text("cognitive_function").notNull(),
+	score: integer("score").notNull(),
+	comment: text("comment"),
+});
+
 export type UserRole = "therapist" | "patient";
 export type ExerciseProgressRow = typeof exerciseProgress.$inferSelect;
 export type ProgramRow = typeof programs.$inferSelect;
 export type ProgramWeekRow = typeof programWeeks.$inferSelect;
 export type ProgramWeekExerciseRow = typeof programWeekExercises.$inferSelect;
 export type ProgramWeekCompletionRow = typeof programWeekCompletions.$inferSelect;
+export type ObservationGridRow = typeof observationGrids.$inferSelect;
+export type ObservationGridItemRow = typeof observationGridItems.$inferSelect;

@@ -1,10 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { hashPassword } from "better-auth/crypto";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	account,
 	exerciseProgress,
+	observationGrids,
 	programs,
 	therapistPatients,
 	user,
@@ -117,5 +118,20 @@ export const getPatientDetail = createServerFn({ method: "GET" })
 			)
 			.orderBy(programs.createdAt);
 
-		return { patient: patientUser, progress, programs: patientPrograms };
+		const grids = await db
+			.select({
+				id: observationGrids.id,
+				globalComment: observationGrids.globalComment,
+				createdAt: observationGrids.createdAt,
+			})
+			.from(observationGrids)
+			.where(
+				and(
+					eq(observationGrids.therapistId, therapistId),
+					eq(observationGrids.patientId, patientId),
+				),
+			)
+			.orderBy(desc(observationGrids.createdAt));
+
+		return { patient: patientUser, progress, programs: patientPrograms, grids };
 	});
