@@ -15,7 +15,10 @@ export function Nav() {
 
 	return (
 		<header className="border-b bg-background px-6 py-3 flex items-center justify-between">
-			<span className="font-semibold text-lg">RevivalMed</span>
+			<div className="flex flex-col gap-0">
+				<span className="font-semibold text-lg">RevivalMed</span>
+				<span className="text-[0.55rem]">outil de remediation cognitive</span>
+			</div>
 			<div className="flex items-center gap-3">
 				{user && (
 					<>
