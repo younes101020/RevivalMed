@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq, gte, lte, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	exerciseProgress,
@@ -72,13 +72,12 @@ export const createProgram = createServerFn({ method: "POST" })
 			throw new Error("Un programme doit contenir exactement 16 semaines");
 		}
 
-		for (let i = 0; i < weeks.length; i++) {
-			if (weeks[i].exercises.length === 0) {
-				throw new Error(`La semaine ${i + 1} doit avoir au moins un exercice`);
-			}
-			if (!weeks[i].missionTitle.trim()) {
-				throw new Error(`La semaine ${i + 1} doit avoir une mission`);
-			}
+		// Only week 1 is required
+		if (weeks[0].exercises.length === 0) {
+			throw new Error("La semaine 1 doit avoir au moins un exercice");
+		}
+		if (!weeks[0].missionTitle.trim()) {
+			throw new Error("La semaine 1 doit avoir une mission");
 		}
 
 		const programId = crypto.randomUUID();
@@ -174,9 +173,7 @@ export const getProgram = createServerFn({ method: "GET" })
 				? await db
 						.select()
 						.from(programWeekExercises)
-						.where(
-							sql`${programWeekExercises.programWeekId} = ANY(${weekIds})`,
-						)
+						.where(inArray(programWeekExercises.programWeekId, weekIds))
 				: [];
 
 		const completions =
@@ -184,9 +181,7 @@ export const getProgram = createServerFn({ method: "GET" })
 				? await db
 						.select()
 						.from(programWeekCompletions)
-						.where(
-							sql`${programWeekCompletions.programWeekId} = ANY(${weekIds})`,
-						)
+						.where(inArray(programWeekCompletions.programWeekId, weekIds))
 				: [];
 
 		const exercisesByWeek = new Map<string, typeof exercises>();
