@@ -212,7 +212,7 @@ function PatientDetail() {
 									<div className="flex items-center gap-2">
 										<Badge
 											variant={status === "active" ? "default" : "secondary"}
-											className={status === "completed" ? "text-green-600" : status === "upcoming" ? "text-blue-600" : ""}
+											className={status === "completed" ? "text-green-600" : status === "upcoming" ? "text-secondary-foreground" : ""}
 										>
 											{status === "active" ? "En cours" : status === "upcoming" ? "À venir" : "Terminé"}
 										</Badge>
@@ -229,12 +229,15 @@ function PatientDetail() {
 										</Button>
 										<Button
 											size="sm"
-											variant="ghost"
-											className="text-destructive hover:text-destructive"
+											variant="destructive"
 											disabled={deleting === prog.id}
 											onClick={() => handleDelete(prog.id)}
 										>
-											{deleting === prog.id ? "..." : <Trash2 className="h-4 w-4" />}
+											{deleting === prog.id ? "..." :
+												<span>
+													Supprimer
+												</span>
+											}
 										</Button>
 									</div>
 								</CardTitle>
@@ -603,11 +606,11 @@ function ProgramCreator({
 												type="button"
 												variant="outline"
 												size="sm"
-												className="text-xs"
+												className="text-xs mt-2"
 												onClick={() => copyFromPrevious(idx)}
 											>
 												<Copy className="h-3 w-3 mr-1" />
-												Copier la semaine {idx}
+												Copier la semaine précédente
 											</Button>
 										)}
 

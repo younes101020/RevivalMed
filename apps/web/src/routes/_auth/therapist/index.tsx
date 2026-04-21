@@ -71,7 +71,7 @@ return (
 <h1 className="text-3xl font-bold">Mes patients</h1>
 <Dialog open={open} onOpenChange={setOpen}>
 <DialogTrigger asChild>
-<Button>
+<Button className="text-secondary-foreground">
 <UserPlus className="mr-2 h-4 w-4" />
 Ajouter un patient
 </Button>

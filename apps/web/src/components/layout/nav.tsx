@@ -25,6 +25,7 @@ export function Nav() {
 						<span className="text-sm text-muted-foreground">{user.name}</span>
 						<Badge
 							variant={user.role === "therapist" ? "default" : "secondary"}
+							className="text-secondary-foreground"
 						>
 							{user.role === "therapist" ? "Thérapeute" : "Patient"}
 						</Badge>
