@@ -8,6 +8,15 @@
 		},
 		"build": {
 			"outputs": [".output/**", "dist/**"]
+		},
+		"start": {
+			"persistent": true,
+			"cache": false,
+			"env": ["DATABASE_URL", "BETTER_AUTH_SECRET", "BETTER_AUTH_URL"]
+		},
+		"migrate": {
+			"cache": false,
+			"env": ["DATABASE_URL"]
 		}
 	}
 }
