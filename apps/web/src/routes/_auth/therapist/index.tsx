@@ -16,6 +16,7 @@ DialogTitle,
 DialogTrigger,
 } from "@/components/ui/dialog";
 import { UserPlus, ChevronRight } from "lucide-react";
+import { Avatar } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/_auth/therapist/")({
 beforeLoad: ({ context }) => {
@@ -137,9 +138,12 @@ className="block"
 >
 <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
 <CardContent className="flex items-center justify-between py-4">
+<div className="flex items-center gap-3">
+<Avatar src={patient.image} name={patient.name} size="sm" />
 <div>
 <p className="font-medium">{patient.name}</p>
 <p className="text-sm text-muted-foreground">{patient.email}</p>
+</div>
 </div>
 <ChevronRight className="h-4 w-4 text-muted-foreground" />
 </CardContent>

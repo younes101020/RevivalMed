@@ -19,6 +19,7 @@ export const getPatients = createServerFn({ method: "GET" })
 				id: user.id,
 				name: user.name,
 				email: user.email,
+				image: user.image,
 				createdAt: user.createdAt,
 			})
 			.from(user)

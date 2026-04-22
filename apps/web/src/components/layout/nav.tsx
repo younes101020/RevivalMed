@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { useRouteContext, useNavigate } from "@tanstack/react-router";
 import { LogOut } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { authClient } from "@/lib/auth-client";
 
 export function Nav() {
 	const { user } = useRouteContext({ from: "/_auth" });
 	const navigate = useNavigate();
+	const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.image ?? null);
 
 	const handleSignOut = async () => {
 		await authClient.signOut();
@@ -22,6 +25,12 @@ export function Nav() {
 			<div className="flex items-center gap-3">
 				{user && (
 					<>
+						<AvatarUpload
+							src={avatarUrl}
+							name={user.name}
+							size="md"
+							onUploaded={setAvatarUrl}
+						/>
 						<span className="text-sm text-muted-foreground">{user.name}</span>
 						<Badge
 							variant={user.role === "therapist" ? "default" : "secondary"}

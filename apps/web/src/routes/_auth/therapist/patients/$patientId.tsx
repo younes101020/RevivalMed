@@ -1,6 +1,7 @@
 import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronUp, Copy, Trash2 } from "lucide-react";
+import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +13,6 @@ import {
 	createProgram,
 	deleteProgram,
 	getProgram,
-	updateProgramWeek,
 	type WeekInput,
 } from "@/lib/programs";
 import {
@@ -142,118 +142,47 @@ function PatientDetail() {
 						Retour
 					</Link>
 				</Button>
-				<h1 className="text-3xl font-bold">{patient.name}</h1>
-				<p className="text-muted-foreground">{patient.email}</p>
+				<div className="flex items-center gap-4">
+					<Avatar src={patient.image} name={patient.name} size="lg" />
+					<div>
+						<h1 className="text-3xl font-bold">{patient.name}</h1>
+						<p className="text-muted-foreground">{patient.email}</p>
+					</div>
+				</div>
 			</div>
 
 			<Separator />
 
-			<div className="flex flex-wrap gap-6">
-				{/* Progress overview */}
-				<section className="space-y-4 flex-1 min-w-80">
-					<h2 className="text-xl font-semibold">Progression globale</h2>
-					<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-						{ALL_EXERCISE_KEYS.map((key) => {
-							const p = progressMap[key];
-							const rating = p?.rating ?? 30;
-							const sessions = p?.sessions ?? 0;
-							return (
-								<Card key={key}>
-									<CardContent className="pt-4 space-y-2">
-										<div className="flex justify-between items-center">
-											<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
-											<Badge variant="secondary" className="text-xs">
-												{sessions} sess.
-											</Badge>
-										</div>
-										<div className="h-2 bg-secondary rounded-full overflow-hidden">
-											<div
-												className="h-full bg-primary transition-all"
-												style={{ width: `${rating}%` }}
-											/>
-										</div>
-										<p className="text-xs text-muted-foreground text-right">{Math.round(rating)}%</p>
-									</CardContent>
-								</Card>
-							);
-						})}
-					</div>
-				</section>
-
-				{/* Observation grids section */}
-				<section className="space-y-4 flex-1 min-w-80">
-					<div className="flex items-center justify-between">
-						<div>
-							<h2 className="text-xl font-semibold">Grilles d'observation</h2>
-							<p className="text-sm text-muted-foreground">
-								Évaluation des fonctions cognitives du patient (échelle 1-5).
-							</p>
-						</div>
-						{!showGridCreator && (
-							<Button className="text-secondary-foreground" onClick={() => setShowGridCreator(true)}>Nouvelle grille</Button>
-						)}
-					</div>
-
-					{grids.length === 0 && !showGridCreator && (
-						<p className="text-sm text-muted-foreground">Aucune grille d'observation pour l'instant.</p>
-					)}
-
-					{grids.map((grid) => (
-						<Card key={grid.id}>
-							<CardHeader className="pb-2">
-								<CardTitle className="text-base flex items-center justify-between gap-2">
-									<span>{formatDate(grid.createdAt.toString())}</span>
-									<div className="flex items-center gap-2">
-										<Button
-											size="sm"
-											variant="outline"
-											onClick={() =>
-												setViewingGridId(
-													viewingGridId === grid.id ? null : grid.id,
-												)
-											}
-										>
-											{viewingGridId === grid.id ? "Masquer" : "Détails"}
-										</Button>
-										<Button
-											size="sm"
-											variant="ghost"
-											className="text-destructive hover:text-destructive"
-											disabled={deletingGrid === grid.id}
-											onClick={() => handleDeleteGrid(grid.id)}
-										>
-											{deletingGrid === grid.id ? "..." : <Trash2 className="h-4 w-4" />}
-										</Button>
+			{/* Progress overview */}
+			<section className="space-y-4">
+				<h2 className="text-xl font-semibold">Progression globale</h2>
+				<div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
+					{ALL_EXERCISE_KEYS.map((key) => {
+						const p = progressMap[key];
+						const rating = p?.rating ?? 30;
+						const sessions = p?.sessions ?? 0;
+						return (
+							<Card key={key}>
+								<CardContent className="pt-4 space-y-2">
+									<div className="flex justify-between items-center">
+										<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
+										<Badge variant="secondary" className="text-xs">
+											{sessions} sess.
+										</Badge>
 									</div>
-								</CardTitle>
-								{grid.globalComment && (
-									<p className="text-sm text-muted-foreground line-clamp-2">{grid.globalComment}</p>
-								)}
-							</CardHeader>
-							{viewingGridId === grid.id && (
-								<CardContent>
-									<ObservationGridDetail
-										therapistId={user!.id}
-										gridId={grid.id}
-									/>
+									<div className="h-2 bg-secondary rounded-full overflow-hidden">
+										<div
+											className="h-full bg-primary transition-all"
+											style={{ width: `${rating}%` }}
+										/>
+									</div>
+									<p className="text-xs text-muted-foreground text-right">{Math.round(rating)}%</p>
 								</CardContent>
-							)}
-						</Card>
-					))}
-
-					{showGridCreator && (
-						<ObservationGridCreator
-							therapistId={user!.id}
-							patientId={patientId}
-							onDone={() => {
-								setShowGridCreator(false);
-								router.invalidate();
-							}}
-							onCancel={() => setShowGridCreator(false)}
-						/>
-					)}
-				</section>
-			</div>
+							</Card>
+						);
+					})}
+				</div>
+			</section>
 
 			<Separator />
 
@@ -289,7 +218,7 @@ function PatientDetail() {
 									<div className="flex items-center gap-2">
 										<Badge
 											variant={status === "active" ? "default" : "secondary"}
-											className={status === "completed" ? "text-green-600" : status === "upcoming" ? "text-secondary-foreground" : ""}
+											className={status === "completed" ? "text-green-600" : status === "upcoming" ? "text-blue-600" : ""}
 										>
 											{status === "active" ? "En cours" : status === "upcoming" ? "À venir" : "Terminé"}
 										</Badge>
@@ -306,15 +235,12 @@ function PatientDetail() {
 										</Button>
 										<Button
 											size="sm"
-											variant="destructive"
+											variant="ghost"
+											className="text-destructive hover:text-destructive"
 											disabled={deleting === prog.id}
 											onClick={() => handleDelete(prog.id)}
 										>
-											{deleting === prog.id ? "..." :
-												<span>
-													Supprimer
-												</span>
-											}
+											{deleting === prog.id ? "..." : <Trash2 className="h-4 w-4" />}
 										</Button>
 									</div>
 								</CardTitle>
@@ -345,7 +271,82 @@ function PatientDetail() {
 				)}
 			</section>
 
-			</div>
+			<Separator />
+
+			{/* Observation grids section */}
+			<section className="space-y-4">
+				<div className="flex items-center justify-between">
+					<div>
+						<h2 className="text-xl font-semibold">Grilles d'observation</h2>
+						<p className="text-sm text-muted-foreground">
+							Évaluation des fonctions cognitives du patient (échelle 1-5).
+						</p>
+					</div>
+					{!showGridCreator && (
+						<Button onClick={() => setShowGridCreator(true)}>Nouvelle grille</Button>
+					)}
+				</div>
+
+				{grids.length === 0 && !showGridCreator && (
+					<p className="text-sm text-muted-foreground">Aucune grille d'observation pour l'instant.</p>
+				)}
+
+				{grids.map((grid) => (
+					<Card key={grid.id}>
+						<CardHeader className="pb-2">
+							<CardTitle className="text-base flex items-center justify-between gap-2">
+								<span>{formatDate(grid.createdAt.toString())}</span>
+								<div className="flex items-center gap-2">
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() =>
+											setViewingGridId(
+												viewingGridId === grid.id ? null : grid.id,
+											)
+										}
+									>
+										{viewingGridId === grid.id ? "Masquer" : "Détails"}
+									</Button>
+									<Button
+										size="sm"
+										variant="ghost"
+										className="text-destructive hover:text-destructive"
+										disabled={deletingGrid === grid.id}
+										onClick={() => handleDeleteGrid(grid.id)}
+									>
+										{deletingGrid === grid.id ? "..." : <Trash2 className="h-4 w-4" />}
+									</Button>
+								</div>
+							</CardTitle>
+							{grid.globalComment && (
+								<p className="text-sm text-muted-foreground line-clamp-2">{grid.globalComment}</p>
+							)}
+						</CardHeader>
+						{viewingGridId === grid.id && (
+							<CardContent>
+								<ObservationGridDetail
+									therapistId={user!.id}
+									gridId={grid.id}
+								/>
+							</CardContent>
+						)}
+					</Card>
+				))}
+
+				{showGridCreator && (
+					<ObservationGridCreator
+						therapistId={user!.id}
+						patientId={patientId}
+						onDone={() => {
+							setShowGridCreator(false);
+							router.invalidate();
+						}}
+						onCancel={() => setShowGridCreator(false)}
+					/>
+				)}
+			</section>
+		</div>
 	);
 }
 
@@ -361,7 +362,6 @@ function ProgramDetail({
 	> | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [editingWeekId, setEditingWeekId] = useState<string | null>(null);
 
 	const load = async () => {
 		if (data) return;
@@ -397,251 +397,44 @@ function ProgramDetail({
 			{data.weeks.map((week) => {
 				const isCurrent = week.weekNumber === currentWeek;
 				const isPast = week.weekNumber < currentWeek;
-
-			if (editingWeekId === week.id) {
 				return (
-					<WeekEditorForm
+					<div
 						key={week.id}
-						therapistId={therapistId}
-						week={week}
-						onSaved={() => {
-							setEditingWeekId(null);
-							setData(null);
-						}}
-						onCancel={() => setEditingWeekId(null)}
-					/>
-				);
-			}
-
-			return (
-				<div
-					key={week.id}
-					className={`border rounded-lg p-3 space-y-2 ${isCurrent ? "border-primary bg-primary/5" : isPast ? "opacity-60" : ""}`}
-				>
-					<div className="flex items-center justify-between">
-						<span className="font-medium text-sm">
-							Semaine {week.weekNumber}
-							{isCurrent && (
-								<Badge variant="default" className="ml-2 text-xs">
-									En cours
-								</Badge>
-							)}
-						</span>
-						<div className="flex items-center gap-2">
+						className={`border rounded-lg p-3 space-y-2 ${isCurrent ? "border-primary bg-primary/5" : isPast ? "opacity-60" : ""}`}
+					>
+						<div className="flex items-center justify-between">
+							<span className="font-medium text-sm">
+								Semaine {week.weekNumber}
+								{isCurrent && (
+									<Badge variant="default" className="ml-2 text-xs">
+										En cours
+									</Badge>
+								)}
+							</span>
 							{week.completion && (
 								<Badge variant="secondary" className="text-green-600 text-xs">
 									Mission terminée ✓
 								</Badge>
 							)}
-							<Button
-								size="sm"
-								variant="outline"
-								className="text-xs h-6 px-2"
-								onClick={() => setEditingWeekId(week.id)}
-							>
-								Modifier
-							</Button>
+						</div>
+						<div className="flex flex-wrap gap-1">
+							{week.exercises.map((ex) => (
+								<Badge key={ex.id} variant="outline" className="text-xs">
+									{EXERCISE_LABELS[ex.exerciseKey as ExerciseKey]}
+									{ex.difficultyOverride != null && ` (${ex.difficultyOverride}%)`}
+								</Badge>
+							))}
+						</div>
+						<div className="text-sm">
+							<span className="font-medium">Mission :</span>{" "}
+							<span className="text-muted-foreground">{week.missionTitle}</span>
+							{week.missionDescription && (
+								<p className="text-xs text-muted-foreground mt-1">{week.missionDescription}</p>
+							)}
 						</div>
 					</div>
-					<div className="flex flex-wrap gap-1">
-						{week.exercises.map((ex) => (
-							<Badge key={ex.id} variant="outline" className="text-xs">
-								{EXERCISE_LABELS[ex.exerciseKey as ExerciseKey]}
-								{ex.difficultyOverride != null && ` (${ex.difficultyOverride}%)`}
-							</Badge>
-						))}
-					</div>
-					<div className="text-sm">
-						<span className="font-medium">Mission :</span>{" "}
-						<span className="text-muted-foreground">{week.missionTitle}</span>
-						{week.missionDescription && (
-							<p className="text-xs text-muted-foreground mt-1">{week.missionDescription}</p>
-						)}
-					</div>
-				</div>
-			);
-		})}
-		</div>
-	);
-}
-
-// ─── Week editor form ────────────────────────────────────────────────────────
-
-type WeekEditorData = Awaited<ReturnType<typeof getProgram>>["weeks"][number];
-
-function WeekEditorForm({
-	therapistId,
-	week,
-	onSaved,
-	onCancel,
-}: {
-	therapistId: string;
-	week: WeekEditorData;
-	onSaved: () => void;
-	onCancel: () => void;
-}) {
-	const [exercises, setExercises] = useState<Set<ExerciseKey>>(
-		() => new Set(week.exercises.map((e) => e.exerciseKey as ExerciseKey)),
-	);
-	const [overrides, setOverrides] = useState<Record<string, string>>(
-		() =>
-			Object.fromEntries(
-				week.exercises
-					.filter((e) => e.difficultyOverride != null)
-					.map((e) => [e.exerciseKey, String(e.difficultyOverride)]),
-			),
-	);
-	const [missionTitle, setMissionTitle] = useState(week.missionTitle);
-	const [missionDescription, setMissionDescription] = useState(week.missionDescription ?? "");
-	const [missionCognitiveFunctions, setMissionCognitiveFunctions] = useState<ExerciseKey[]>(
-		(week.missionCognitiveFunctions ?? []) as ExerciseKey[],
-	);
-	const [saving, setSaving] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-
-	const toggleExercise = (key: ExerciseKey) => {
-		setExercises((prev) => {
-			const next = new Set(prev);
-			if (next.has(key)) next.delete(key);
-			else next.add(key);
-			return next;
-		});
-	};
-
-	const handleSubmit = async () => {
-		setError(null);
-		if (exercises.size === 0) {
-			setError("Au moins un exercice requis");
-			return;
-		}
-		if (!missionTitle.trim()) {
-			setError("Titre de mission requis");
-			return;
-		}
-		setSaving(true);
-		try {
-			await updateProgramWeek({
-				data: {
-					therapistId,
-					programWeekId: week.id,
-					exercises: [...exercises].map((key) => ({
-						exerciseKey: key,
-						difficultyOverride:
-							overrides[key] !== undefined && overrides[key] !== ""
-								? Number(overrides[key])
-								: null,
-					})),
-					missionTitle,
-					missionDescription,
-					missionCognitiveFunctions,
-				},
-			});
-			onSaved();
-		} catch (e) {
-			setError(e instanceof Error ? e.message : "Erreur lors de la sauvegarde");
-		} finally {
-			setSaving(false);
-		}
-	};
-
-	return (
-		<div className="border border-primary rounded-lg p-3 space-y-4">
-			<div className="flex items-center justify-between">
-				<span className="font-medium text-sm">Semaine {week.weekNumber} — Modification</span>
-				<Button size="sm" variant="ghost" onClick={onCancel}>Annuler</Button>
-			</div>
-
-			<div className="space-y-2">
-				<Label className="text-sm">Exercices</Label>
-				<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-					{ALL_EXERCISE_KEYS.map((key) => {
-						const checked = exercises.has(key);
-						return (
-							<div key={key} className="space-y-1">
-								<label className="flex items-center gap-2 cursor-pointer text-sm select-none">
-									<input
-										type="checkbox"
-										className="accent-primary h-4 w-4"
-										checked={checked}
-										onChange={() => toggleExercise(key)}
-									/>
-									{EXERCISE_LABELS[key]}
-								</label>
-								{checked && (
-									<Input
-										type="number"
-										min={0}
-										max={100}
-										className="h-7 text-xs ml-6 max-w-28"
-										placeholder="Auto"
-										value={overrides[key] ?? ""}
-										onChange={(e) =>
-											setOverrides((prev) => ({ ...prev, [key]: e.target.value }))
-										}
-									/>
-								)}
-							</div>
-						);
-					})}
-				</div>
-			</div>
-
-			<Separator />
-
-			<div className="space-y-3">
-				<Label className="text-sm">Mission de la semaine</Label>
-				<div className="space-y-1">
-					<Label className="text-xs text-muted-foreground">Titre</Label>
-					<Input
-						value={missionTitle}
-						onChange={(e) => setMissionTitle(e.target.value)}
-						placeholder="Ex : Promenade quotidienne"
-					/>
-				</div>
-				<div className="space-y-1">
-					<Label className="text-xs text-muted-foreground">Description (optionnel)</Label>
-					<Textarea
-						value={missionDescription}
-						onChange={(e) => setMissionDescription(e.target.value)}
-						placeholder="Décrivez la mission…"
-						rows={2}
-					/>
-				</div>
-				<div className="space-y-1">
-					<Label className="text-xs text-muted-foreground">Fonctions cognitives ciblées</Label>
-					<div className="grid grid-cols-2 gap-1">
-						{ALL_EXERCISE_KEYS.map((key) => (
-							<label
-								key={key}
-								className="flex items-center gap-1.5 cursor-pointer text-xs select-none"
-							>
-								<input
-									type="checkbox"
-									className="accent-primary h-3.5 w-3.5"
-									checked={missionCognitiveFunctions.includes(key)}
-									onChange={() =>
-										setMissionCognitiveFunctions((prev) =>
-											prev.includes(key)
-												? prev.filter((k) => k !== key)
-												: [...prev, key],
-										)
-									}
-								/>
-								{EXERCISE_LABELS[key]}
-							</label>
-						))}
-					</div>
-				</div>
-			</div>
-
-			{error && <p className="text-sm text-destructive">{error}</p>}
-
-			<div className="flex justify-end gap-2">
-				<Button variant="outline" size="sm" onClick={onCancel}>Annuler</Button>
-				<Button size="sm" disabled={saving} onClick={handleSubmit}>
-					{saving ? "Sauvegarde…" : "Sauvegarder"}
-				</Button>
-			</div>
+				);
+			})}
 		</div>
 	);
 }
@@ -705,16 +498,18 @@ function ProgramCreator({
 	const handleSubmit = async () => {
 		setError(null);
 
-		// Only week 1 is required
-		if (weeks[0].exercises.size === 0) {
-			setError("Semaine 1 : au moins un exercice requis");
-			setExpandedWeek(0);
-			return;
-		}
-		if (!weeks[0].missionTitle.trim()) {
-			setError("Semaine 1 : titre de mission requis");
-			setExpandedWeek(0);
-			return;
+		// Validate
+		for (let i = 0; i < 16; i++) {
+			if (weeks[i].exercises.size === 0) {
+				setError(`Semaine ${i + 1} : au moins un exercice requis`);
+				setExpandedWeek(i);
+				return;
+			}
+			if (!weeks[i].missionTitle.trim()) {
+				setError(`Semaine ${i + 1} : titre de mission requis`);
+				setExpandedWeek(i);
+				return;
+			}
 		}
 
 		setSaving(true);
@@ -814,11 +609,11 @@ function ProgramCreator({
 												type="button"
 												variant="outline"
 												size="sm"
-												className="text-xs mt-2"
+												className="text-xs"
 												onClick={() => copyFromPrevious(idx)}
 											>
 												<Copy className="h-3 w-3 mr-1" />
-												Copier la semaine précédente
+												Copier la semaine {idx}
 											</Button>
 										)}
 
