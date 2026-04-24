@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUploadAvatarRouteImport } from './routes/api/upload-avatar'
 import { Route as AuthTherapistIndexRouteImport } from './routes/_auth/therapist/index'
 import { Route as AuthPatientIndexRouteImport } from './routes/_auth/patient/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -29,6 +30,11 @@ const AuthRoute = AuthRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUploadAvatarRoute = ApiUploadAvatarRouteImport.update({
+  id: '/api/upload-avatar',
+  path: '/api/upload-avatar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthTherapistIndexRoute = AuthTherapistIndexRouteImport.update({
@@ -56,6 +62,7 @@ const AuthTherapistPatientsPatientIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/patient': typeof AuthPatientIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
@@ -64,6 +71,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/patient': typeof AuthPatientIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
@@ -74,6 +82,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
+  '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/patient/': typeof AuthPatientIndexRoute
   '/_auth/therapist/': typeof AuthTherapistIndexRoute
@@ -84,6 +93,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/api/upload-avatar'
     | '/api/auth/$'
     | '/patient'
     | '/therapist'
@@ -92,6 +102,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/api/upload-avatar'
     | '/api/auth/$'
     | '/patient'
     | '/therapist'
@@ -101,6 +112,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/login'
+    | '/api/upload-avatar'
     | '/api/auth/$'
     | '/_auth/patient/'
     | '/_auth/therapist/'
@@ -111,6 +123,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ApiUploadAvatarRoute: typeof ApiUploadAvatarRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/upload-avatar': {
+      id: '/api/upload-avatar'
+      path: '/api/upload-avatar'
+      fullPath: '/api/upload-avatar'
+      preLoaderRoute: typeof ApiUploadAvatarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/therapist/': {
@@ -186,6 +206,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   LoginRoute: LoginRoute,
+  ApiUploadAvatarRoute: ApiUploadAvatarRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
