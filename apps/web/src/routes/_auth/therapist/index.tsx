@@ -15,7 +15,7 @@ DialogHeader,
 DialogTitle,
 DialogTrigger,
 } from "@/components/ui/dialog";
-import { UserPlus, ChevronRight } from "lucide-react";
+import { UserPlus, ChevronRight, LayoutGrid, List } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 
 export const Route = createFileRoute("/_auth/therapist/")({
@@ -33,6 +33,7 @@ component: TherapistDashboard,
 function TherapistDashboard() {
 const patients = Route.useLoaderData();
 const { user } = Route.useRouteContext();
+const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 const [open, setOpen] = useState(false);
 const [name, setName] = useState("");
 const [email, setEmail] = useState("");
@@ -70,6 +71,23 @@ return (
 <div className="container mx-auto p-6 space-y-6">
 <div className="flex items-center justify-between">
 <h1 className="text-3xl font-bold">Mes patients</h1>
+<div className="flex items-center gap-2">
+<Button
+	variant={viewMode === 'grid' ? 'default' : 'outline'}
+	size="sm"
+	onClick={() => setViewMode('grid')}
+	title="Vue grille"
+>
+	<LayoutGrid className="h-4 w-4" />
+</Button>
+<Button
+	variant={viewMode === 'list' ? 'default' : 'outline'}
+	size="sm"
+	onClick={() => setViewMode('list')}
+	title="Vue liste"
+>
+	<List className="h-4 w-4" />
+</Button>
 <Dialog open={open} onOpenChange={setOpen}>
 <DialogTrigger asChild>
 <Button className="text-secondary-foreground">
@@ -120,6 +138,7 @@ onChange={(e) => setPassword(e.target.value)}
 </DialogContent>
 </Dialog>
 </div>
+</div>
 
 {patients.length === 0 ? (
 <Card>
@@ -128,7 +147,7 @@ Aucun patient pour le moment. Ajoutez votre premier patient.
 </CardContent>
 </Card>
 ) : (
-<div className="grid gap-3">
+<div className={viewMode === 'grid' ? 'grid gap-3 sm:grid-cols-2 lg:grid-cols-3' : 'space-y-3'}>
 {patients.map((patient) => (
 <Link
 key={patient.id}
