@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "turbo dev",
 		"dev:web": "turbo run dev --filter=@revivalmed/web",
+		"dev:landing": "turbo run dev --filter=@revivalmed/landing",
 		"build": "turbo build",
 		"start": "turbo start",
 		"db:migrate": "turbo migrate"
