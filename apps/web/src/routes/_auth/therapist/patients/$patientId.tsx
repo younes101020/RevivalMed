@@ -218,7 +218,7 @@ function PatientDetail() {
 									<div className="flex items-center gap-2">
 										<Badge
 											variant={status === "active" ? "default" : "secondary"}
-											className={status === "completed" ? "text-green-600" : status === "upcoming" ? "text-blue-600" : ""}
+											className={status === "completed" ? "text-primary" : status === "upcoming" ? "text-secondary-foreground" : ""}
 										>
 											{status === "active" ? "En cours" : status === "upcoming" ? "À venir" : "Terminé"}
 										</Badge>
@@ -235,12 +235,11 @@ function PatientDetail() {
 										</Button>
 										<Button
 											size="sm"
-											variant="ghost"
-											className="text-destructive hover:text-destructive"
+											variant="destructive"
 											disabled={deleting === prog.id}
 											onClick={() => handleDelete(prog.id)}
 										>
-											{deleting === prog.id ? "..." : <Trash2 className="h-4 w-4" />}
+											{deleting === prog.id ? "..." : "Supprimer"}
 										</Button>
 									</div>
 								</CardTitle>
@@ -412,7 +411,7 @@ function ProgramDetail({
 								)}
 							</span>
 							{week.completion && (
-								<Badge variant="secondary" className="text-green-600 text-xs">
+								<Badge variant="secondary" className="text-secondary-foreground text-xs">
 									Mission terminée ✓
 								</Badge>
 							)}
