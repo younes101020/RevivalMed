@@ -498,17 +498,15 @@ function ProgramCreator({
 		setError(null);
 
 		// Validate
-		for (let i = 0; i < 16; i++) {
-			if (weeks[i].exercises.size === 0) {
-				setError(`Semaine ${i + 1} : au moins un exercice requis`);
-				setExpandedWeek(i);
-				return;
-			}
-			if (!weeks[i].missionTitle.trim()) {
-				setError(`Semaine ${i + 1} : titre de mission requis`);
-				setExpandedWeek(i);
-				return;
-			}
+		if (weeks[0].exercises.size === 0) {
+			setError("Semaine 1 : au moins un exercice requis");
+			setExpandedWeek(0);
+			return;
+		}
+		if (!weeks[0].missionTitle.trim()) {
+			setError("Semaine 1 : titre de mission requis");
+			setExpandedWeek(0);
+			return;
 		}
 
 		setSaving(true);
