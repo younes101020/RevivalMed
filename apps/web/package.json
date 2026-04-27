@@ -11,7 +11,8 @@
 		"lint": "biome lint",
 		"check": "biome check",
 		"start": "node .output/server/index.mjs",
-		"migrate": "drizzle-kit migrate"
+		"migrate": "drizzle-kit migrate",
+		"seed": "node --experimental-strip-types src/db/seed.ts"
 	},
 	"dependencies": {
 		"@revivalmed/types": "workspace:*",
