@@ -6,8 +6,10 @@
 		"dev": "turbo dev",
 		"dev:web": "turbo run dev --filter=@revivalmed/web",
 		"dev:landing": "turbo run dev --filter=@revivalmed/landing",
-		"build": "turbo build",
-		"start": "turbo start",
+		"build:web": "turbo build --filter=@revivalmed/web",
+		"build:landing": "turbo build --filter=@revivalmed/landing",
+		"start:web": "turbo start --filter=@revivalmed/web",
+		"start:landing": "turbo start --filter=@revivalmed/landing",
 		"db:migrate": "turbo migrate"
 	},
 	"devDependencies": {
