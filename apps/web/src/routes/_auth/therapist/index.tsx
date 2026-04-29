@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
 import { getPatients, createPatient } from "@/lib/therapist";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import {
 Card,
 CardContent,
@@ -47,7 +49,7 @@ e.preventDefault();
 setError(null);
 setPending(true);
 try {
-await createPatient({
+const response = await createPatient({
 data: {
 therapistId: user!.id,
 name,
@@ -59,7 +61,8 @@ setOpen(false);
 setName("");
 setEmail("");
 setPassword("");
-navigate({ to: "/therapist" });
+toast.success(`Patient ${name} créé avec succès.`);
+navigate({ to: "/therapist/patients/$patientId", params: { patientId: response.id } });
 } catch (err) {
 setError(err instanceof Error ? err.message : "Erreur lors de la création");
 } finally {
@@ -171,6 +174,7 @@ className="block"
 ))}
 </div>
 )}
+<Toaster />
 </div>
 );
 }
