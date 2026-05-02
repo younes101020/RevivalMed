@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ExercicesRouteImport } from './routes/exercices'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiUploadAvatarRouteImport } from './routes/api/upload-avatar'
@@ -27,6 +28,11 @@ import { Route as ApiProfileAvatarDeleteServerRouteImport } from './routes/api/p
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExercicesRoute = ExercicesRouteImport.update({
+  id: '/exercices',
+  path: '/exercices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -99,6 +105,7 @@ const ApiProfileAvatarDeleteServerRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/exercices'
     | '/login'
     | '/profile'
     | '/api/upload-avatar'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/exercices'
     | '/login'
     | '/profile'
     | '/api/upload-avatar'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/exercices'
     | '/login'
     | '/_auth/profile'
     | '/api/upload-avatar'
@@ -196,6 +208,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  ExercicesRoute: typeof ExercicesRoute
   LoginRoute: typeof LoginRoute
   ApiUploadAvatarRoute: typeof ApiUploadAvatarRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -211,6 +224,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercices': {
+      id: '/exercices'
+      path: '/exercices'
+      fullPath: '/exercices'
+      preLoaderRoute: typeof ExercicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -350,6 +370,7 @@ const ApiProfileUpdateRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  ExercicesRoute: ExercicesRoute,
   LoginRoute: LoginRoute,
   ApiUploadAvatarRoute: ApiUploadAvatarRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
