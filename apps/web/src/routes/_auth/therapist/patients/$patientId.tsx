@@ -153,40 +153,6 @@ function PatientDetail() {
 
 			<Separator />
 
-			{/* Progress overview */}
-			<section className="space-y-4">
-				<h2 className="text-xl font-semibold">Progression globale</h2>
-				<div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
-					{ALL_EXERCISE_KEYS.map((key) => {
-						const p = progressMap[key];
-						const rating = p?.rating ?? 30;
-						const sessions = p?.sessions ?? 0;
-						return (
-							<Card key={key}>
-								<CardContent className="pt-4 space-y-2">
-									<div className="flex justify-between items-center">
-										<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
-										<Badge variant="secondary" className="text-xs">
-											{sessions} sess.
-										</Badge>
-									</div>
-									<div className="h-2 bg-secondary rounded-full overflow-hidden">
-										<div
-											className="h-full bg-primary transition-all"
-											style={{ width: `${rating}%` }}
-										/>
-									</div>
-									<p className="text-xs text-muted-foreground text-right">{Math.round(rating)}%</p>
-								</CardContent>
-							</Card>
-						);
-					})}
-				</div>
-			</section>
-
-			<Separator />
-
-			{/* Programs section */}
 			<section className="space-y-4">
 				<div className="flex items-center justify-between">
 					<div>
@@ -272,6 +238,36 @@ function PatientDetail() {
 
 			<Separator />
 
+			<section className="space-y-4">
+				<h2 className="text-xl font-semibold">Progression globale</h2>
+				<div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-4">
+					{ALL_EXERCISE_KEYS.map((key) => {
+						const p = progressMap[key];
+						const rating = p?.rating ?? 30;
+						const sessions = p?.sessions ?? 0;
+						return (
+							<Card key={key}>
+								<CardContent className="pt-4 space-y-2">
+									<div className="flex justify-between items-center">
+										<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
+										<Badge variant="secondary" className="text-xs">
+											{sessions} sess.
+										</Badge>
+									</div>
+									<div className="h-2 bg-secondary rounded-full overflow-hidden">
+										<div
+											className="h-full bg-primary transition-all"
+											style={{ width: `${rating}%` }}
+										/>
+									</div>
+									<p className="text-xs text-muted-foreground text-right">{Math.round(rating)}%</p>
+								</CardContent>
+							</Card>
+						);
+					})}
+				</div>
+			</section>
+			<Separator />
 			{/* Observation grids section */}
 			<section className="space-y-4">
 				<div className="flex items-center justify-between">
