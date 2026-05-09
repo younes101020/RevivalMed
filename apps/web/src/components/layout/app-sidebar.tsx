@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouteContext, useNavigate, Link } from "@tanstack/react-router";
-import { LogOut, Activity } from "lucide-react";
+import { LogOut, Activity, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
@@ -38,6 +38,16 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/therapist">
+                    <Users />
+                    <span>Patients</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
