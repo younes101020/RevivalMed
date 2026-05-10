@@ -10,13 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as ExercicesRouteImport } from './routes/exercices'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiUploadAvatarRouteImport } from './routes/api/upload-avatar'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthTherapistIndexRouteImport } from './routes/_auth/therapist/index'
 import { Route as AuthPatientIndexRouteImport } from './routes/_auth/patient/index'
+import { Route as AuthExercicesIndexRouteImport } from './routes/_auth/exercices/index'
 import { Route as ApiProfileUpdateRouteImport } from './routes/api/profile/update'
 import { Route as ApiAuthChangePasswordRouteImport } from './routes/api/auth/change-password'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
@@ -28,11 +28,6 @@ import { Route as ApiProfileAvatarDeleteServerRouteImport } from './routes/api/p
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExercicesRoute = ExercicesRouteImport.update({
-  id: '/exercices',
-  path: '/exercices',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -62,6 +57,11 @@ const AuthTherapistIndexRoute = AuthTherapistIndexRouteImport.update({
 const AuthPatientIndexRoute = AuthPatientIndexRouteImport.update({
   id: '/patient/',
   path: '/patient/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthExercicesIndexRoute = AuthExercicesIndexRouteImport.update({
+  id: '/exercices/',
+  path: '/exercices/',
   getParentRoute: () => AuthRoute,
 } as any)
 const ApiProfileUpdateRoute = ApiProfileUpdateRouteImport.update({
@@ -105,13 +105,13 @@ const ApiProfileAvatarDeleteServerRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
+  '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
@@ -121,13 +121,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
+  '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
@@ -139,13 +139,13 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
-  '/exercices': typeof ExercicesRoute
   '/login': typeof LoginRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
+  '/_auth/exercices/': typeof AuthExercicesIndexRoute
   '/_auth/patient/': typeof AuthPatientIndexRoute
   '/_auth/therapist/': typeof AuthTherapistIndexRoute
   '/_auth/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
@@ -157,13 +157,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/exercices'
     | '/login'
     | '/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
     | '/api/profile/update'
+    | '/exercices'
     | '/patient'
     | '/therapist'
     | '/therapist/patients/$patientId'
@@ -173,13 +173,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/exercices'
     | '/login'
     | '/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
     | '/api/profile/update'
+    | '/exercices'
     | '/patient'
     | '/therapist'
     | '/therapist/patients/$patientId'
@@ -190,13 +190,13 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
-    | '/exercices'
     | '/login'
     | '/_auth/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
     | '/api/profile/update'
+    | '/_auth/exercices/'
     | '/_auth/patient/'
     | '/_auth/therapist/'
     | '/_auth/therapist/patients/$patientId'
@@ -208,7 +208,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
-  ExercicesRoute: typeof ExercicesRoute
   LoginRoute: typeof LoginRoute
   ApiUploadAvatarRoute: typeof ApiUploadAvatarRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -224,13 +223,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/exercices': {
-      id: '/exercices'
-      path: '/exercices'
-      fullPath: '/exercices'
-      preLoaderRoute: typeof ExercicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -273,6 +265,13 @@ declare module '@tanstack/react-router' {
       path: '/patient'
       fullPath: '/patient'
       preLoaderRoute: typeof AuthPatientIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/exercices/': {
+      id: '/_auth/exercices/'
+      path: '/exercices'
+      fullPath: '/exercices'
+      preLoaderRoute: typeof AuthExercicesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/api/profile/update': {
@@ -329,6 +328,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthProfileRoute: typeof AuthProfileRoute
+  AuthExercicesIndexRoute: typeof AuthExercicesIndexRoute
   AuthPatientIndexRoute: typeof AuthPatientIndexRoute
   AuthTherapistIndexRoute: typeof AuthTherapistIndexRoute
   AuthTherapistPatientsPatientIdRoute: typeof AuthTherapistPatientsPatientIdRoute
@@ -336,6 +336,7 @@ interface AuthRouteChildren {
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
+  AuthExercicesIndexRoute: AuthExercicesIndexRoute,
   AuthPatientIndexRoute: AuthPatientIndexRoute,
   AuthTherapistIndexRoute: AuthTherapistIndexRoute,
   AuthTherapistPatientsPatientIdRoute: AuthTherapistPatientsPatientIdRoute,
@@ -370,7 +371,6 @@ const ApiProfileUpdateRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
-  ExercicesRoute: ExercicesRoute,
   LoginRoute: LoginRoute,
   ApiUploadAvatarRoute: ApiUploadAvatarRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
