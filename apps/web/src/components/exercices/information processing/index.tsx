@@ -96,7 +96,7 @@ export function InformationProcessing() {
 	);
 	const level = getLevelFromRating(rating);
 	const config = getInfoProcessingConfig(rating);
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	const handleComplete = (scorePercent: number) =>
 		updateRating("informationProcessing", scorePercent);

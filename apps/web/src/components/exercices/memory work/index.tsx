@@ -15,7 +15,7 @@ import { updateRating } from "@/store/level";
 import { RangerDansLOrdreExercice } from "./exercice";
 
 export function MemoryWork() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	return (
 		<>

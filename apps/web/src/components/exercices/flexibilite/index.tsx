@@ -15,7 +15,7 @@ import { updateRating } from "@/store/level";
 import { FlexibiliteExercice } from "./exercice";
 
 export function Flexibilite() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	return (
 		<>

@@ -22,7 +22,7 @@ import { EventsDescription } from "./components/events-description";
 import { WeeklySchedule } from "./exercice";
 
 export function Planification() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	return (
 		<>

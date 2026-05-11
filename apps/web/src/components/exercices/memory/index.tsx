@@ -75,7 +75,7 @@ function getLevelFromRating(rating: number): number {
 }
 
 export function Memory() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 	const rating = useStore(levelStore, (s) => s.exercises.memory.rating);
 	const level = getLevelFromRating(rating);
 	const config = getMemoryConfig(rating);

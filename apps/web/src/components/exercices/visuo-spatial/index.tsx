@@ -15,7 +15,7 @@ import { updateRating } from "@/store/level";
 import { JeVoisDoubleExercice } from "./exercice";
 
 export function VisiuoSpatial() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	return (
 		<>

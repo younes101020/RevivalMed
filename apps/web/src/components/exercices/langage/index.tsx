@@ -15,7 +15,7 @@ import { updateRating } from "@/store/level";
 import { PetitBacExercice } from "./exercice";
 
 export function Langage() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 	return (
 		<>
 			<CardContent className="space-y-3">

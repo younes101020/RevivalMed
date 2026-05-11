@@ -61,7 +61,7 @@ export function Attention() {
 	const rating = useStore(levelStore, (s) => s.exercises.attention.rating);
 	const level = getLevelFromRating(rating);
 	const config = getAttentionConfig(rating);
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 
 	const handleComplete = (scorePercent: number) =>
 		updateRating("attention", scorePercent);

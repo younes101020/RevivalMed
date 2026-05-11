@@ -54,7 +54,7 @@ function getLevelFromRating(rating: number): number {
 }
 
 export function VitesseTraitement() {
-	const [isFullscreen, setIsFullscreen] = useState(false);
+	const [isFullscreen, setIsFullscreen] = useState(true);
 	const rating = useStore(
 		levelStore,
 		(s) => s.exercises.processingSpeed.rating,
