@@ -20,9 +20,10 @@ import {
 import { Separator } from "../../ui/separator";
 import { EventsDescription } from "./components/events-description";
 import { WeeklySchedule } from "./exercice";
+import { useFullscreen } from "@/hooks/use-fullscreen";
 
 export function Planification() {
-	const [isFullscreen, setIsFullscreen] = useState(true);
+	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
 
 	return (
 		<>
@@ -44,14 +45,14 @@ export function Planification() {
 					<DialogContent
 						className={cn(
 							"rounded-xl max-h-[80vh] overflow-scroll",
-							isFullscreen && "min-w-[90vw] max-h-screen",
+							fullscreenClasses,
 						)}
 					>
 						<Card className="border-none rounded-lg mt-7 px-2">
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => setIsFullscreen(!isFullscreen)}
+								onClick={toggle}
 								className="absolute top-1.5 left-1 opacity-70 transition-opacity hover:opacity-100"
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}

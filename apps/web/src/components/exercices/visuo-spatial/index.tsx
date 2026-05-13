@@ -13,9 +13,10 @@ import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
 import { updateRating } from "@/store/level";
 import { JeVoisDoubleExercice } from "./exercice";
+import { useFullscreen } from "@/hooks/use-fullscreen";
 
 export function VisiuoSpatial() {
-	const [isFullscreen, setIsFullscreen] = useState(true);
+	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
 
 	return (
 		<>
@@ -39,14 +40,14 @@ export function VisiuoSpatial() {
 					<DialogContent
 						className={cn(
 							"rounded-xl max-h-[80vh] overflow-scroll",
-							isFullscreen && "min-w-[90vw] max-h-screen",
+							fullscreenClasses,
 						)}
 					>
 						<Card className="border-none rounded-lg mt-7 px-4">
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => setIsFullscreen(!isFullscreen)}
+								onClick={toggle}
 								className="absolute top-1.5 left-1 opacity-70 transition-opacity hover:opacity-100"
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}

@@ -15,6 +15,7 @@ import {
 } from "../../ui/dialog";
 import { Separator } from "../../ui/separator";
 import { MemoryExerciseForm } from "./form/memory";
+import { useFullscreen } from "@/hooks/use-fullscreen";
 
 type MemoryConfig = {
 	readingTimeSec: number | null;
@@ -75,7 +76,7 @@ function getLevelFromRating(rating: number): number {
 }
 
 export function Memory() {
-	const [isFullscreen, setIsFullscreen] = useState(true);
+	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
 	const rating = useStore(levelStore, (s) => s.exercises.memory.rating);
 	const level = getLevelFromRating(rating);
 	const config = getMemoryConfig(rating);
@@ -110,14 +111,14 @@ export function Memory() {
 					<DialogContent
 						className={cn(
 							"rounded-xl max-h-[80vh] overflow-scroll",
-							isFullscreen && "min-w-[90vw] max-h-screen",
+							fullscreenClasses,
 						)}
 					>
 						<Card className="border-none rounded-lg mt-7">
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={() => setIsFullscreen(!isFullscreen)}
+								onClick={toggle}
 								className="absolute top-1.5 left-1 opacity-70 transition-opacity hover:opacity-100"
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
