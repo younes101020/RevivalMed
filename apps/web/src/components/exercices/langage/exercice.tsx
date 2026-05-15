@@ -16,10 +16,10 @@ const CATEGORIES = [
 
 const VALID_WORDS: Record<string, string[]> = {
     "Fruit": ["pomme", "poire", "pêche", "prune", "clémentine", "cerise", "citron", "cassis", "mûre", "melon", "mangue", "banane", "brugnon"],
-    "Légume": ["poireau", "petit pois", "pomme de terre", "carotte", "chou", "concombre", "maïs", "manioc", "brocoli", "bette"],
-    "Fromage": ["parmesan", "pont-l'évêque", "comté", "camembert", "mimolette", "morbier", "brie", "bleu", "boursin"],
+    "Légume": ["poireau", "petit pois", "pomme de terre", "carotte", "chou", "concombre", "maïs", "manioc", "brocoli", "bette", "mâche", "betterave", "aubergine"],
+    "Fromage": ["parmesan", "pont-l'évêque", "comté", "camembert", "mimolette", "morbier", "brie", "bleu", "boursin", "mozarella", "burrata", "cantal", "chèvre"],
     "Poisson": ["perche", "panga", "cabillaud", "colin", "carpe", "merlan", "maquereau", "mule", "bar", "baudroie", "brème"],
-    "Aromate ou Épice": ["persil", "piment", "poivre", "paprika", "cannelle", "curry", "clou de girofle", "menthe", "muscade", "basilic", "badiane"]
+    "Aromate ou Épice": ["persil", "piment", "poivre", "paprika", "cannelle", "curry", "clou de girofle", "menthe", "muscade", "basilic", "badiane", "moutarde"]
 };
 
 type Answers = Record<string, Record<string, string>>;
