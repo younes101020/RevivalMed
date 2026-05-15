@@ -17,6 +17,7 @@ import { levelStore, updateRating } from "@/store/level";
 import type { AttentionConfig } from "./exercice";
 import { WordSearchExercice } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 function getAttentionConfig(rating: number): AttentionConfig {
 	switch (true) {
@@ -101,45 +102,13 @@ export function Attention() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<AttentionExercise config={config} onComplete={handleComplete} />
+							<Countdown>
+								<WordSearchExercice config={config} onComplete={handleComplete} />
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
-		</>
-	);
-}
-
-function AttentionExercise({
-	config,
-	onComplete,
-}: {
-	config: AttentionConfig;
-	onComplete: (scorePercent: number) => void;
-}) {
-	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
-		setHasStarted(true),
-	);
-
-	return (
-		<>
-			{hasStarted ? (
-				<WordSearchExercice config={config} onComplete={onComplete} />
-			) : (
-				<p className="py-12 text-center">
-					L'exercice va commencer dans
-					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-						{remainingSecond}
-					</span>
-				</p>
-			)}
-			{hasStarted && <Separator className="my-2" />}
-			<DialogClose asChild>
-				<Button type="button" variant="outline" onClick={cancel}>
-					Annuler
-				</Button>
-			</DialogClose>
 		</>
 	);
 }

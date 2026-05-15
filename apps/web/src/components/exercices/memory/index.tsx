@@ -16,6 +16,7 @@ import {
 import { Separator } from "../../ui/separator";
 import { MemoryExerciseForm } from "./form/memory";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 type MemoryConfig = {
 	readingTimeSec: number | null;
@@ -123,7 +124,10 @@ export function Memory() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
+							<Countdown>
+
 							<MemoryExercise config={config} onComplete={handleComplete} />
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>

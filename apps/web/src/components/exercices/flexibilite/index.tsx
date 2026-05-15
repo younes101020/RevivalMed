@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { updateRating } from "@/store/level";
 import { FlexibiliteExercice } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 export function Flexibilite() {
 	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
@@ -57,41 +58,15 @@ export function Flexibilite() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<FlexibiliteExercise />
+							<Countdown>
+								<FlexibiliteExercice
+									onComplete={(s) => updateRating("mentalFlexibility", s)}
+								/>
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
-		</>
-	);
-}
-
-function FlexibiliteExercise() {
-	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
-		setHasStarted(true),
-	);
-
-	return (
-		<>
-			{hasStarted ? (
-				<FlexibiliteExercice
-					onComplete={(s) => updateRating("mentalFlexibility", s)}
-				/>
-			) : (
-				<p className="py-12 text-center">
-					L'exercice va commencer dans
-					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-						{remainingSecond}
-					</span>
-				</p>
-			)}
-			{hasStarted && <Separator className="my-2" />}
-			<DialogClose asChild>
-				<Button type="button" variant="outline" onClick={cancel}>
-					Annuler
-				</Button>
-			</DialogClose>
 		</>
 	);
 }

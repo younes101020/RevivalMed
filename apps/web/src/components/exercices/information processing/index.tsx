@@ -17,6 +17,7 @@ import { levelStore, updateRating } from "@/store/level";
 import type { InfoProcessingConfig } from "./exercice";
 import { SortingExercice } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 function getInfoProcessingConfig(rating: number): InfoProcessingConfig {
 	switch (true) {
@@ -137,48 +138,13 @@ export function InformationProcessing() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<InformationProcessingExercise
-								config={config}
-								onComplete={handleComplete}
-							/>
+							<Countdown>
+								<SortingExercice config={config} onComplete={handleComplete} />
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
-		</>
-	);
-}
-
-function InformationProcessingExercise({
-	config,
-	onComplete,
-}: {
-	config: InfoProcessingConfig;
-	onComplete: (scorePercent: number) => void;
-}) {
-	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
-		setHasStarted(true),
-	);
-
-	return (
-		<>
-			{hasStarted ? (
-				<SortingExercice config={config} onComplete={onComplete} />
-			) : (
-				<p className="py-12 text-center">
-					L'exercice va commencer dans
-					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-						{remainingSecond}
-					</span>
-				</p>
-			)}
-			{hasStarted && <Separator className="my-2" />}
-			<DialogClose asChild>
-				<Button type="button" variant="outline" onClick={cancel}>
-					Annuler
-				</Button>
-			</DialogClose>
 		</>
 	);
 }

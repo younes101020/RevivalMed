@@ -1,19 +1,16 @@
 import { Expand, Shrink } from "lucide-react";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
-import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
 import { updateRating } from "@/store/level";
 import { RangerDansLOrdreExercice } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 export function MemoryWork() {
 	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
@@ -53,41 +50,15 @@ export function MemoryWork() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<MemoryWorkExercise />
+							<Countdown>
+								<RangerDansLOrdreExercice
+									onComplete={(s) => updateRating("workingMemory", s)}
+								/>
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
-		</>
-	);
-}
-
-function MemoryWorkExercise() {
-	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
-		setHasStarted(true),
-	);
-
-	return (
-		<>
-			{hasStarted ? (
-				<RangerDansLOrdreExercice
-					onComplete={(s) => updateRating("workingMemory", s)}
-				/>
-			) : (
-				<p className="py-12 text-center">
-					L'exercice va commencer dans
-					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-						{remainingSecond}
-					</span>
-				</p>
-			)}
-			{hasStarted && <Separator className="my-2" />}
-			<DialogClose asChild>
-				<Button type="button" variant="outline" onClick={cancel}>
-					Annuler
-				</Button>
-			</DialogClose>
 		</>
 	);
 }

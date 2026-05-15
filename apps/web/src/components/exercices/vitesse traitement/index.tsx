@@ -17,6 +17,7 @@ import { levelStore, updateRating } from "@/store/level";
 import type { VitesseConfig } from "./exercice";
 import { VitesseTraitementExercise } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
+import { Countdown } from "@/components/layout/countdown";
 
 function getVitesseConfig(rating: number): VitesseConfig {
 	switch (true) {
@@ -110,45 +111,13 @@ export function VitesseTraitement() {
 							>
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
-							<VitesseTraitementCountdown
-								onComplete={(s) => updateRating("processingSpeed", s)}
-							/>
+							<Countdown>
+								<VitesseTraitementExercise onComplete={(score) => updateRating("processingSpeed", score)} />
+							</Countdown>
 						</Card>
 					</DialogContent>
 				</Dialog>
 			</CardFooter>
-		</>
-	);
-}
-
-function VitesseTraitementCountdown({
-	onComplete,
-}: {
-	onComplete?: (score: number) => void;
-}) {
-	const [hasStarted, setHasStarted] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () => {
-		setHasStarted(true);
-	});
-
-	return (
-		<>
-			{hasStarted ? (
-				<VitesseTraitementExercise onComplete={onComplete} />
-			) : (
-				<p className="py-12 text-center">
-					L'exercice va commencer dans
-					<span className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance pl-2 underline underline-offset-8">
-						{remainingSecond}
-					</span>
-				</p>
-			)}
-			{hasStarted && <Separator className="my-2" />}
-			<DialogClose asChild>
-				<Button type="button" variant="outline" onClick={cancel}>
-					Annuler
-				</Button>
-			</DialogClose>
 		</>
 	);
 }
