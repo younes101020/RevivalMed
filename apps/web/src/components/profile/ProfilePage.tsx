@@ -53,16 +53,16 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 	};
 
 	return (
-		<div className="container max-w-2xl py-8">
+		<div className="container max-w-2xl p-8">
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold">Profile</h1>
-				<p className="text-gray-500 mt-2">Manage your account settings</p>
+				<p className="text-gray-500 mt-2">Gérer vos paramètres de compte</p>
 			</div>
 
 			<Tabs defaultValue="general" className="space-y-6">
 				<TabsList>
 					<TabsTrigger value="general">General</TabsTrigger>
-					<TabsTrigger value="security">Security</TabsTrigger>
+					<TabsTrigger value="security">Sécurité</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="general" className="space-y-6">

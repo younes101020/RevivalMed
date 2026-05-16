@@ -84,13 +84,13 @@ export function PasswordForm({ onSuccess }: PasswordFormProps) {
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Change Password</CardTitle>
-				<CardDescription>Update your password</CardDescription>
+				<CardTitle>Mot de passe</CardTitle>
+				<CardDescription>Mettre à jour votre mot de passe</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-1">
-						<Label htmlFor="currentPassword">Current Password</Label>
+						<Label htmlFor="currentPassword">Mot de passe actuel</Label>
 						<Input
 							id="currentPassword"
 							type="password"
@@ -103,7 +103,7 @@ export function PasswordForm({ onSuccess }: PasswordFormProps) {
 					</div>
 
 					<div className="space-y-1">
-						<Label htmlFor="newPassword">New Password</Label>
+						<Label htmlFor="newPassword">Nouveau mot de passe</Label>
 						<Input
 							id="newPassword"
 							type="password"
@@ -113,11 +113,11 @@ export function PasswordForm({ onSuccess }: PasswordFormProps) {
 							disabled={pending}
 							required
 						/>
-						<p className="text-xs text-gray-500">Must be at least 8 characters</p>
+						<p className="text-xs text-gray-500">Doit contenir au moins 8 caractères</p>
 					</div>
 
 					<div className="space-y-1">
-						<Label htmlFor="confirmPassword">Confirm New Password</Label>
+						<Label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</Label>
 						<Input
 							id="confirmPassword"
 							type="password"
@@ -130,10 +130,10 @@ export function PasswordForm({ onSuccess }: PasswordFormProps) {
 					</div>
 
 					{error && <p className="text-sm text-red-500">{error}</p>}
-					{success && <p className="text-sm text-green-600">Password changed successfully!</p>}
+					{success && <p className="text-sm text-green-600">Mot de passe mis à jour avec succès!</p>}
 
 					<Button type="submit" disabled={pending} className="w-full">
-						{pending ? "Changing..." : "Change Password"}
+						{pending ? "Mis à jour..." : "Changer le mot de passe"}
 					</Button>
 				</form>
 			</CardContent>

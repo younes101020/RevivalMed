@@ -85,13 +85,13 @@ export function ProfileForm({ initialName, initialEmail, onSuccess }: ProfileFor
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>General Information</CardTitle>
-				<CardDescription>Update your name and email address</CardDescription>
+				<CardTitle>Information générale</CardTitle>
+				<CardDescription>Mettre à jour votre nom et votre adresse e-mail</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-1">
-						<Label htmlFor="name">Name</Label>
+						<Label htmlFor="name">Nom</Label>
 						<Input
 							id="name"
 							type="text"

@@ -50,8 +50,8 @@ export function ProfilePictureSection({ src, name, onUploaded, onRemoved }: Prof
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Profile Picture</CardTitle>
-				<CardDescription>Upload or update your profile picture</CardDescription>
+				<CardTitle>Photo de profil</CardTitle>
+				<CardDescription>Uploader ou mettre à jour votre photo de profile</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<AvatarUpload
