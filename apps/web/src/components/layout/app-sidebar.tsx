@@ -38,25 +38,37 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            {user.role === "therapist" && (
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link to="/therapist">
-                      <Users />
-                      <span>Patients</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
+            {user?.role === "therapist" && (
+              <>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/therapist">
+                        <Users />
+                        <span>Patients</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link to="/programmes">
+                        <BookOpen />
+                        <span>Programmes</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </>
             )}
-            {user.role === "patient" && (
+            {user?.role === "patient" && (
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link to="/patient">
                       <BookOpen />
-                      <span>Programme</span>
+                      <span>Parcours</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiUploadAvatarRouteImport } from './routes/api/upload-avatar'
 import { Route as AuthProfileRouteImport } from './routes/_auth/profile'
 import { Route as AuthTherapistIndexRouteImport } from './routes/_auth/therapist/index'
+import { Route as AuthProgrammesIndexRouteImport } from './routes/_auth/programmes/index'
 import { Route as AuthPatientIndexRouteImport } from './routes/_auth/patient/index'
 import { Route as AuthExercicesIndexRouteImport } from './routes/_auth/exercices/index'
 import { Route as ApiProfileUpdateRouteImport } from './routes/api/profile/update'
@@ -52,6 +53,11 @@ const AuthProfileRoute = AuthProfileRouteImport.update({
 const AuthTherapistIndexRoute = AuthTherapistIndexRouteImport.update({
   id: '/therapist/',
   path: '/therapist/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthProgrammesIndexRoute = AuthProgrammesIndexRouteImport.update({
+  id: '/programmes/',
+  path: '/programmes/',
   getParentRoute: () => AuthRoute,
 } as any)
 const AuthPatientIndexRoute = AuthPatientIndexRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
+  '/programmes': typeof AuthProgrammesIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
+  '/programmes': typeof AuthProgrammesIndexRoute
   '/therapist': typeof AuthTherapistIndexRoute
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/_auth/exercices/': typeof AuthExercicesIndexRoute
   '/_auth/patient/': typeof AuthPatientIndexRoute
+  '/_auth/programmes/': typeof AuthProgrammesIndexRoute
   '/_auth/therapist/': typeof AuthTherapistIndexRoute
   '/_auth/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/api/profile/update'
     | '/exercices'
     | '/patient'
+    | '/programmes'
     | '/therapist'
     | '/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/api/profile/update'
     | '/exercices'
     | '/patient'
+    | '/programmes'
     | '/therapist'
     | '/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/api/profile/update'
     | '/_auth/exercices/'
     | '/_auth/patient/'
+    | '/_auth/programmes/'
     | '/_auth/therapist/'
     | '/_auth/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
@@ -258,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/therapist'
       fullPath: '/therapist'
       preLoaderRoute: typeof AuthTherapistIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/programmes/': {
+      id: '/_auth/programmes/'
+      path: '/programmes'
+      fullPath: '/programmes'
+      preLoaderRoute: typeof AuthProgrammesIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/patient/': {
@@ -330,6 +349,7 @@ interface AuthRouteChildren {
   AuthProfileRoute: typeof AuthProfileRoute
   AuthExercicesIndexRoute: typeof AuthExercicesIndexRoute
   AuthPatientIndexRoute: typeof AuthPatientIndexRoute
+  AuthProgrammesIndexRoute: typeof AuthProgrammesIndexRoute
   AuthTherapistIndexRoute: typeof AuthTherapistIndexRoute
   AuthTherapistPatientsPatientIdRoute: typeof AuthTherapistPatientsPatientIdRoute
 }
@@ -338,6 +358,7 @@ const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
   AuthExercicesIndexRoute: AuthExercicesIndexRoute,
   AuthPatientIndexRoute: AuthPatientIndexRoute,
+  AuthProgrammesIndexRoute: AuthProgrammesIndexRoute,
   AuthTherapistIndexRoute: AuthTherapistIndexRoute,
   AuthTherapistPatientsPatientIdRoute: AuthTherapistPatientsPatientIdRoute,
 }
