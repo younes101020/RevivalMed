@@ -45,11 +45,16 @@ export function initLevelStore(
 export function updateRating(
 	exercise: ExerciseKey,
 	scorePercent: number,
-): void {
+) {
+	let isNewHighscore = false;
+
 	levelStore.setState((state) => {
 		const current = state.exercises[exercise];
 		const delta = (scorePercent - 50) * 0.4; // -20 to +20 per session
 		const newRating = Math.min(100, Math.max(0, current.rating + delta));
+
+		isNewHighscore = newRating > current.rating;
+
 		return {
 			...state,
 			exercises: {
@@ -71,4 +76,6 @@ export function updateRating(
 			},
 		});
 	}
+
+	return { isNewHighscore };
 }

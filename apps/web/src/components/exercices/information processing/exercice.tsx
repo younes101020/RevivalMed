@@ -2,8 +2,9 @@ import { useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SharedConfig } from "@/types";
 
-export interface InfoProcessingConfig {
+export interface InfoProcessingConfig extends SharedConfig {
 	sortedItems: string[];
 	instruction: string;
 	hint: string;

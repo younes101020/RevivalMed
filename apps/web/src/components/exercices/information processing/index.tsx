@@ -6,12 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
-import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
 import { levelStore, updateRating } from "@/store/level";
 import type { InfoProcessingConfig } from "./exercice";

@@ -6,18 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
 	Dialog,
-	DialogClose,
 	DialogContent,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
-import { useCountdown } from "@/hooks/countdown";
 import { cn } from "@/lib/utils";
 import { levelStore, updateRating } from "@/store/level";
 import type { AttentionConfig } from "./exercice";
 import { WordSearchExercice } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
 import { Countdown } from "@/components/layout/countdown";
+import { ConfettiComponent } from "@/components/layout/confetti";
 
 function getAttentionConfig(rating: number): AttentionConfig {
 	switch (true) {
@@ -60,14 +58,19 @@ function getLevelFromRating(rating: number): number {
 }
 
 export function Attention() {
+	const [showConfetti, setShowConfetti] = useState(false);
 	const rating = useStore(levelStore, (s) => s.exercises.attention.rating);
 	const level = getLevelFromRating(rating);
 	const config = getAttentionConfig(rating);
 	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
 
-	const handleComplete = (scorePercent: number) =>
-		updateRating("attention", scorePercent);
-
+	const handleComplete = (scorePercent: number) => {
+		const { isNewHighscore } = updateRating("attention", scorePercent);
+		if (isNewHighscore) {
+			setShowConfetti(true);
+			setTimeout(() => setShowConfetti(false), 5000);
+		}
+	}
 	return (
 		<>
 			<CardContent className="space-y-3">
@@ -103,7 +106,7 @@ export function Attention() {
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
 							<Countdown>
-								<WordSearchExercice config={config} onComplete={handleComplete} />
+								<WordSearchExercice config={{ ...config, showConfetti }} onComplete={handleComplete} />
 							</Countdown>
 						</Card>
 					</DialogContent>

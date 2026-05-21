@@ -97,6 +97,7 @@ function formatDate(dateStr: string) {
 
 function PatientDetail() {
 	const { patient, progress, programs: patientPrograms, grids } = Route.useLoaderData();
+	console.log(patientPrograms)
 	const { user } = Route.useRouteContext();
 	const { patientId } = Route.useParams();
 	const router = useRouter();

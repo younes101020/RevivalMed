@@ -25,3 +25,7 @@ export interface LevelState {
 // ─── User domain ──────────────────────────────────────────────────────────────
 
 export type UserRole = "therapist" | "patient";
+
+export type SharedConfig = {
+	showConfetti?: boolean;
+}

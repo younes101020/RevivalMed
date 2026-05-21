@@ -3,4 +3,5 @@ export type {
 	ExerciseRating,
 	LevelState,
 	UserRole,
+	SharedConfig,
 } from "@revivalmed/types";

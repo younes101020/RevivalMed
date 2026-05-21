@@ -2,6 +2,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { SharedConfig } from "@/types";
 
 type Answer = "identique" | "different" | null;
 
@@ -45,7 +46,7 @@ const PAIRS: Pair[] = [
 	{ id: "R15", left: "T", right: "T", correct: "identique" },
 ];
 
-export interface VitesseConfig {
+export interface VitesseConfig extends SharedConfig {
 	pairCount: number;
 	letters: string[];
 	hint: string;

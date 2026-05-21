@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { ConfettiComponent } from "@/components/layout/confetti";
+import { SharedConfig } from "@/types";
 
 type Position = { row: number; col: number };
 type Direction = "horizontal" | "vertical" | "diagonal" | "diagonal-reverse";
@@ -15,7 +17,7 @@ interface WordPlacement {
 	positions: Position[];
 }
 
-export interface AttentionConfig {
+export interface AttentionConfig extends SharedConfig {
 	wordCount: number;
 	gridSize: number;
 	directions: Direction[];
@@ -274,6 +276,9 @@ export function WordSearchExercice({
 	return (
 		<div className="mx-auto space-y-6 relative">
 			<Card className="p-4 md:p-6">
+				{
+					config.showConfetti && <ConfettiComponent />
+				}
 				<div className="flex flex-col md:flex-row items-center justify-between gap-4">
 					<div className="flex items-center gap-4">
 						<div className="text-center">
