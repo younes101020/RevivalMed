@@ -448,9 +448,8 @@ function ProgramCreator({
 	onDone: () => void;
 	onCancel: () => void;
 }) {
-	const tomorrow = new Date();
-	tomorrow.setDate(tomorrow.getDate() + 1);
-	const minDate = tomorrow.toISOString().slice(0, 10);
+	const today = new Date();
+	const minDate = today.toISOString().slice(0, 10);
 
 	const [startDate, setStartDate] = useState(minDate);
 	const [weeks, setWeeks] = useState<WeekFormData[]>(() =>
