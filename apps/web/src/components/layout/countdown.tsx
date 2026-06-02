@@ -27,11 +27,13 @@ export function Countdown({ children }: CountdownProps) {
                 </p>
             )}
             {hasStarted && <Separator className="my-2" />}
-            <DialogClose asChild>
-                <Button type="button" variant="outline" onClick={cancel}>
-                    Annuler
-                </Button>
-            </DialogClose>
+            {!hasStarted && (
+                <DialogClose asChild>
+                    <Button type="button" variant="outline" onClick={cancel}>
+                        Annuler
+                    </Button>
+                </DialogClose>
+            )}
         </>
     );
 }
