@@ -53,7 +53,7 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 	};
 
 	return (
-		<div className="container max-w-2xl p-8">
+		<div className="h-full container mx-auto p-4">
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold">Profile</h1>
 				<p className="text-gray-500 mt-2">Gérer vos paramètres de compte</p>
