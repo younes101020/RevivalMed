@@ -107,6 +107,7 @@ export const getPatientDetail = createServerFn({ method: "GET" })
 		const patientPrograms = await db
 			.select({
 				id: programs.id,
+				name: programs.name,
 				startDate: programs.startDate,
 				createdAt: programs.createdAt,
 			})

@@ -20,9 +20,20 @@ export type WeekInput = {
 	missionCognitiveFunctions: ExerciseKey[];
 };
 
+type ProgramCreationInput = {
+	therapistId: string;
+	patientId?: string;
+	name: string;
+	startDate: string;
+	weeks: WeekInput[];
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-async function verifyTherapistOwnsPatient(therapistId: string, patientId: string) {
+async function verifyTherapistOwnsPatient(
+	therapistId: string,
+	patientId: string,
+) {
 	const link = await db
 		.select({ id: therapistPatients.id })
 		.from(therapistPatients)
@@ -46,87 +57,99 @@ function getWeekDateRange(startDate: string, weekNumber: number) {
 
 // ─── Therapist functions ─────────────────────────────────────────────────────
 
+async function saveProgram({
+	therapistId,
+	patientId,
+	name,
+	startDate,
+	weeks,
+}: ProgramCreationInput) {
+	if (!name.trim()) throw new Error("Le nom du programme est requis");
+	if (weeks.length !== 16) {
+		throw new Error("Un programme doit contenir exactement 16 semaines");
+	}
+	if (weeks[0].exercises.length === 0) {
+		throw new Error("La semaine 1 doit avoir au moins un exercice");
+	}
+	if (!weeks[0].missionTitle.trim()) {
+		throw new Error("La semaine 1 doit avoir une mission");
+	}
+
+	const programId = crypto.randomUUID();
+	const now = new Date();
+	await db.insert(programs).values({
+		id: programId,
+		name: name.trim(),
+		therapistId,
+		patientId: patientId ?? null,
+		startDate,
+		createdAt: now,
+	});
+
+	for (let i = 0; i < weeks.length; i++) {
+		const week = weeks[i];
+		const weekId = crypto.randomUUID();
+		await db.insert(programWeeks).values({
+			id: weekId,
+			programId,
+			weekNumber: i + 1,
+			missionTitle: week.missionTitle,
+			missionDescription: week.missionDescription,
+			missionCognitiveFunctions: week.missionCognitiveFunctions,
+		});
+		for (const ex of week.exercises) {
+			await db.insert(programWeekExercises).values({
+				id: crypto.randomUUID(),
+				programWeekId: weekId,
+				exerciseKey: ex.exerciseKey,
+				difficultyOverride: ex.difficultyOverride,
+			});
+		}
+	}
+
+	return { id: programId };
+}
+
 export const createProgram = createServerFn({ method: "POST" })
 	.inputValidator(
 		(input: {
 			therapistId: string;
 			patientId: string;
+			name: string;
 			startDate: string; // ISO date string YYYY-MM-DD
 			weeks: WeekInput[];
 		}) => input,
 	)
 	.handler(async ({ data }) => {
-		const { therapistId, patientId, startDate, weeks } = data;
+		const { therapistId, patientId, name, startDate, weeks } = data;
 
 		await verifyTherapistOwnsPatient(therapistId, patientId);
-
 		// Validate start date is in the future
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 		const start = new Date(startDate);
 		if (start <= today) {
-			throw new Error("La date de début doit être supérieure à la date actuelle");
+			throw new Error(
+				"La date de début doit être supérieure à la date actuelle",
+			);
 		}
 
-		if (weeks.length !== 16) {
-			throw new Error("Un programme doit contenir exactement 16 semaines");
-		}
-
-		// Only week 1 is required
-		if (weeks[0].exercises.length === 0) {
-			throw new Error("La semaine 1 doit avoir au moins un exercice");
-		}
-		if (!weeks[0].missionTitle.trim()) {
-			throw new Error("La semaine 1 doit avoir une mission");
-		}
-
-		const programId = crypto.randomUUID();
-		const now = new Date();
-
-		await db.insert(programs).values({
-			id: programId,
-			therapistId,
-			patientId,
-			startDate,
-			createdAt: now,
-		});
-
-		for (let i = 0; i < weeks.length; i++) {
-			const week = weeks[i];
-			const weekId = crypto.randomUUID();
-
-			await db.insert(programWeeks).values({
-				id: weekId,
-				programId,
-				weekNumber: i + 1,
-				missionTitle: week.missionTitle,
-				missionDescription: week.missionDescription,
-				missionCognitiveFunctions: week.missionCognitiveFunctions,
-			});
-
-			for (const ex of week.exercises) {
-				await db.insert(programWeekExercises).values({
-					id: crypto.randomUUID(),
-					programWeekId: weekId,
-					exerciseKey: ex.exerciseKey,
-					difficultyOverride: ex.difficultyOverride,
-				});
-			}
-		}
-
-		return { id: programId };
+		return saveProgram({ therapistId, patientId, name, startDate, weeks });
 	});
 
+export const createProgramTemplate = createServerFn({ method: "POST" })
+	.inputValidator((input: Omit<ProgramCreationInput, "patientId">) => input)
+	.handler(({ data }) => saveProgram(data));
+
 export const getProgramsForPatient = createServerFn({ method: "GET" })
-	.inputValidator(
-		(input: { therapistId: string; patientId: string }) => input,
-	)
+	.inputValidator((input: { therapistId: string; patientId: string }) => input)
 	.handler(async ({ data: { therapistId, patientId } }) => {
 		await verifyTherapistOwnsPatient(therapistId, patientId);
 
 		const rows = await db
 			.select({
 				id: programs.id,
+				name: programs.name,
 				startDate: programs.startDate,
 				createdAt: programs.createdAt,
 			})
@@ -143,18 +166,13 @@ export const getProgramsForPatient = createServerFn({ method: "GET" })
 	});
 
 export const getProgram = createServerFn({ method: "GET" })
-	.inputValidator(
-		(input: { therapistId: string; programId: string }) => input,
-	)
+	.inputValidator((input: { therapistId: string; programId: string }) => input)
 	.handler(async ({ data: { therapistId, programId } }) => {
 		const [program] = await db
 			.select()
 			.from(programs)
 			.where(
-				and(
-					eq(programs.id, programId),
-					eq(programs.therapistId, therapistId),
-				),
+				and(eq(programs.id, programId), eq(programs.therapistId, therapistId)),
 			)
 			.limit(1);
 
@@ -211,7 +229,10 @@ export const updateProgramWeek = createServerFn({ method: "POST" })
 		(input: {
 			therapistId: string;
 			programWeekId: string;
-			exercises: { exerciseKey: ExerciseKey; difficultyOverride: number | null }[];
+			exercises: {
+				exerciseKey: ExerciseKey;
+				difficultyOverride: number | null;
+			}[];
 			missionTitle: string;
 			missionDescription: string;
 			missionCognitiveFunctions: ExerciseKey[];
@@ -278,18 +299,13 @@ export const updateProgramWeek = createServerFn({ method: "POST" })
 	});
 
 export const deleteProgram = createServerFn({ method: "POST" })
-	.inputValidator(
-		(input: { therapistId: string; programId: string }) => input,
-	)
+	.inputValidator((input: { therapistId: string; programId: string }) => input)
 	.handler(async ({ data: { therapistId, programId } }) => {
 		const [program] = await db
 			.select({ id: programs.id })
 			.from(programs)
 			.where(
-				and(
-					eq(programs.id, programId),
-					eq(programs.therapistId, therapistId),
-				),
+				and(eq(programs.id, programId), eq(programs.therapistId, therapistId)),
 			)
 			.limit(1);
 

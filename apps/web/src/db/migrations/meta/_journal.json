@@ -29,6 +29,13 @@
       "when": 1776623252630,
       "tag": "0003_slow_swarm",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1785335347091,
+      "tag": "0004_ancient_legion",
+      "breakpoints": true
     }
   ]
 }

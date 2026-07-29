@@ -69,9 +69,9 @@ export const therapistPatients = pgTable("therapist_patients", {
 	therapistId: text("therapist_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
-	patientId: text("patient_id")
-		.notNull()
-		.references(() => user.id, { onDelete: "cascade" }),
+	patientId: text("patient_id").references(() => user.id, {
+		onDelete: "cascade",
+	}),
 	createdAt: timestamp("created_at").notNull(),
 });
 
@@ -90,6 +90,7 @@ export const exerciseProgress = pgTable("exercise_progress", {
 
 export const programs = pgTable("programs", {
 	id: text("id").primaryKey(),
+	name: text("name").notNull(),
 	therapistId: text("therapist_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
@@ -163,6 +164,7 @@ export type ExerciseProgressRow = typeof exerciseProgress.$inferSelect;
 export type ProgramRow = typeof programs.$inferSelect;
 export type ProgramWeekRow = typeof programWeeks.$inferSelect;
 export type ProgramWeekExerciseRow = typeof programWeekExercises.$inferSelect;
-export type ProgramWeekCompletionRow = typeof programWeekCompletions.$inferSelect;
+export type ProgramWeekCompletionRow =
+	typeof programWeekCompletions.$inferSelect;
 export type ObservationGridRow = typeof observationGrids.$inferSelect;
 export type ObservationGridItemRow = typeof observationGridItems.$inferSelect;

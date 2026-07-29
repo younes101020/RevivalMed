@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { CircleHelp, ExternalLink, MapPlus } from "lucide-react";
-import { useState } from "react";
+import { useId, useState } from "react";
 import {
 	Stepper,
 	StepperContent,
@@ -19,6 +19,9 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
 	Tooltip,
@@ -27,13 +30,25 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import {
+	ProgramCreator,
+	type ProgramPreset,
+} from "@/routes/_auth/therapist/patients/$patientId";
 
 export const Route = createFileRoute("/_auth/programmes/")({
+	beforeLoad: ({ context }) => {
+		if (context.user?.role !== "therapist") {
+			throw redirect({ to: "/patient" });
+		}
+	},
 	component: RouteComponent,
 });
 
 function RouteComponent() {
+	const { user } = Route.useRouteContext();
+	const router = useRouter();
 	const [open, setOpen] = useState(false);
+	if (!user) return null;
 	return (
 		<div className="container mx-auto p-8 space-y-6">
 			<div className="mb-8">
@@ -46,11 +61,19 @@ function RouteComponent() {
 								Créer mon programme
 							</Button>
 						</DialogTrigger>
-						<DialogContent className="max-w-xl">
+						<DialogContent className="flex h-[90vh] w-[calc(100vw-2rem)] max-w-4xl flex-col overflow-hidden">
 							<DialogHeader>
 								<DialogTitle>Nouveau Programme</DialogTitle>
 							</DialogHeader>
-							<ProgramPattern />
+							<ScrollArea className="min-h-0 flex-1 rounded-xl bg-card p-4">
+								<ProgramPattern
+									therapistId={user.id}
+									onDone={() => {
+										setOpen(false);
+										router.invalidate();
+									}}
+								/>
+							</ScrollArea>
 						</DialogContent>
 					</Dialog>
 				</div>
@@ -71,7 +94,7 @@ function RouteComponent() {
 
 const steps = [1, 2];
 
-type ProgramType = "crt" | "recos" | "personalized";
+type ProgramType = ProgramPreset;
 
 const programTypes: Array<{
 	value: ProgramType;
@@ -110,9 +133,17 @@ const programTypes: Array<{
 	},
 ];
 
-function ProgramPattern() {
+function ProgramPattern({
+	therapistId,
+	onDone,
+}: {
+	therapistId: string;
+	onDone: () => void;
+}) {
 	const [activeStep, setActiveStep] = useState(1);
 	const [programType, setProgramType] = useState<ProgramType | null>(null);
+	const [programName, setProgramName] = useState("");
+	const programNameId = useId();
 
 	return (
 		<Stepper
@@ -138,6 +169,17 @@ function ProgramPattern() {
 					<StepperContent key={step} value={step} className="space-y-5">
 						{step === 1 ? (
 							<>
+								<div>
+									<Label htmlFor={programNameId}>Nom du programme</Label>
+									<Input
+										id={programNameId}
+										className="mt-2"
+										placeholder="Ex. Programme mémoire"
+										value={programName}
+										onChange={(event) => setProgramName(event.target.value)}
+									/>
+								</div>
+
 								<div>
 									<h2 className="font-semibold">
 										Choisissez le type de programme
@@ -216,7 +258,7 @@ function ProgramPattern() {
 
 								<div className="flex justify-end">
 									<Button
-										disabled={!programType}
+										disabled={!programType || !programName.trim()}
 										onClick={() => setActiveStep(2)}
 									>
 										Continuer
@@ -224,9 +266,18 @@ function ProgramPattern() {
 								</div>
 							</>
 						) : (
-							<div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-								Les paramètres du programme {programType?.toUpperCase()} seront
-								configurés à cette étape.
+							<div className="space-y-4">
+								{programType && (
+									<ProgramCreator
+										key={`${programType}-${programName}`}
+										therapistId={therapistId}
+										programName={programName}
+										preset={programType}
+										scrollableWeeks
+										onDone={onDone}
+										onCancel={() => setActiveStep(1)}
+									/>
+								)}
 							</div>
 						)}
 					</StepperContent>

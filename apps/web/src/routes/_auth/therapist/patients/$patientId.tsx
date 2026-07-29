@@ -1,6 +1,17 @@
-import { Link, createFileRoute, redirect, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronUp, Copy, Trash2 } from "lucide-react";
+import {
+	Link,
+	createFileRoute,
+	redirect,
+	useRouter,
+} from "@tanstack/react-router";
+import { type ReactNode, useId, useState } from "react";
+import {
+	ChevronDown,
+	ChevronLeft,
+	ChevronUp,
+	Copy,
+	Trash2,
+} from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,9 +19,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	createProgram,
+	createProgramTemplate,
 	deleteProgram,
 	getProgram,
 	type WeekInput,
@@ -73,7 +86,9 @@ function emptyWeek(): WeekFormData {
 	};
 }
 
-function getProgramStatus(startDate: string): "upcoming" | "active" | "completed" {
+function getProgramStatus(
+	startDate: string,
+): "upcoming" | "active" | "completed" {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 	const start = new Date(startDate);
@@ -96,8 +111,13 @@ function formatDate(dateStr: string) {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 function PatientDetail() {
-	const { patient, progress, programs: patientPrograms, grids } = Route.useLoaderData();
-	console.log(patientPrograms)
+	const {
+		patient,
+		progress,
+		programs: patientPrograms,
+		grids,
+	} = Route.useLoaderData();
+	console.log(patientPrograms);
 	const { user } = Route.useRouteContext();
 	const { patientId } = Route.useParams();
 	const router = useRouter();
@@ -159,16 +179,21 @@ function PatientDetail() {
 					<div>
 						<h2 className="text-xl font-semibold">Programmes</h2>
 						<p className="text-sm text-muted-foreground">
-							Chaque programme couvre 16 semaines avec des exercices et une mission par semaine.
+							Chaque programme couvre 16 semaines avec des exercices et une
+							mission par semaine.
 						</p>
 					</div>
 					{!showCreator && (
-						<Button onClick={() => setShowCreator(true)}>Nouveau programme</Button>
+						<Button onClick={() => setShowCreator(true)}>
+							Nouveau programme
+						</Button>
 					)}
 				</div>
 
 				{patientPrograms.length === 0 && !showCreator && (
-					<p className="text-sm text-muted-foreground">Aucun programme créé pour l'instant.</p>
+					<p className="text-sm text-muted-foreground">
+						Aucun programme créé pour l'instant.
+					</p>
 				)}
 
 				{patientPrograms.map((prog) => {
@@ -180,14 +205,27 @@ function PatientDetail() {
 							<CardHeader className="pb-2">
 								<CardTitle className="text-base flex items-center justify-between gap-2">
 									<span>
-										{formatDate(prog.startDate)} → {formatDate(endDate.toISOString().slice(0, 10))}
+										{prog.name}
+										<span className="mx-2 text-muted-foreground">·</span>
+										{formatDate(prog.startDate)} →{" "}
+										{formatDate(endDate.toISOString().slice(0, 10))}
 									</span>
 									<div className="flex items-center gap-2">
 										<Badge
 											variant={status === "active" ? "default" : "secondary"}
-											className={status === "completed" ? "text-primary" : status === "upcoming" ? "text-secondary-foreground" : ""}
+											className={
+												status === "completed"
+													? "text-primary"
+													: status === "upcoming"
+														? "text-secondary-foreground"
+														: ""
+											}
 										>
-											{status === "active" ? "En cours" : status === "upcoming" ? "À venir" : "Terminé"}
+											{status === "active"
+												? "En cours"
+												: status === "upcoming"
+													? "À venir"
+													: "Terminé"}
 										</Badge>
 										<Button
 											size="sm"
@@ -250,7 +288,9 @@ function PatientDetail() {
 							<Card key={key}>
 								<CardContent className="pt-4 space-y-2">
 									<div className="flex justify-between items-center">
-										<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
+										<span className="text-sm font-medium">
+											{EXERCISE_LABELS[key]}
+										</span>
 										<Badge variant="secondary" className="text-xs">
 											{sessions} sess.
 										</Badge>
@@ -261,7 +301,9 @@ function PatientDetail() {
 											style={{ width: `${rating}%` }}
 										/>
 									</div>
-									<p className="text-xs text-muted-foreground text-right">{Math.round(rating)}%</p>
+									<p className="text-xs text-muted-foreground text-right">
+										{Math.round(rating)}%
+									</p>
 								</CardContent>
 							</Card>
 						);
@@ -279,12 +321,16 @@ function PatientDetail() {
 						</p>
 					</div>
 					{!showGridCreator && (
-						<Button onClick={() => setShowGridCreator(true)}>Nouvelle grille</Button>
+						<Button onClick={() => setShowGridCreator(true)}>
+							Nouvelle grille
+						</Button>
 					)}
 				</div>
 
 				{grids.length === 0 && !showGridCreator && (
-					<p className="text-sm text-muted-foreground">Aucune grille d'observation pour l'instant.</p>
+					<p className="text-sm text-muted-foreground">
+						Aucune grille d'observation pour l'instant.
+					</p>
 				)}
 
 				{grids.map((grid) => (
@@ -311,12 +357,18 @@ function PatientDetail() {
 										disabled={deletingGrid === grid.id}
 										onClick={() => handleDeleteGrid(grid.id)}
 									>
-										{deletingGrid === grid.id ? "..." : <Trash2 className="h-4 w-4" />}
+										{deletingGrid === grid.id ? (
+											"..."
+										) : (
+											<Trash2 className="h-4 w-4" />
+										)}
 									</Button>
 								</div>
 							</CardTitle>
 							{grid.globalComment && (
-								<p className="text-sm text-muted-foreground line-clamp-2">{grid.globalComment}</p>
+								<p className="text-sm text-muted-foreground line-clamp-2">
+									{grid.globalComment}
+								</p>
 							)}
 						</CardHeader>
 						{viewingGridId === grid.id && (
@@ -352,7 +404,11 @@ function ProgramDetail({
 	therapistId,
 	programId,
 	startDate,
-}: { therapistId: string; programId: string; startDate: string }) {
+}: {
+	therapistId: string;
+	programId: string;
+	startDate: string;
+}) {
 	const [data, setData] = useState<Awaited<
 		ReturnType<typeof getProgram>
 	> | null>(null);
@@ -377,16 +433,18 @@ function ProgramDetail({
 		load();
 	}
 
-	if (loading) return <p className="text-sm text-muted-foreground py-2">Chargement…</p>;
+	if (loading)
+		return <p className="text-sm text-muted-foreground py-2">Chargement…</p>;
 	if (error) return <p className="text-sm text-destructive py-2">{error}</p>;
 	if (!data) return null;
 
 	const today = new Date();
 	const start = new Date(startDate);
 	const diffMs = today.getTime() - start.getTime();
-	const currentWeek = start <= today
-		? Math.min(16, Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)) + 1)
-		: 0;
+	const currentWeek =
+		start <= today
+			? Math.min(16, Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)) + 1)
+			: 0;
 
 	return (
 		<div className="space-y-3">
@@ -408,7 +466,10 @@ function ProgramDetail({
 								)}
 							</span>
 							{week.completion && (
-								<Badge variant="secondary" className="text-secondary-foreground text-xs">
+								<Badge
+									variant="secondary"
+									className="text-secondary-foreground text-xs"
+								>
 									Mission terminée ✓
 								</Badge>
 							)}
@@ -417,7 +478,8 @@ function ProgramDetail({
 							{week.exercises.map((ex) => (
 								<Badge key={ex.id} variant="outline" className="text-xs">
 									{EXERCISE_LABELS[ex.exerciseKey as ExerciseKey]}
-									{ex.difficultyOverride != null && ` (${ex.difficultyOverride}%)`}
+									{ex.difficultyOverride != null &&
+										` (${ex.difficultyOverride}%)`}
 								</Badge>
 							))}
 						</div>
@@ -425,7 +487,9 @@ function ProgramDetail({
 							<span className="font-medium">Mission :</span>{" "}
 							<span className="text-muted-foreground">{week.missionTitle}</span>
 							{week.missionDescription && (
-								<p className="text-xs text-muted-foreground mt-1">{week.missionDescription}</p>
+								<p className="text-xs text-muted-foreground mt-1">
+									{week.missionDescription}
+								</p>
 							)}
 						</div>
 					</div>
@@ -437,14 +501,60 @@ function ProgramDetail({
 
 // ─── Program creator ─────────────────────────────────────────────────────────
 
-function ProgramCreator({
+export type ProgramPreset = "crt" | "recos" | "personalized";
+
+function WeeksContainer({
+	scrollable,
+	children,
+}: {
+	scrollable: boolean;
+	children: ReactNode;
+}) {
+	if (!scrollable) return <div className="space-y-2">{children}</div>;
+	return (
+		<ScrollArea className="max-h-[45vh] pr-3">
+			<div className="space-y-2">{children}</div>
+		</ScrollArea>
+	);
+}
+
+function presetWeek(preset: ProgramPreset, weekNumber: number): WeekFormData {
+	if (preset === "personalized") return emptyWeek();
+
+	const exercises: ExerciseKey[] =
+		preset === "crt"
+			? ["attention", "workingMemory", "mentalFlexibility"]
+			: ["memory", "attention", "planning"];
+	const title =
+		preset === "crt"
+			? "Entraînement cognitif CRT"
+			: "Entraînement cognitif RECOS";
+
+	return {
+		exercises: new Set(exercises),
+		overrides: {},
+		missionTitle: `${title} — semaine ${weekNumber}`,
+		missionDescription: "",
+		missionCognitiveFunctions: exercises,
+	};
+}
+
+export function ProgramCreator({
 	therapistId,
 	patientId,
+	programName = "",
+	preset = "personalized",
+	showNameInput = !programName,
+	scrollableWeeks = false,
 	onDone,
 	onCancel,
 }: {
 	therapistId: string;
-	patientId: string;
+	patientId?: string;
+	programName?: string;
+	preset?: ProgramPreset;
+	showNameInput?: boolean;
+	scrollableWeeks?: boolean;
 	onDone: () => void;
 	onCancel: () => void;
 }) {
@@ -452,14 +562,20 @@ function ProgramCreator({
 	const minDate = today.toISOString().slice(0, 10);
 
 	const [startDate, setStartDate] = useState(minDate);
+	const [name, setName] = useState(programName);
 	const [weeks, setWeeks] = useState<WeekFormData[]>(() =>
-		Array.from({ length: 16 }, () => emptyWeek()),
+		Array.from({ length: 16 }, (_, index) => presetWeek(preset, index + 1)),
 	);
 	const [expandedWeek, setExpandedWeek] = useState<number | null>(0);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const startDateId = useId();
+	const programNameId = useId();
 
-	const updateWeek = (index: number, updater: (w: WeekFormData) => WeekFormData) => {
+	const updateWeek = (
+		index: number,
+		updater: (w: WeekFormData) => WeekFormData,
+	) => {
 		setWeeks((prev) => prev.map((w, i) => (i === index ? updater(w) : w)));
 	};
 
@@ -492,6 +608,10 @@ function ProgramCreator({
 
 	const handleSubmit = async () => {
 		setError(null);
+		if (!name.trim()) {
+			setError("Le nom du programme est requis");
+			return;
+		}
 
 		// Validate
 		if (weeks[0].exercises.size === 0) {
@@ -520,14 +640,17 @@ function ProgramCreator({
 				missionCognitiveFunctions: w.missionCognitiveFunctions,
 			}));
 
-			await createProgram({
-				data: {
-					therapistId,
-					patientId,
-					startDate,
-					weeks: weekInputs,
-				},
-			});
+			const data = {
+				therapistId,
+				name: name.trim(),
+				startDate,
+				weeks: weekInputs,
+			};
+			if (patientId) {
+				await createProgram({ data: { ...data, patientId } });
+			} else {
+				await createProgramTemplate({ data });
+			}
 			onDone();
 		} catch (e) {
 			setError(e instanceof Error ? e.message : "Erreur lors de la création");
@@ -540,18 +663,30 @@ function ProgramCreator({
 		<Card>
 			<CardHeader>
 				<CardTitle className="text-lg flex items-center justify-between">
-					Nouveau programme (16 semaines)
+					{`${name || "Nouveau programme"} (16 semaines)`}
 					<Button variant="ghost" size="sm" onClick={onCancel}>
 						Annuler
 					</Button>
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
+				{showNameInput && (
+					<div className="space-y-1 max-w-xs">
+						<Label htmlFor={programNameId}>Nom du programme</Label>
+						<Input
+							id={programNameId}
+							value={name}
+							onChange={(event) => setName(event.target.value)}
+							placeholder="Ex. Programme mémoire"
+						/>
+					</div>
+				)}
+
 				{/* Start date */}
 				<div className="space-y-1 max-w-xs">
-					<Label htmlFor="start-date">Date de début</Label>
+					<Label htmlFor={startDateId}>Date de début</Label>
 					<Input
-						id="start-date"
+						id={startDateId}
 						type="date"
 						min={minDate}
 						value={startDate}
@@ -562,7 +697,7 @@ function ProgramCreator({
 				<Separator />
 
 				{/* Weeks */}
-				<div className="space-y-2">
+				<WeeksContainer scrollable={scrollableWeeks}>
 					{weeks.map((week, idx) => {
 						const isExpanded = expandedWeek === idx;
 						const exerciseCount = week.exercises.size;
@@ -576,7 +711,9 @@ function ProgramCreator({
 									onClick={() => setExpandedWeek(isExpanded ? null : idx)}
 								>
 									<div className="flex items-center gap-2">
-										<span className="font-medium text-sm">Semaine {idx + 1}</span>
+										<span className="font-medium text-sm">
+											Semaine {idx + 1}
+										</span>
 										{exerciseCount > 0 && (
 											<Badge variant="secondary" className="text-xs">
 												{exerciseCount} exercice{exerciseCount > 1 ? "s" : ""}
@@ -658,7 +795,9 @@ function ProgramCreator({
 										<div className="space-y-3">
 											<Label className="text-sm">Mission de la semaine</Label>
 											<div className="space-y-1">
-												<Label className="text-xs text-muted-foreground">Titre</Label>
+												<Label className="text-xs text-muted-foreground">
+													Titre
+												</Label>
 												<Input
 													value={week.missionTitle}
 													onChange={(e) =>
@@ -699,7 +838,9 @@ function ProgramCreator({
 															<input
 																type="checkbox"
 																className="accent-primary h-3.5 w-3.5"
-																checked={week.missionCognitiveFunctions.includes(key)}
+																checked={week.missionCognitiveFunctions.includes(
+																	key,
+																)}
 																onChange={() =>
 																	updateWeek(idx, (w) => ({
 																		...w,
@@ -708,10 +849,7 @@ function ProgramCreator({
 																				? w.missionCognitiveFunctions.filter(
 																						(k) => k !== key,
 																					)
-																				: [
-																						...w.missionCognitiveFunctions,
-																						key,
-																					],
+																				: [...w.missionCognitiveFunctions, key],
 																	}))
 																}
 															/>
@@ -726,7 +864,7 @@ function ProgramCreator({
 							</div>
 						);
 					})}
-				</div>
+				</WeeksContainer>
 
 				{error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -750,7 +888,10 @@ const SCORE_LABELS = ["", "Très faible", "Faible", "Moyen", "Bon", "Excellent"]
 function ObservationGridDetail({
 	therapistId,
 	gridId,
-}: { therapistId: string; gridId: string }) {
+}: {
+	therapistId: string;
+	gridId: string;
+}) {
 	const [data, setData] = useState<Awaited<
 		ReturnType<typeof getObservationGrid>
 	> | null>(null);
@@ -761,7 +902,9 @@ function ObservationGridDetail({
 		if (data) return;
 		setLoading(true);
 		try {
-			const result = await getObservationGrid({ data: { therapistId, gridId } });
+			const result = await getObservationGrid({
+				data: { therapistId, gridId },
+			});
 			setData(result);
 		} catch (e) {
 			setError(e instanceof Error ? e.message : "Erreur");
@@ -774,7 +917,8 @@ function ObservationGridDetail({
 		load();
 	}
 
-	if (loading) return <p className="text-sm text-muted-foreground py-2">Chargement…</p>;
+	if (loading)
+		return <p className="text-sm text-muted-foreground py-2">Chargement…</p>;
 	if (error) return <p className="text-sm text-destructive py-2">{error}</p>;
 	if (!data) return null;
 
@@ -786,7 +930,9 @@ function ObservationGridDetail({
 				return (
 					<div key={key} className="border rounded-lg p-3 space-y-1">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-medium">{EXERCISE_LABELS[key]}</span>
+							<span className="text-sm font-medium">
+								{EXERCISE_LABELS[key]}
+							</span>
 							<div className="flex items-center gap-1.5">
 								{[1, 2, 3, 4, 5].map((s) => (
 									<div
@@ -814,7 +960,9 @@ function ObservationGridDetail({
 			{data.globalComment && (
 				<div className="border-t pt-3 mt-3">
 					<span className="text-sm font-medium">Commentaire global</span>
-					<p className="text-sm text-muted-foreground mt-1">{data.globalComment}</p>
+					<p className="text-sm text-muted-foreground mt-1">
+						{data.globalComment}
+					</p>
 				</div>
 			)}
 		</div>
@@ -873,11 +1021,13 @@ function ObservationGridCreator({
 
 		setSaving(true);
 		try {
-			const items: ObservationGridItemInput[] = ALL_EXERCISE_KEYS.map((key) => ({
-				cognitiveFunction: key,
-				score: scores[key].score,
-				comment: scores[key].comment || undefined,
-			}));
+			const items: ObservationGridItemInput[] = ALL_EXERCISE_KEYS.map(
+				(key) => ({
+					cognitiveFunction: key,
+					score: scores[key].score,
+					comment: scores[key].comment || undefined,
+				}),
+			);
 
 			await createObservationGrid({
 				data: {
@@ -909,7 +1059,9 @@ function ObservationGridCreator({
 				{ALL_EXERCISE_KEYS.map((key) => (
 					<div key={key} className="space-y-2 border rounded-lg p-3">
 						<div className="flex items-center justify-between">
-							<Label className="text-sm font-medium">{EXERCISE_LABELS[key]}</Label>
+							<Label className="text-sm font-medium">
+								{EXERCISE_LABELS[key]}
+							</Label>
 							<div className="flex items-center gap-1">
 								{[1, 2, 3, 4, 5].map((s) => (
 									<button
