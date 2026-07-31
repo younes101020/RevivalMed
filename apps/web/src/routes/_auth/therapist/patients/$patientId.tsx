@@ -15,7 +15,13 @@ import {
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -512,7 +518,7 @@ function WeeksContainer({
 }) {
 	if (!scrollable) return <div className="space-y-2">{children}</div>;
 	return (
-		<ScrollArea className="max-h-[45vh] pr-3">
+		<ScrollArea className="min-h-0 flex-1 pr-3">
 			<div className="space-y-2">{children}</div>
 		</ScrollArea>
 	);
@@ -546,6 +552,7 @@ export function ProgramCreator({
 	preset = "personalized",
 	showNameInput = !programName,
 	scrollableWeeks = false,
+	variant = "patient",
 	onDone,
 	onCancel,
 }: {
@@ -555,6 +562,7 @@ export function ProgramCreator({
 	preset?: ProgramPreset;
 	showNameInput?: boolean;
 	scrollableWeeks?: boolean;
+	variant?: "patient" | "template";
 	onDone: () => void;
 	onCancel: () => void;
 }) {
@@ -566,11 +574,31 @@ export function ProgramCreator({
 	const [weeks, setWeeks] = useState<WeekFormData[]>(() =>
 		Array.from({ length: 16 }, (_, index) => presetWeek(preset, index + 1)),
 	);
+	const [weekCount, setWeekCount] = useState(16);
 	const [expandedWeek, setExpandedWeek] = useState<number | null>(0);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const startDateId = useId();
 	const programNameId = useId();
+	const weekCountId = useId();
+	const isTemplate = variant === "template";
+
+	const updateWeekCount = (nextCount: number) => {
+		const count = Math.min(52, Math.max(1, nextCount));
+		setWeekCount(count);
+		setWeeks((currentWeeks) => {
+			if (count <= currentWeeks.length) return currentWeeks.slice(0, count);
+			return [
+				...currentWeeks,
+				...Array.from({ length: count - currentWeeks.length }, (_, index) =>
+					presetWeek(preset, currentWeeks.length + index + 1),
+				),
+			];
+		});
+		setExpandedWeek((current) =>
+			current !== null && current >= count ? count - 1 : current,
+		);
+	};
 
 	const updateWeek = (
 		index: number,
@@ -660,16 +688,22 @@ export function ProgramCreator({
 	};
 
 	return (
-		<Card>
+		<Card className={scrollableWeeks ? "min-h-0 flex-1" : undefined}>
 			<CardHeader>
 				<CardTitle className="text-lg flex items-center justify-between">
-					{`${name || "Nouveau programme"} (16 semaines)`}
+					{`${name || "Nouveau programme"} (${weeks.length} semaines)`}
 					<Button variant="ghost" size="sm" onClick={onCancel}>
 						Annuler
 					</Button>
 				</CardTitle>
 			</CardHeader>
-			<CardContent className="space-y-4">
+			<CardContent
+				className={
+					scrollableWeeks
+						? "flex min-h-0 flex-1 flex-col space-y-4"
+						: "space-y-4"
+				}
+			>
 				{showNameInput && (
 					<div className="space-y-1 max-w-xs">
 						<Label htmlFor={programNameId}>Nom du programme</Label>
@@ -682,16 +716,34 @@ export function ProgramCreator({
 					</div>
 				)}
 
-				{/* Start date */}
-				<div className="space-y-1 max-w-xs">
-					<Label htmlFor={startDateId}>Date de début</Label>
-					<Input
-						id={startDateId}
-						type="date"
-						min={minDate}
-						value={startDate}
-						onChange={(e) => setStartDate(e.target.value)}
-					/>
+				<div className={isTemplate ? "flex items-end gap-4" : undefined}>
+					{!isTemplate && (
+						<div className="space-y-1 max-w-xs">
+							<Label htmlFor={startDateId}>Date de début</Label>
+							<Input
+								id={startDateId}
+								type="date"
+								min={minDate}
+								value={startDate}
+								onChange={(e) => setStartDate(e.target.value)}
+							/>
+						</div>
+					)}
+					{isTemplate && (
+						<div className="space-y-1 w-44">
+							<Label htmlFor={weekCountId}>Nombre de semaines</Label>
+							<Input
+								id={weekCountId}
+								type="number"
+								min={1}
+								max={52}
+								value={weekCount}
+								onChange={(event) =>
+									updateWeekCount(Number(event.target.value))
+								}
+							/>
+						</div>
+					)}
 				</div>
 
 				<Separator />
@@ -868,15 +920,27 @@ export function ProgramCreator({
 
 				{error && <p className="text-sm text-destructive">{error}</p>}
 
-				<div className="flex justify-end gap-2">
+				{!isTemplate && (
+					<div className="flex justify-end gap-2">
+						<Button variant="outline" onClick={onCancel}>
+							Annuler
+						</Button>
+						<Button disabled={saving} onClick={handleSubmit}>
+							{saving ? "Création…" : "Créer le programme"}
+						</Button>
+					</div>
+				)}
+			</CardContent>
+			{isTemplate && (
+				<CardFooter className="mt-auto flex justify-end gap-2 border-t">
 					<Button variant="outline" onClick={onCancel}>
 						Annuler
 					</Button>
 					<Button disabled={saving} onClick={handleSubmit}>
 						{saving ? "Création…" : "Créer le programme"}
 					</Button>
-				</div>
-			</CardContent>
+				</CardFooter>
+			)}
 		</Card>
 	);
 }

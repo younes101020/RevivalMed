@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
 	Tooltip,
@@ -61,11 +60,11 @@ function RouteComponent() {
 								Créer mon programme
 							</Button>
 						</DialogTrigger>
-						<DialogContent className="flex h-[90vh] w-[calc(100vw-2rem)] max-w-4xl flex-col overflow-hidden">
+						<DialogContent className="flex h-[90vh] w-[calc(100vw-2rem)] max-w-6xl flex-col overflow-hidden">
 							<DialogHeader>
 								<DialogTitle>Nouveau Programme</DialogTitle>
 							</DialogHeader>
-							<ScrollArea className="min-h-0 flex-1 rounded-xl bg-card p-4">
+							<div className="min-h-0 flex-1 rounded-xl bg-card p-4">
 								<ProgramPattern
 									therapistId={user.id}
 									onDone={() => {
@@ -73,7 +72,7 @@ function RouteComponent() {
 										router.invalidate();
 									}}
 								/>
-							</ScrollArea>
+							</div>
 						</DialogContent>
 					</Dialog>
 				</div>
@@ -147,7 +146,7 @@ function ProgramPattern({
 
 	return (
 		<Stepper
-			className="w-full space-y-8"
+			className="flex h-full min-h-0 w-full flex-col gap-8"
 			value={activeStep}
 			onValueChange={setActiveStep}
 		>
@@ -164,9 +163,16 @@ function ProgramPattern({
 				))}
 			</StepperNav>
 
-			<StepperPanel className="text-sm">
+			<StepperPanel className="flex min-h-0 flex-1 flex-col text-sm">
 				{steps.map((step) => (
-					<StepperContent key={step} value={step} className="space-y-5">
+					<StepperContent
+						key={step}
+						value={step}
+						className={cn(
+							"space-y-5",
+							step === 2 && "flex min-h-0 flex-1 flex-col",
+						)}
+					>
 						{step === 1 ? (
 							<>
 								<div>
@@ -266,7 +272,7 @@ function ProgramPattern({
 								</div>
 							</>
 						) : (
-							<div className="space-y-4">
+							<div className="flex min-h-0 flex-1">
 								{programType && (
 									<ProgramCreator
 										key={`${programType}-${programName}`}
@@ -274,6 +280,7 @@ function ProgramPattern({
 										programName={programName}
 										preset={programType}
 										scrollableWeeks
+										variant="template"
 										onDone={onDone}
 										onCancel={() => setActiveStep(1)}
 									/>
