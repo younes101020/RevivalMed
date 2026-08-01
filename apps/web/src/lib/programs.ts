@@ -26,6 +26,7 @@ type ProgramCreationInput = {
 	name: string;
 	startDate: string;
 	weeks: WeekInput[];
+	lifeObjectives?: string[];
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -63,6 +64,7 @@ async function saveProgram({
 	name,
 	startDate,
 	weeks,
+	lifeObjectives = [],
 }: ProgramCreationInput) {
 	if (!name.trim()) throw new Error("Le nom du programme est requis");
 	if (weeks.length !== 16) {
@@ -82,6 +84,7 @@ async function saveProgram({
 		name: name.trim(),
 		therapistId,
 		patientId: patientId ?? null,
+		lifeObjectives,
 		startDate,
 		createdAt: now,
 	});
@@ -118,10 +121,18 @@ export const createProgram = createServerFn({ method: "POST" })
 			name: string;
 			startDate: string; // ISO date string YYYY-MM-DD
 			weeks: WeekInput[];
+			lifeObjectives: string[];
 		}) => input,
 	)
 	.handler(async ({ data }) => {
-		const { therapistId, patientId, name, startDate, weeks } = data;
+		const { therapistId, patientId, name, startDate, weeks, lifeObjectives } =
+			data;
+		const validLifeObjectives = lifeObjectives
+			.map((objective) => objective.trim())
+			.filter(Boolean);
+		if (validLifeObjectives.length === 0) {
+			throw new Error("Au moins un objectif de vie est requis");
+		}
 
 		await verifyTherapistOwnsPatient(therapistId, patientId);
 		// Validate start date is in the future
@@ -134,12 +145,19 @@ export const createProgram = createServerFn({ method: "POST" })
 			);
 		}
 
-		return saveProgram({ therapistId, patientId, name, startDate, weeks });
+		return saveProgram({
+			therapistId,
+			patientId,
+			name,
+			startDate,
+			weeks,
+			lifeObjectives: validLifeObjectives,
+		});
 	});
 
 export const createProgramTemplate = createServerFn({ method: "POST" })
 	.inputValidator((input: Omit<ProgramCreationInput, "patientId">) => input)
-	.handler(({ data }) => saveProgram(data));
+	.handler(({ data }) => saveProgram({ ...data, lifeObjectives: [] }));
 
 export const getProgramsForPatient = createServerFn({ method: "GET" })
 	.inputValidator((input: { therapistId: string; patientId: string }) => input)

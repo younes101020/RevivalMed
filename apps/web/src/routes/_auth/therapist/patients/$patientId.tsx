@@ -10,6 +10,7 @@ import {
 	ChevronLeft,
 	ChevronUp,
 	Copy,
+	Plus,
 	Trash2,
 } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
@@ -571,6 +572,7 @@ export function ProgramCreator({
 
 	const [startDate, setStartDate] = useState(minDate);
 	const [name, setName] = useState(programName);
+	const [lifeObjectives, setLifeObjectives] = useState([""]);
 	const [weeks, setWeeks] = useState<WeekFormData[]>(() =>
 		Array.from({ length: 16 }, (_, index) => presetWeek(preset, index + 1)),
 	);
@@ -580,6 +582,7 @@ export function ProgramCreator({
 	const [error, setError] = useState<string | null>(null);
 	const startDateId = useId();
 	const programNameId = useId();
+	const lifeObjectiveId = useId();
 	const weekCountId = useId();
 	const isTemplate = variant === "template";
 
@@ -640,6 +643,13 @@ export function ProgramCreator({
 			setError("Le nom du programme est requis");
 			return;
 		}
+		const validLifeObjectives = lifeObjectives
+			.map((objective) => objective.trim())
+			.filter(Boolean);
+		if (!isTemplate && validLifeObjectives.length === 0) {
+			setError("Ajoutez au moins un objectif de vie");
+			return;
+		}
 
 		// Validate
 		if (weeks[0].exercises.size === 0) {
@@ -675,7 +685,9 @@ export function ProgramCreator({
 				weeks: weekInputs,
 			};
 			if (patientId) {
-				await createProgram({ data: { ...data, patientId } });
+				await createProgram({
+					data: { ...data, patientId, lifeObjectives: validLifeObjectives },
+				});
 			} else {
 				await createProgramTemplate({ data });
 			}
@@ -713,6 +725,58 @@ export function ProgramCreator({
 							onChange={(event) => setName(event.target.value)}
 							placeholder="Ex. Programme mémoire"
 						/>
+					</div>
+				)}
+
+				{!isTemplate && (
+					<div className="space-y-2 max-w-xl">
+						<Label>Objectifs de vie</Label>
+						{lifeObjectives.map((objective, index) => {
+							const inputId = `${lifeObjectiveId}-${index}`;
+							return (
+								<div className="flex gap-2" key={inputId}>
+									<Input
+										id={inputId}
+										aria-label={`Objectif de vie ${index + 1}`}
+										value={objective}
+										onChange={(event) =>
+											setLifeObjectives((current) =>
+												current.map((value, currentIndex) =>
+													currentIndex === index ? event.target.value : value,
+												),
+											)
+										}
+										placeholder="Ex. Reprendre une activité sociale régulière"
+									/>
+									{lifeObjectives.length > 1 && (
+										<Button
+											type="button"
+											variant="outline"
+											size="icon"
+											onClick={() =>
+												setLifeObjectives((current) =>
+													current.filter(
+														(_, currentIndex) => currentIndex !== index,
+													),
+												)
+											}
+											aria-label={`Supprimer l’objectif de vie ${index + 1}`}
+										>
+											<Trash2 className="size-4" />
+										</Button>
+									)}
+								</div>
+							);
+						})}
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							onClick={() => setLifeObjectives((current) => [...current, ""])}
+						>
+							<Plus className="size-4" />
+							Ajouter un objectif de vie
+						</Button>
 					</div>
 				)}
 

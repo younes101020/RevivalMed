@@ -97,6 +97,7 @@ export const programs = pgTable("programs", {
 	patientId: text("patient_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
+	lifeObjectives: text("life_objectives").array().notNull().default([]),
 	startDate: date("start_date").notNull(),
 	createdAt: timestamp("created_at").notNull(),
 });
