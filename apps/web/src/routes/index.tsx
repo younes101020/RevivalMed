@@ -230,7 +230,11 @@ function LandingPage() {
 								RevivalMed donne à chacun un cadre rassurant pour pratiquer,
 								progresser et échanger avec son thérapeute.
 							</p>
-							<Button asChild size="lg" className="mt-9 rounded-full text-white">
+							<Button
+								asChild
+								size="lg"
+								className="mt-9 rounded-full text-white"
+							>
 								<Link to={user ? appDestination : "/login"}>
 									{user
 										? "Reprendre mon parcours"
@@ -242,9 +246,26 @@ function LandingPage() {
 				</section>
 			</main>
 			<footer className="bg-[#062b25] px-6 py-8 text-sm text-emerald-50/60 lg:px-8">
-				<div className="mx-auto flex max-w-7xl items-center justify-between">
+				<div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 					<span>© {new Date().getFullYear()} RevivalMed</span>
-					<span>Outil numérique de remédiation cognitive</span>
+					<div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+						<Link
+							to="/mentions-legales"
+							className="transition-colors hover:text-white"
+						>
+							Mentions légales
+						</Link>
+						<Link
+							to="/confidentialite"
+							className="transition-colors hover:text-white"
+						>
+							Confidentialité
+						</Link>
+						<Link to="/cookies" className="transition-colors hover:text-white">
+							Cookies
+						</Link>
+						<span>Outil numérique de remédiation cognitive</span>
+					</div>
 				</div>
 			</footer>
 		</div>

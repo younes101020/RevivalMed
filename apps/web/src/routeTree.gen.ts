@@ -9,7 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiUploadAvatarRouteImport } from './routes/api/upload-avatar'
@@ -26,9 +29,24 @@ import { Route as ApiAuthChangePasswordServerRouteImport } from './routes/api/au
 import { Route as AuthTherapistPatientsPatientIdRouteImport } from './routes/_auth/therapist/patients/$patientId'
 import { Route as ApiProfileAvatarDeleteServerRouteImport } from './routes/api/profile/avatar/delete.server'
 
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -111,7 +129,10 @@ const ApiProfileAvatarDeleteServerRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -128,7 +149,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -147,7 +171,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -166,7 +193,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/confidentialite'
+    | '/cookies'
     | '/login'
+    | '/mentions-legales'
     | '/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
@@ -183,7 +213,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/confidentialite'
+    | '/cookies'
     | '/login'
+    | '/mentions-legales'
     | '/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
@@ -201,7 +234,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_auth'
+    | '/confidentialite'
+    | '/cookies'
     | '/login'
+    | '/mentions-legales'
     | '/_auth/profile'
     | '/api/upload-avatar'
     | '/api/auth/$'
@@ -220,7 +256,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
+  CookiesRoute: typeof CookiesRoute
   LoginRoute: typeof LoginRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   ApiUploadAvatarRoute: typeof ApiUploadAvatarRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiAuthChangePasswordRoute: typeof ApiAuthChangePasswordRouteWithChildren
@@ -230,11 +269,32 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -392,7 +452,10 @@ const ApiProfileUpdateRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
+  ConfidentialiteRoute: ConfidentialiteRoute,
+  CookiesRoute: CookiesRoute,
   LoginRoute: LoginRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   ApiUploadAvatarRoute: ApiUploadAvatarRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiAuthChangePasswordRoute: ApiAuthChangePasswordRouteWithChildren,

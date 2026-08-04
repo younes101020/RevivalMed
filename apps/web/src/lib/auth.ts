@@ -18,7 +18,7 @@ export const auth = betterAuth({
 		// No email provider — disable password reset
 		sendResetPassword: undefined,
 		// Patients are created by therapists; public sign-up is disabled
-		disableSignUp: true,
+		disableSignUp: process.env.SEED_MODE !== "true",
 	},
 	user: {
 		additionalFields: {
