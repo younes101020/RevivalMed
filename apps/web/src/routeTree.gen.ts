@@ -22,6 +22,7 @@ import { Route as AuthProgrammesIndexRouteImport } from './routes/_auth/programm
 import { Route as AuthPatientIndexRouteImport } from './routes/_auth/patient/index'
 import { Route as AuthExercicesIndexRouteImport } from './routes/_auth/exercices/index'
 import { Route as ApiProfileUpdateRouteImport } from './routes/api/profile/update'
+import { Route as ApiProfileDeleteRouteImport } from './routes/api/profile/delete'
 import { Route as ApiAuthChangePasswordRouteImport } from './routes/api/auth/change-password'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiProfileUpdateServerRouteImport } from './routes/api/profile/update.server'
@@ -93,6 +94,11 @@ const ApiProfileUpdateRoute = ApiProfileUpdateRouteImport.update({
   path: '/api/profile/update',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiProfileDeleteRoute = ApiProfileDeleteRouteImport.update({
+  id: '/api/profile/delete',
+  path: '/api/profile/delete',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthChangePasswordRoute = ApiAuthChangePasswordRouteImport.update({
   id: '/api/auth/change-password',
   path: '/api/auth/change-password',
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
+  '/api/profile/delete': typeof ApiProfileDeleteRoute
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByTo {
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
+  '/api/profile/delete': typeof ApiProfileDeleteRoute
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/exercices': typeof AuthExercicesIndexRoute
   '/patient': typeof AuthPatientIndexRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
+  '/api/profile/delete': typeof ApiProfileDeleteRoute
   '/api/profile/update': typeof ApiProfileUpdateRouteWithChildren
   '/_auth/exercices/': typeof AuthExercicesIndexRoute
   '/_auth/patient/': typeof AuthPatientIndexRoute
@@ -201,6 +210,7 @@ export interface FileRouteTypes {
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
+    | '/api/profile/delete'
     | '/api/profile/update'
     | '/exercices'
     | '/patient'
@@ -221,6 +231,7 @@ export interface FileRouteTypes {
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
+    | '/api/profile/delete'
     | '/api/profile/update'
     | '/exercices'
     | '/patient'
@@ -242,6 +253,7 @@ export interface FileRouteTypes {
     | '/api/upload-avatar'
     | '/api/auth/$'
     | '/api/auth/change-password'
+    | '/api/profile/delete'
     | '/api/profile/update'
     | '/_auth/exercices/'
     | '/_auth/patient/'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   ApiUploadAvatarRoute: typeof ApiUploadAvatarRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiAuthChangePasswordRoute: typeof ApiAuthChangePasswordRouteWithChildren
+  ApiProfileDeleteRoute: typeof ApiProfileDeleteRoute
   ApiProfileUpdateRoute: typeof ApiProfileUpdateRouteWithChildren
   ApiProfileAvatarDeleteServerRoute: typeof ApiProfileAvatarDeleteServerRoute
 }
@@ -358,6 +371,13 @@ declare module '@tanstack/react-router' {
       path: '/api/profile/update'
       fullPath: '/api/profile/update'
       preLoaderRoute: typeof ApiProfileUpdateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/profile/delete': {
+      id: '/api/profile/delete'
+      path: '/api/profile/delete'
+      fullPath: '/api/profile/delete'
+      preLoaderRoute: typeof ApiProfileDeleteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/change-password': {
@@ -459,6 +479,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiUploadAvatarRoute: ApiUploadAvatarRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiAuthChangePasswordRoute: ApiAuthChangePasswordRouteWithChildren,
+  ApiProfileDeleteRoute: ApiProfileDeleteRoute,
   ApiProfileUpdateRoute: ApiProfileUpdateRouteWithChildren,
   ApiProfileAvatarDeleteServerRoute: ApiProfileAvatarDeleteServerRoute,
 }
