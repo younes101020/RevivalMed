@@ -74,6 +74,18 @@ export function AppSidebar() {
                 </SidebarMenuItem>
               </SidebarMenu>
             )}
+            {user?.role === "patient" && (
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link to={"/_auth/patient/missions" as any}>
+                      <BookOpen />
+                      <span>Mes missions</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            )}
             <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
