@@ -75,6 +75,45 @@ export const therapistPatients = pgTable("therapist_patients", {
 	createdAt: timestamp("created_at").notNull(),
 });
 
+export const exerciseAssignments = pgTable("exercise_assignments", {
+	id: text("id").primaryKey(),
+	therapistId: text("therapist_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	exerciseKey: text("exercise_key").notNull(),
+	difficultyOverride: integer("difficulty_override"),
+	createdAt: timestamp("created_at").notNull(),
+	updatedAt: timestamp("updated_at").notNull(),
+});
+
+export const missions = pgTable("missions", {
+	id: text("id").primaryKey(),
+	therapistId: text("therapist_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	title: text("title").notNull(),
+	description: text("description").notNull(),
+	cognitiveFunctions: text("cognitive_functions").array().notNull().default([]),
+	createdAt: timestamp("created_at").notNull(),
+});
+
+export const missionCompletions = pgTable("mission_completions", {
+	id: text("id").primaryKey(),
+	missionId: text("mission_id")
+		.notNull()
+		.references(() => missions.id, { onDelete: "cascade" }),
+	patientId: text("patient_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
+	completedAt: timestamp("completed_at").notNull(),
+});
+
 export const exerciseProgress = pgTable("exercise_progress", {
 	id: text("id").primaryKey(),
 	userId: text("user_id")

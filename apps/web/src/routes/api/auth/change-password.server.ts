@@ -5,5 +5,5 @@ export const Route = createFileRoute('/api/auth/change-password/server')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/api/auth/change-password"!</div>
+  return "Hello '/api/auth/change-password'!";
 }

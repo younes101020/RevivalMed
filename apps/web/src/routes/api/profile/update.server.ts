@@ -5,5 +5,5 @@ export const Route = createFileRoute('/api/profile/update/server')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/api/profile/update"!</div>
+  return "Hello '/api/profile/update'!";
 }
