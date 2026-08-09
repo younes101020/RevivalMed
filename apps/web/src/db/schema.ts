@@ -5,6 +5,7 @@ import {
 	text,
 	timestamp,
 	date,
+	uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 // ─── Better Auth core tables ────────────────────────────────────────────────
@@ -125,6 +126,34 @@ export const exerciseProgress = pgTable("exercise_progress", {
 	updatedAt: timestamp("updated_at").notNull(),
 });
 
+export const patientXp = pgTable("patient_xp", {
+	userId: text("user_id")
+		.primaryKey()
+		.references(() => user.id, { onDelete: "cascade" }),
+	totalXp: integer("total_xp").notNull().default(0),
+	updatedAt: timestamp("updated_at").notNull(),
+});
+
+/** One row per completed client exercise session, used to prevent duplicate XP. */
+export const exerciseXpAwards = pgTable(
+	"exercise_xp_awards",
+	{
+		id: text("id").primaryKey(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		exerciseKey: text("exercise_key").notNull(),
+		attemptId: text("attempt_id").notNull(),
+		createdAt: timestamp("created_at").notNull(),
+	},
+	(table) => [
+		uniqueIndex("exercise_xp_awards_user_attempt_unique").on(
+			table.userId,
+			table.attemptId,
+		),
+	],
+);
+
 // ─── Programme tables ─────────────────────────────────────────────────────────
 
 export const programs = pgTable("programs", {
@@ -201,6 +230,7 @@ export const observationGridItems = pgTable("observation_grid_items", {
 
 export type UserRole = "therapist" | "patient";
 export type ExerciseProgressRow = typeof exerciseProgress.$inferSelect;
+export type PatientXpRow = typeof patientXp.$inferSelect;
 export type ProgramRow = typeof programs.$inferSelect;
 export type ProgramWeekRow = typeof programWeeks.$inferSelect;
 export type ProgramWeekExerciseRow = typeof programWeekExercises.$inferSelect;

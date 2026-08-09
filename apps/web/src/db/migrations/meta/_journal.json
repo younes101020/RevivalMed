@@ -43,6 +43,13 @@
       "when": 1785621653707,
       "tag": "0005_add-life-objectives",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786316681619,
+      "tag": "0006_past_yellowjacket",
+      "breakpoints": true
     }
   ]
 }

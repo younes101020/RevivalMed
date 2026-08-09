@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useStore } from "@tanstack/react-store";
 import { useRouteContext, useNavigate, Link } from "@tanstack/react-router";
 import { LogOut, Users, BookOpen, UserPen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { authClient } from "@/lib/auth-client";
+import { getPatientXp } from "@/lib/progress";
+import { getPatientLevel, getXpTowardNextLevel } from "@/lib/patient-level";
+import { levelStore, setTotalXp } from "@/store/level";
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +25,16 @@ export function AppSidebar() {
   const { user } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.image ?? null);
+  const totalXp = useStore(levelStore, (state) => state.totalXp);
+  const level = getPatientLevel(totalXp);
+  const xpTowardNextLevel = getXpTowardNextLevel(totalXp);
+
+  useEffect(() => {
+    if (user?.role !== "patient") return;
+    getPatientXp({ data: user.id }).then(setTotalXp).catch(() => {
+      // The sidebar remains usable when progress cannot be loaded.
+    });
+  }, [user?.id, user?.role]);
 
   const handleSignOut = async () => {
     await authClient.signOut();
@@ -113,8 +127,27 @@ export function AppSidebar() {
                       onUploaded={setAvatarUrl}
                     />
                   </div>
-                  <div className="flex gap-2 flex-col items-start">
+                  <div className="flex gap-1 flex-col items-start min-w-0 flex-1">
                     <span className="text-sm text-muted-foreground">{user.name}</span>
+                    {user.role === "patient" && (
+                      <div className="w-full space-y-1">
+                        <span className="text-xs font-medium">Niveau {level}</span>
+                        <div
+                          className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+                          role="progressbar"
+                          aria-label={`Niveau ${level}`}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={xpTowardNextLevel}
+                        >
+                          <div
+                            className="h-full rounded-full bg-primary transition-all"
+                            style={{ width: `${xpTowardNextLevel}%` }}
+                          />
+                        </div>
+                        <span className="text-[0.65rem] text-muted-foreground">{xpTowardNextLevel} / 100 XP</span>
+                      </div>
+                    )}
                     <Badge
                       variant={user.role === "therapist" ? "default" : "secondary"}
                       className="text-secondary-foreground"

@@ -19,6 +19,7 @@ export interface ExerciseRating {
 
 export interface LevelState {
 	userId: string | null;
+	totalXp: number;
 	exercises: Record<ExerciseKey, ExerciseRating>;
 }
 

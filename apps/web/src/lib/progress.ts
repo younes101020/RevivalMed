@@ -1,13 +1,16 @@
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
 	exerciseProgress,
+	exerciseXpAwards,
+	patientXp,
 	programWeekExercises,
 	programWeeks,
 	programs,
 } from "@/db/schema";
 import type { ExerciseKey } from "@/store/level";
+import { isSuccessfulExercise, XP_PER_SUCCESS } from "@/lib/patient-level";
 
 export const getProgress = createServerFn({ method: "GET" })
 	.inputValidator((userId: string) => userId)
@@ -56,6 +59,68 @@ export const upsertProgress = createServerFn({ method: "POST" })
 				updatedAt: new Date(),
 			});
 		}
+	});
+
+export const getPatientXp = createServerFn({ method: "GET" })
+	.inputValidator((userId: string) => userId)
+	.handler(async ({ data: userId }) => {
+		const [progress] = await db
+			.select({ totalXp: patientXp.totalXp })
+			.from(patientXp)
+			.where(eq(patientXp.userId, userId))
+			.limit(1);
+		return progress?.totalXp ?? 0;
+	});
+
+export const awardExerciseXp = createServerFn({ method: "POST" })
+	.inputValidator(
+		(input: {
+			userId: string;
+			exerciseKey: ExerciseKey;
+			attemptId: string;
+			scorePercent: number;
+		}) => input,
+	)
+	.handler(async ({ data }) => {
+		if (!isSuccessfulExercise(data.scorePercent)) {
+			const [progress] = await db
+				.select({ totalXp: patientXp.totalXp })
+				.from(patientXp)
+				.where(eq(patientXp.userId, data.userId))
+				.limit(1);
+			return { awarded: false, totalXp: progress?.totalXp ?? 0 };
+		}
+
+		return db.transaction(async (tx) => {
+			const award = await tx
+				.insert(exerciseXpAwards)
+				.values({
+					id: crypto.randomUUID(),
+					userId: data.userId,
+					exerciseKey: data.exerciseKey,
+					attemptId: data.attemptId,
+					createdAt: new Date(),
+				})
+				.onConflictDoNothing({ target: [exerciseXpAwards.userId, exerciseXpAwards.attemptId] })
+				.returning({ id: exerciseXpAwards.id });
+
+			if (award.length > 0) {
+				await tx
+					.insert(patientXp)
+					.values({ userId: data.userId, totalXp: XP_PER_SUCCESS, updatedAt: new Date() })
+					.onConflictDoUpdate({
+						target: patientXp.userId,
+						set: { totalXp: sql`${patientXp.totalXp} + ${XP_PER_SUCCESS}`, updatedAt: new Date() },
+					});
+			}
+
+			const [progress] = await tx
+				.select({ totalXp: patientXp.totalXp })
+				.from(patientXp)
+				.where(eq(patientXp.userId, data.userId))
+				.limit(1);
+			return { awarded: award.length > 0, totalXp: progress?.totalXp ?? 0 };
+		});
 	});
 
 export const getAssignmentsForPatient = createServerFn({ method: "GET" })

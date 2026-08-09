@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getActiveWeekForPatient, completeWeekMission } from "@/lib/programs";
-import { getProgress } from "@/lib/progress";
+import { getPatientXp, getProgress } from "@/lib/progress";
 import type { ExerciseKey } from "@/store/level";
 import { initLevelStore } from "@/store/level";
 
@@ -51,12 +51,13 @@ export const Route = createFileRoute("/_auth/patient/")({
 		}
 	},
 	loader: async ({ context }) => {
-		const [rows, weekData] = await Promise.all([
+		const [rows, totalXp, weekData] = await Promise.all([
 			getProgress({ data: context.user!.id }),
+			getPatientXp({ data: context.user!.id }),
 			getActiveWeekForPatient({ data: context.user!.id }),
 		]);
-		initLevelStore(context.user!.id, rows);
-		return { rows, weekData };
+		initLevelStore(context.user!.id, rows, totalXp);
+		return { rows, totalXp, weekData };
 	},
 	ssr: false,
 	component: PatientDashboard,
