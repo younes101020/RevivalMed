@@ -25,6 +25,8 @@ import { Route as ApiProfileUpdateRouteImport } from './routes/api/profile/updat
 import { Route as ApiProfileDeleteRouteImport } from './routes/api/profile/delete'
 import { Route as ApiAuthChangePasswordRouteImport } from './routes/api/auth/change-password'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AuthPatientMissionsRouteImport } from './routes/_auth/patient/missions'
+import { Route as AuthPatientMissionsIndexRouteImport } from './routes/_auth/patient/missions/index'
 import { Route as ApiProfileUpdateServerRouteImport } from './routes/api/profile/update.server'
 import { Route as ApiAuthChangePasswordServerRouteImport } from './routes/api/auth/change-password.server'
 import { Route as AuthTherapistPatientsPatientIdRouteImport } from './routes/_auth/therapist/patients/$patientId'
@@ -109,6 +111,17 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthPatientMissionsRoute = AuthPatientMissionsRouteImport.update({
+  id: '/patient/missions',
+  path: '/patient/missions',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthPatientMissionsIndexRoute =
+  AuthPatientMissionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthPatientMissionsRoute,
+  } as any)
 const ApiProfileUpdateServerRoute = ApiProfileUpdateServerRouteImport.update({
   id: '/server',
   path: '/server',
@@ -141,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
+  '/patient/missions': typeof AuthPatientMissionsRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
   '/api/profile/delete': typeof ApiProfileDeleteRoute
@@ -152,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
   '/api/profile/update/server': typeof ApiProfileUpdateServerRoute
+  '/patient/missions/': typeof AuthPatientMissionsIndexRoute
   '/api/profile/avatar/delete/server': typeof ApiProfileAvatarDeleteServerRoute
 }
 export interface FileRoutesByTo {
@@ -173,6 +188,7 @@ export interface FileRoutesByTo {
   '/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
   '/api/profile/update/server': typeof ApiProfileUpdateServerRoute
+  '/patient/missions': typeof AuthPatientMissionsIndexRoute
   '/api/profile/avatar/delete/server': typeof ApiProfileAvatarDeleteServerRoute
 }
 export interface FileRoutesById {
@@ -185,6 +201,7 @@ export interface FileRoutesById {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/_auth/profile': typeof AuthProfileRoute
   '/api/upload-avatar': typeof ApiUploadAvatarRoute
+  '/_auth/patient/missions': typeof AuthPatientMissionsRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/auth/change-password': typeof ApiAuthChangePasswordRouteWithChildren
   '/api/profile/delete': typeof ApiProfileDeleteRoute
@@ -196,6 +213,7 @@ export interface FileRoutesById {
   '/_auth/therapist/patients/$patientId': typeof AuthTherapistPatientsPatientIdRoute
   '/api/auth/change-password/server': typeof ApiAuthChangePasswordServerRoute
   '/api/profile/update/server': typeof ApiProfileUpdateServerRoute
+  '/_auth/patient/missions/': typeof AuthPatientMissionsIndexRoute
   '/api/profile/avatar/delete/server': typeof ApiProfileAvatarDeleteServerRoute
 }
 export interface FileRouteTypes {
@@ -208,6 +226,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/profile'
     | '/api/upload-avatar'
+    | '/patient/missions'
     | '/api/auth/$'
     | '/api/auth/change-password'
     | '/api/profile/delete'
@@ -219,6 +238,7 @@ export interface FileRouteTypes {
     | '/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
     | '/api/profile/update/server'
+    | '/patient/missions/'
     | '/api/profile/avatar/delete/server'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -240,6 +260,7 @@ export interface FileRouteTypes {
     | '/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
     | '/api/profile/update/server'
+    | '/patient/missions'
     | '/api/profile/avatar/delete/server'
   id:
     | '__root__'
@@ -251,6 +272,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/_auth/profile'
     | '/api/upload-avatar'
+    | '/_auth/patient/missions'
     | '/api/auth/$'
     | '/api/auth/change-password'
     | '/api/profile/delete'
@@ -262,6 +284,7 @@ export interface FileRouteTypes {
     | '/_auth/therapist/patients/$patientId'
     | '/api/auth/change-password/server'
     | '/api/profile/update/server'
+    | '/_auth/patient/missions/'
     | '/api/profile/avatar/delete/server'
   fileRoutesById: FileRoutesById
 }
@@ -394,6 +417,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_auth/patient/missions': {
+      id: '/_auth/patient/missions'
+      path: '/patient/missions'
+      fullPath: '/patient/missions'
+      preLoaderRoute: typeof AuthPatientMissionsRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/patient/missions/': {
+      id: '/_auth/patient/missions/'
+      path: '/'
+      fullPath: '/patient/missions/'
+      preLoaderRoute: typeof AuthPatientMissionsIndexRouteImport
+      parentRoute: typeof AuthPatientMissionsRoute
+    }
     '/api/profile/update/server': {
       id: '/api/profile/update/server'
       path: '/server'
@@ -425,8 +462,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthPatientMissionsRouteChildren {
+  AuthPatientMissionsIndexRoute: typeof AuthPatientMissionsIndexRoute
+}
+
+const AuthPatientMissionsRouteChildren: AuthPatientMissionsRouteChildren = {
+  AuthPatientMissionsIndexRoute: AuthPatientMissionsIndexRoute,
+}
+
+const AuthPatientMissionsRouteWithChildren =
+  AuthPatientMissionsRoute._addFileChildren(AuthPatientMissionsRouteChildren)
+
 interface AuthRouteChildren {
   AuthProfileRoute: typeof AuthProfileRoute
+  AuthPatientMissionsRoute: typeof AuthPatientMissionsRouteWithChildren
   AuthExercicesIndexRoute: typeof AuthExercicesIndexRoute
   AuthPatientIndexRoute: typeof AuthPatientIndexRoute
   AuthProgrammesIndexRoute: typeof AuthProgrammesIndexRoute
@@ -436,6 +485,7 @@ interface AuthRouteChildren {
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthProfileRoute: AuthProfileRoute,
+  AuthPatientMissionsRoute: AuthPatientMissionsRouteWithChildren,
   AuthExercicesIndexRoute: AuthExercicesIndexRoute,
   AuthPatientIndexRoute: AuthPatientIndexRoute,
   AuthProgrammesIndexRoute: AuthProgrammesIndexRoute,

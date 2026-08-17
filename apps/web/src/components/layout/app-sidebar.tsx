@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { authClient } from "@/lib/auth-client";
 import { getPatientXp } from "@/lib/progress";
-import { getPatientLevel, getXpTowardNextLevel } from "@/lib/patient-level";
+import {
+  getPatientLevel,
+  getPatientTier,
+  getXpTowardNextLevel,
+} from "@/lib/patient-level";
 import { levelStore, setTotalXp } from "@/store/level";
 import {
   Sidebar,
@@ -27,6 +31,7 @@ export function AppSidebar() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.image ?? null);
   const totalXp = useStore(levelStore, (state) => state.totalXp);
   const level = getPatientLevel(totalXp);
+  const tier = getPatientTier(level);
   const xpTowardNextLevel = getXpTowardNextLevel(totalXp);
 
   useEffect(() => {
@@ -92,7 +97,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link to={"/_auth/patient/missions" as any}>
+                    <Link to="/patient/missions">
                       <BookOpen />
                       <span>Mes missions</span>
                     </Link>
@@ -131,6 +136,18 @@ export function AppSidebar() {
                     <span className="text-sm text-muted-foreground">{user.name}</span>
                     {user.role === "patient" && (
                       <div className="w-full space-y-1">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={tier.iconSrc}
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="size-5 shrink-0 object-contain"
+                          />
+                          <span className="text-xs font-semibold text-foreground">
+                            {tier.name}
+                          </span>
+                        </div>
                         <span className="text-xs font-medium">Niveau {level}</span>
                         <div
                           className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
