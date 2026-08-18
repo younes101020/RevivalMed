@@ -49,9 +49,19 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex flex-col gap-0 px-2 py-2">
-          <span className="font-semibold text-lg">RevivalMed</span>
-          <span className="text-[0.55rem]">outil de remediation cognitive</span>
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-0 px-2 py-2">
+            <span className="font-semibold text-lg">RevivalMed</span>
+            <span className="text-[0.55rem]">outil de remediation cognitive</span>
+          </div>
+          {user &&
+            <Badge
+              variant={user.role === "therapist" ? "default" : "secondary"}
+              className="text-secondary-foreground h-fit"
+            >
+              {user.role === "therapist" ? "Thérapeute" : "Patient"}
+            </Badge>
+          }
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -115,6 +125,14 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                <SidebarMenuButton size="sm" onClick={handleSignOut} className="cursor-pointer">
+                <LogOut className="h-4 w-4 mr-1" />
+                Déconnexion
+              </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
@@ -133,7 +151,6 @@ export function AppSidebar() {
                     />
                   </div>
                   <div className="flex gap-1 flex-col items-start min-w-0 flex-1">
-                    <span className="text-sm text-muted-foreground">{user.name}</span>
                     {user.role === "patient" && (
                       <div className="w-full space-y-1">
                         <div className="flex items-center gap-2">
@@ -165,19 +182,9 @@ export function AppSidebar() {
                         <span className="text-[0.65rem] text-muted-foreground">{xpTowardNextLevel} / 100 XP</span>
                       </div>
                     )}
-                    <Badge
-                      variant={user.role === "therapist" ? "default" : "secondary"}
-                      className="text-secondary-foreground"
-                    >
-                      {user.role === "therapist" ? "Thérapeute" : "Patient"}
-                    </Badge>
                   </div>
                 </div>
               )}
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                <LogOut className="h-4 w-4 mr-1" />
-                Déconnexion
-              </Button>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
