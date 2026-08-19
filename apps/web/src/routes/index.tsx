@@ -64,7 +64,7 @@ function LandingPage() {
 								prolongent dans la vraie vie.
 							</h1>
 							<p className="mt-7 max-w-xl text-lg leading-8 text-emerald-50/80 sm:text-xl">
-								RevivalMed donne aux thérapeutes un cadre simple pour définir
+								RevivalMed offre aux thérapeutes un cadre simple pour définir
 								les objectifs, proposer un entraînement ciblé et accompagner la
 								généralisation des acquis avec des missions de la semaine.
 							</p>
@@ -103,6 +103,25 @@ function LandingPage() {
 								</div>
 							</div>
 						</div>
+					</div>
+				</section>
+
+				<section className="bg-[#f7f8f2] px-6 py-24 text-[#123d35] lg:px-8">
+					<div className="mx-auto max-w-7xl">
+						<div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+							<div>
+								<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-700">
+									Le transfert des acquis dans la vie réelle
+								</p>
+								<h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
+									Des entrainements utiles
+								</h2>
+							</div>
+						</div>
+						<img
+							src="/images/generalisation.jpg"
+							alt="generalisation"
+						/>
 					</div>
 				</section>
 
