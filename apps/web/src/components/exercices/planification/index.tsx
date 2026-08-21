@@ -44,11 +44,11 @@ export function Planification() {
 					</DialogTrigger>
 					<DialogContent
 						className={cn(
-							"rounded-xl max-h-[80vh] overflow-scroll",
+							"rounded-xl max-h-[80vh] overflow-scroll flex items-center w-full",
 							fullscreenClasses,
 						)}
 					>
-						<Card className="border-none rounded-lg mt-7 px-2">
+						<Card className="border-none rounded-lg w-full">
 							<Button
 								variant="ghost"
 								size="icon"
