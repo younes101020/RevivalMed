@@ -1,6 +1,5 @@
 import { useStore } from "@tanstack/react-store";
 import { Expand, Shrink } from "lucide-react";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -15,6 +14,7 @@ import type { VitesseConfig } from "./exercice";
 import { VitesseTraitementExercise } from "./exercice";
 import { useFullscreen } from "@/hooks/use-fullscreen";
 import { Countdown } from "@/components/layout/countdown";
+import { useGamePreferences } from "@/lib/game-preferences";
 
 function getVitesseConfig(rating: number): VitesseConfig {
 	switch (true) {
@@ -54,6 +54,7 @@ function getLevelFromRating(rating: number): number {
 
 export function VitesseTraitement() {
 	const { isFullscreen, toggle, fullscreenClasses } = useFullscreen(true);
+	const { preferences } = useGamePreferences();
 	const rating = useStore(
 		levelStore,
 		(s) => s.exercises.processingSpeed.rating,
@@ -109,7 +110,10 @@ export function VitesseTraitement() {
 								{isFullscreen ? <Shrink /> : <Expand />}
 							</Button>
 							<Countdown>
-								<VitesseTraitementExercise onComplete={(score) => updateRating("processingSpeed", score)} />
+								<VitesseTraitementExercise
+									exerciseTimerEnabled={preferences.exerciseTimerEnabled}
+									onComplete={(score) => updateRating("processingSpeed", score)}
+								/>
 							</Countdown>
 						</Card>
 					</DialogContent>

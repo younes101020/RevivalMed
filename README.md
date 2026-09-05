@@ -11,3 +11,6 @@ Numerous therapies apply cognitive remediation, including RECOS (Remédiation Co
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
+
+
+## Local creds

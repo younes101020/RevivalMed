@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/countdown";
+import { useGamePreferences } from "@/lib/game-preferences";
 import { cn } from "@/lib/utils";
 import { levelStore, updateRating } from "@/store/level";
 import { Card, CardContent, CardFooter } from "../../ui/card";
@@ -145,7 +146,10 @@ function MemoryExercise({
 }) {
 	const [hasStarted, setHasStarted] = useState(false);
 	const [hasFinished, setHasFinished] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
+	const { preferences } = useGamePreferences();
+	const { remainingSecond, cancel } = useCountdown(
+		preferences.countdownSeconds,
+		() =>
 		setHasStarted(true),
 	);
 

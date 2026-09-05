@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from "react";
 export function useCountdown(seconds: number, onComplete: () => void) {
 	const timer = useRef<NodeJS.Timeout | null>(null);
 	const [remainingSecond, setRemainingSecond] = useState(seconds);
+	const remainingRef = useRef(seconds);
+	const onCompleteRef = useRef(onComplete);
+	onCompleteRef.current = onComplete;
 
 	const cancel = () => {
 		if (timer.current) {
@@ -12,17 +15,26 @@ export function useCountdown(seconds: number, onComplete: () => void) {
 	};
 
 	useEffect(() => {
+		remainingRef.current = seconds;
+		setRemainingSecond(seconds);
+
+		if (seconds <= 0) {
+			onCompleteRef.current();
+			return cancel;
+		}
+
 		timer.current = setInterval(() => {
-			setRemainingSecond((prev) => prev - 1);
-            console.log("tick", remainingSecond);
-			if (remainingSecond <= 0) {
-				if (timer.current) clearInterval(timer.current);
-				onComplete();
+			const next = remainingRef.current - 1;
+			remainingRef.current = next;
+			setRemainingSecond(next);
+			if (next <= 0) {
+				cancel();
+				onCompleteRef.current();
 			}
 		}, 1000);
 
 		return cancel;
-	}, [onComplete]);
+	}, [seconds]);
 
 	return {
 		remainingSecond,

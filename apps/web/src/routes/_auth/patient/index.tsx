@@ -17,6 +17,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getActiveWeekForPatient, completeWeekMission } from "@/lib/programs";
 import { getPatientXp, getProgress } from "@/lib/progress";
+import { GamePreferencesProvider } from "@/lib/game-preferences";
 import type { ExerciseKey } from "@/store/level";
 import { initLevelStore } from "@/store/level";
 
@@ -112,6 +113,7 @@ function PatientDashboard() {
 	}
 
 	return (
+		<GamePreferencesProvider userId={user!.id}>
 		<section className="h-full container mx-auto p-4 flex items-center">
 			<Tabs defaultValue={visibleTabs[0].key} className="space-y-4 container">
 				<div className="text-center">
@@ -195,5 +197,6 @@ function PatientDashboard() {
 				</TabsContent>
 			</Tabs>
 		</section>
+		</GamePreferencesProvider>
 	);
 }

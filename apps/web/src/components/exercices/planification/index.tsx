@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
-	CardAction,
 	CardContent,
 	CardFooter,
-	CardHeader,
 } from "@/components/ui/card";
 import { useCountdown } from "@/hooks/countdown";
+import { useGamePreferences } from "@/lib/game-preferences";
 import { cn } from "@/lib/utils";
 import { updateRating } from "@/store/level";
 import {
@@ -69,7 +68,10 @@ export function Planification() {
 function PlanificationExercise() {
 	const [hasStarted, setHasStarted] = useState(false);
 	const [hasFinished, setHasFinished] = useState(false);
-	const { remainingSecond, cancel } = useCountdown(3, () =>
+	const { preferences } = useGamePreferences();
+	const { remainingSecond, cancel } = useCountdown(
+		preferences.countdownSeconds,
+		() =>
 		setHasStarted(true),
 	);
 

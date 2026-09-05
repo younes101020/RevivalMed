@@ -60,8 +60,10 @@ function formatTime(seconds: number): string {
 
 export function VitesseTraitementExercise({
 	onComplete,
+	exerciseTimerEnabled = true,
 }: {
 	onComplete?: (score: number) => void;
+	exerciseTimerEnabled?: boolean;
 } = {}) {
 	const [answers, setAnswers] = useState<Answer[]>(
 		Array(PAIRS.length).fill(null),
@@ -102,7 +104,9 @@ export function VitesseTraitementExercise({
 				<div className="flex items-center justify-between">
 					<h2 className="text-lg font-bold">Résultats</h2>
 					<div className="flex gap-2">
-						<Badge variant="secondary">{formatTime(elapsed)}</Badge>
+						{exerciseTimerEnabled && (
+							<Badge variant="secondary">{formatTime(elapsed)}</Badge>
+						)}
 						<Badge>
 							{score}/{PAIRS.length}
 						</Badge>
@@ -144,7 +148,9 @@ export function VitesseTraitementExercise({
 				<h2 className="text-base font-semibold">
 					Identique ou Différent ? — Niveau 1
 				</h2>
-				<Badge variant="secondary">{formatTime(elapsed)}</Badge>
+				{exerciseTimerEnabled && (
+					<Badge variant="secondary">{formatTime(elapsed)}</Badge>
+				)}
 			</div>
 
 			<div className="grid grid-cols-2 gap-x-4">

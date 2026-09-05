@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
+import { useUserGamePreferences } from "@/lib/game-preferences";
+import { GamePreferencesForm } from "./GamePreferencesForm";
 import { PasswordForm } from "./PasswordForm";
 import { ProfileForm } from "./ProfileForm";
 import { ProfilePictureSection } from "./ProfilePictureSection";
@@ -31,6 +33,8 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 	const [deleting, setDeleting] = useState(false);
 	const router = useRouter();
+	const { preferences: gamePreferences, setPreferences: setGamePreferences } =
+		useUserGamePreferences(user.id);
 
 	useEffect(() => {
 		setLocalUser(user);
@@ -105,6 +109,7 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 				<TabsList>
 					<TabsTrigger value="general">General</TabsTrigger>
 					<TabsTrigger value="security">Sécurité</TabsTrigger>
+					{user.role === "patient" && <TabsTrigger value="game">Jeu</TabsTrigger>}
 				</TabsList>
 
 				<TabsContent value="general" className="space-y-6">
@@ -125,6 +130,15 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 				<TabsContent value="security" className="space-y-6">
 					<PasswordForm />
 				</TabsContent>
+
+				{user.role === "patient" && (
+					<TabsContent value="game" className="space-y-6">
+						<GamePreferencesForm
+							preferences={gamePreferences}
+							onChange={setGamePreferences}
+						/>
+					</TabsContent>
+				)}
 			</Tabs>
 
 			<div className="mt-8 rounded-xl border border-primary-200/60 bg-primary-50 p-6">
