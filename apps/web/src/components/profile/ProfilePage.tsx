@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
 import { useUserGamePreferences } from "@/lib/game-preferences";
+import { CustomizationForm } from "./CustomizationForm";
 import { GamePreferencesForm } from "./GamePreferencesForm";
 import { PasswordForm } from "./PasswordForm";
 import { ProfileForm } from "./ProfileForm";
@@ -109,6 +110,7 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 				<TabsList>
 					<TabsTrigger value="general">General</TabsTrigger>
 					<TabsTrigger value="security">Sécurité</TabsTrigger>
+					<TabsTrigger value="customization">Personnalisation</TabsTrigger>
 					{user.role === "patient" && <TabsTrigger value="game">Jeu</TabsTrigger>}
 				</TabsList>
 
@@ -129,6 +131,10 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 
 				<TabsContent value="security" className="space-y-6">
 					<PasswordForm />
+				</TabsContent>
+
+				<TabsContent value="customization" className="space-y-6">
+					<CustomizationForm />
 				</TabsContent>
 
 				{user.role === "patient" && (
