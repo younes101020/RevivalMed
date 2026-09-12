@@ -107,6 +107,10 @@ export function applyTheme(themeName: string) {
 	}
 
 	if (root) {
+		root.style.setProperty("--background", nextTheme.secondary);
+		root.style.setProperty("--card", nextTheme.secondary);
+		root.style.setProperty("--popover", nextTheme.secondary);
+		root.style.setProperty("--sidebar", nextTheme.secondary);
 		root.style.setProperty("--primary", nextTheme.primary);
 		root.style.setProperty("--secondary", nextTheme.secondary);
 		root.style.setProperty("--primary-foreground", nextTheme.primaryForeground);
