@@ -108,13 +108,18 @@ export function applyTheme(themeName: string) {
 
 	if (root) {
 		root.style.setProperty("--background", nextTheme.secondary);
+		root.style.setProperty("--foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--card", nextTheme.secondary);
+		root.style.setProperty("--card-foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--popover", nextTheme.secondary);
+		root.style.setProperty("--popover-foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--sidebar", nextTheme.secondary);
+		root.style.setProperty("--sidebar-foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--primary", nextTheme.primary);
 		root.style.setProperty("--secondary", nextTheme.secondary);
 		root.style.setProperty("--primary-foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--secondary-foreground", nextTheme.secondaryForeground);
+		root.style.setProperty("--muted-foreground", nextTheme.secondaryForeground);
 		root.style.setProperty("--ring", nextTheme.primary);
 		root.style.setProperty("--sidebar-primary", nextTheme.primary);
 		root.style.setProperty("--sidebar-primary-foreground", nextTheme.primaryForeground);

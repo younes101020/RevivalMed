@@ -6,13 +6,13 @@ export const Route = createFileRoute("/confidentialite")({
 
 function ConfidentialitePage() {
 	return (
-		<div className="min-h-screen bg-[#f7f8f2] text-[#123d35]">
-			<header className="border-b border-emerald-950/10 bg-[#062b25] px-6 py-5 text-white lg:px-8">
+		<div className="min-h-screen bg-background text-foreground">
+			<header className="border-b border-border bg-primary px-6 py-5 text-primary-foreground lg:px-8">
 				<div className="mx-auto flex max-w-7xl items-center justify-between">
 					<Link to="/" className="font-semibold tracking-tight">
 						RevivalMed
 					</Link>
-					<Link to="/" className="text-sm text-emerald-50/75 hover:text-white">
+					<Link to="/" className="text-sm text-primary-foreground/80 hover:text-primary-foreground">
 						Retour à l&apos;accueil
 					</Link>
 				</div>
@@ -22,9 +22,9 @@ function ConfidentialitePage() {
 					<h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
 						Politique de confidentialité
 					</h1>
-					<div className="mt-12 space-y-10 text-sm leading-7 text-slate-600">
+					<div className="mt-12 space-y-10 text-sm leading-7 text-muted-foreground">
 						<section>
-							<h2 className="text-xl font-semibold text-[#123d35]">
+							<h2 className="text-xl font-semibold text-foreground">
 								Responsable du traitement
 							</h2>
 							<p className="mt-3">
@@ -33,7 +33,7 @@ function ConfidentialitePage() {
 								question ou pour exercer vos droits :{" "}
 								<a
 									href="mailto:contact@younesfakallah.com"
-									className="font-semibold text-[#123d35] underline underline-offset-4"
+									className="font-semibold text-foreground underline underline-offset-4"
 								>
 									contact@younesfakallah.com
 								</a>
@@ -41,7 +41,7 @@ function ConfidentialitePage() {
 							</p>
 						</section>
 						<section>
-							<h2 className="text-xl font-semibold text-[#123d35]">
+							<h2 className="text-xl font-semibold text-foreground">
 								Données traitées et finalités
 							</h2>
 							<p className="mt-3">
@@ -56,7 +56,7 @@ function ConfidentialitePage() {
 							</p>
 						</section>
 						<section>
-							<h2 className="text-xl font-semibold text-[#123d35]">
+							<h2 className="text-xl font-semibold text-foreground">
 								Base légale et accès aux données
 							</h2>
 							<p className="mt-3">
@@ -70,7 +70,7 @@ function ConfidentialitePage() {
 							</p>
 						</section>
 						<section>
-							<h2 className="text-xl font-semibold text-[#123d35]">
+							<h2 className="text-xl font-semibold text-foreground">
 								Durée de conservation
 							</h2>
 							<p className="mt-3">
@@ -81,7 +81,7 @@ function ConfidentialitePage() {
 							</p>
 						</section>
 						<section>
-							<h2 className="text-xl font-semibold text-[#123d35]">
+							<h2 className="text-xl font-semibold text-foreground">
 								Vos droits
 							</h2>
 							<p className="mt-3">
@@ -95,14 +95,14 @@ function ConfidentialitePage() {
 					</div>
 				</div>
 			</main>
-			<footer className="bg-[#062b25] px-6 py-8 text-sm text-emerald-50/60 lg:px-8">
+			<footer className="bg-primary px-6 py-8 text-sm text-primary-foreground/80 lg:px-8">
 				<div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
 					<span>© {new Date().getFullYear()} RevivalMed</span>
 					<div className="flex gap-5">
-						<Link to="/mentions-legales" className="hover:text-white">
+						<Link to="/mentions-legales" className="hover:text-primary-foreground">
 							Mentions légales
 						</Link>
-						<Link to="/cookies" className="hover:text-white">
+						<Link to="/cookies" className="hover:text-primary-foreground">
 							Cookies
 						</Link>
 					</div>

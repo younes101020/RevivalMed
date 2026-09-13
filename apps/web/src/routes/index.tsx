@@ -16,21 +16,21 @@ function LandingPage() {
 	const howItWorksId = useId();
 
 	return (
-		<div className="min-h-screen overflow-hidden bg-[#062b25] text-white">
+		<div className="min-h-screen overflow-hidden bg-background text-foreground">
 			<header className="absolute inset-x-0 top-0 z-20">
 				<nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 lg:px-8">
-					<Link to="/" className="font-semibold tracking-tight">
+					<Link to="/" className="font-semibold tracking-tight text-foreground">
 						RevivalMed
 					</Link>
 					<div className="flex items-center gap-3">
 						{user ? (
 							<>
-								<span className="hidden text-sm text-emerald-50/80 sm:block">
+								<span className="hidden text-sm text-muted-foreground sm:block">
 									Bonjour, {user.name}
 								</span>
 								<Button
 									asChild
-									className="rounded-full bg-white text-[#075143] hover:bg-emerald-50"
+									className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
 								>
 									<Link to={appDestination}>Mon espace</Link>
 								</Button>
@@ -38,7 +38,7 @@ function LandingPage() {
 						) : (
 							<Button
 								asChild
-								className="rounded-full bg-white text-[#075143] hover:bg-emerald-50"
+								className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
 							>
 								<Link to="/login">Se connecter</Link>
 							</Button>
@@ -87,17 +87,17 @@ function LandingPage() {
 							</div>
 						</div>
 						<div className="hidden lg:block">
-							<div className="ml-auto max-w-sm rounded-3xl border border-white/20 bg-white/10 p-6 shadow-2xl backdrop-blur-md">
-								<div className="flex items-center justify-between text-sm text-emerald-50/80">
-									<span>Parcours du jour</span>
-									<span>3 / 4</span>
-								</div>
-								<div className="mt-4 h-2 overflow-hidden rounded-full bg-white/20">
-									<div className="h-full w-3/4 rounded-full bg-emerald-300" />
-								</div>
-								<div className="mt-7 rounded-2xl bg-white p-5 text-[#174c42]">
-									<p className="text-sm font-medium">Chaque progrès compte.</p>
-									<p className="mt-1 text-sm text-slate-500">
+								<div className="ml-auto max-w-sm rounded-3xl border border-border bg-card p-6 shadow-2xl backdrop-blur-md">
+									<div className="flex items-center justify-between text-sm text-muted-foreground">
+										<span>Parcours du jour</span>
+										<span>3 / 4</span>
+									</div>
+									<div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
+										<div className="h-full w-3/4 rounded-full bg-primary" />
+									</div>
+									<div className="mt-7 rounded-2xl bg-card p-5 text-foreground">
+										<p className="text-sm font-medium">Chaque progrès compte.</p>
+										<p className="mt-1 text-sm text-muted-foreground">
 										Des exercices adaptés à votre rythme et à vos objectifs.
 									</p>
 								</div>
@@ -106,11 +106,11 @@ function LandingPage() {
 					</div>
 				</section>
 
-				<section className="bg-[#f7f8f2] px-6 py-24 text-[#123d35] lg:px-8">
+				<section className="bg-background px-6 py-24 text-foreground lg:px-8">
 					<div className="mx-auto max-w-7xl">
 						<div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
 							<div>
-								<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-700">
+								<p className="text-sm font-semibold uppercase tracking-[.2em] text-primary">
 									Le transfert des acquis dans la vie réelle
 								</p>
 								<h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -125,18 +125,18 @@ function LandingPage() {
 					</div>
 				</section>
 
-				<section className="bg-[#f7f8f2] px-6 py-24 text-[#123d35] lg:px-8">
+				<section className="bg-background px-6 py-24 text-foreground lg:px-8">
 					<div className="mx-auto max-w-7xl">
 						<div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
 							<div>
-								<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-700">
+								<p className="text-sm font-semibold uppercase tracking-[.2em] text-primary">
 									Du programme à la vie réelle
 								</p>
 								<h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
 									Un cadre concret pour conduire la remédiation cognitive.
 								</h2>
 							</div>
-							<p className="max-w-2xl text-lg leading-8 text-slate-600">
+							<p className="max-w-2xl text-lg leading-8 text-muted-foreground">
 								RevivalMed aide le thérapeute à organiser le parcours complet,
 								et le patient à relier ses entraînements à ses situations
 								quotidiennes.
@@ -163,10 +163,10 @@ function LandingPage() {
 							].map(([title, description]) => (
 								<article
 									key={title}
-									className="rounded-3xl border border-emerald-950/10 bg-white p-7 shadow-sm"
-								>
-									<h3 className="text-xl font-semibold">{title}</h3>
-									<p className="mt-4 leading-7 text-slate-600">{description}</p>
+										className="rounded-3xl border border-border bg-card p-7 shadow-sm"
+									>
+										<h3 className="text-xl font-semibold text-foreground">{title}</h3>
+										<p className="mt-4 leading-7 text-muted-foreground">{description}</p>
 								</article>
 							))}
 						</div>
@@ -175,11 +175,11 @@ function LandingPage() {
 
 				<section
 					id={howItWorksId}
-					className="bg-[#f7f8f2] px-6 py-24 text-[#123d35] lg:px-8"
+					className="bg-background px-6 py-24 text-foreground lg:px-8"
 				>
 					<div className="mx-auto max-w-7xl">
 						<div className="max-w-2xl">
-							<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-700">
+							<p className="text-sm font-semibold uppercase tracking-[.2em] text-primary">
 								Une expérience guidée
 							</p>
 							<h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -204,10 +204,10 @@ function LandingPage() {
 								return (
 									<article
 										key={title as string}
-										className="rounded-3xl border border-emerald-950/10 bg-white p-7 shadow-sm"
+										className="rounded-3xl border border-border bg-card p-7 shadow-sm"
 									>
-										<h3 className="text-xl font-semibold">{title as string}</h3>
-										<p className="mt-3 leading-7 text-slate-600">
+										<h3 className="text-xl font-semibold text-foreground">{title as string}</h3>
+										<p className="mt-3 leading-7 text-muted-foreground">
 											{description as string}
 										</p>
 									</article>
@@ -217,10 +217,10 @@ function LandingPage() {
 					</div>
 				</section>
 
-				<section className="bg-[#e5f0e6] px-6 py-24 text-[#123d35] lg:px-8">
+				<section className="bg-secondary px-6 py-24 text-foreground lg:px-8">
 					<div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-2">
-						<div className="rounded-[2rem] bg-[#0b4b3f] p-8 text-white shadow-xl sm:p-11">
-							<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-200">
+						<div className="rounded-[2rem] bg-primary p-8 text-primary-foreground shadow-xl sm:p-11">
+							<p className="text-sm font-semibold uppercase tracking-[.2em] text-primary-foreground/80">
 								Pensé pour le soin
 							</p>
 							<h2 className="mt-5 text-4xl font-semibold tracking-tight">
@@ -232,27 +232,27 @@ function LandingPage() {
 									"Des programmes organisés par le professionnel de santé.",
 									"Un suivi qui nourrit l’échange pendant les consultations.",
 								].map((item) => (
-									<p key={item} className="flex gap-3 text-emerald-50/90">
+									<p key={item} className="flex gap-3 text-primary-foreground/90">
 										{item}
 									</p>
 								))}
 							</div>
 						</div>
 						<div>
-							<p className="text-sm font-semibold uppercase tracking-[.2em] text-emerald-700">
+							<p className="text-sm font-semibold uppercase tracking-[.2em] text-primary">
 								Pour avancer ensemble
 							</p>
 							<h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
 								Faire de chaque entraînement un pas vers plus d’autonomie.
 							</h2>
-							<p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+							<p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
 								RevivalMed donne à chacun un cadre rassurant pour pratiquer,
 								progresser et échanger avec son thérapeute.
 							</p>
 							<Button
 								asChild
 								size="lg"
-								className="mt-9 rounded-full text-white"
+								className="mt-9 rounded-full bg-primary text-primary-foreground"
 							>
 								<Link to={user ? appDestination : "/login"}>
 									{user
@@ -264,23 +264,23 @@ function LandingPage() {
 					</div>
 				</section>
 			</main>
-			<footer className="bg-[#062b25] px-6 py-8 text-sm text-emerald-50/60 lg:px-8">
+			<footer className="bg-primary px-6 py-8 text-sm text-primary-foreground/80 lg:px-8">
 				<div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 					<span>© {new Date().getFullYear()} RevivalMed</span>
 					<div className="flex flex-wrap items-center gap-x-5 gap-y-2">
 						<Link
 							to="/mentions-legales"
-							className="transition-colors hover:text-white"
+							className="transition-colors hover:text-primary-foreground"
 						>
 							Mentions légales
 						</Link>
 						<Link
 							to="/confidentialite"
-							className="transition-colors hover:text-white"
+							className="transition-colors hover:text-primary-foreground"
 						>
 							Confidentialité
 						</Link>
-						<Link to="/cookies" className="transition-colors hover:text-white">
+						<Link to="/cookies" className="transition-colors hover:text-primary-foreground">
 							Cookies
 						</Link>
 						<span>Outil numérique de remédiation cognitive</span>
