@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { createFileRoute, redirect, Outlet } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { hydrateThemeFromStorage } from "@/store/theme";
 
 export const Route = createFileRoute("/_auth")({
 	beforeLoad: ({ context }) => {
@@ -12,6 +14,10 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function AuthLayout() {
+	useEffect(() => {
+		hydrateThemeFromStorage();
+	}, []);
+
 	return (
 		<SidebarProvider>
 			<AppSidebar />

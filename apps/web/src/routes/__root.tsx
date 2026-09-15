@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import {
 	createRootRouteWithContext,
@@ -8,7 +7,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { getSession } from "@/lib/session";
 import type { RouterContext } from "@/router";
-import { hydrateThemeFromStorage } from "@/store/theme";
 
 import appCss from "../styles.css?url";
 
@@ -29,12 +27,8 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-	useEffect(() => {
-		hydrateThemeFromStorage();
-	}, []);
-
 	return (
-		<html lang="en" className="h-full dark bg-secondary text-secondary-foreground font-roboto">
+		<html lang="fr" className="h-full dark bg-secondary text-secondary-foreground font-roboto">
 			<head>
 				<HeadContent />
 			</head>
