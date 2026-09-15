@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
 import { useUserGamePreferences } from "@/lib/game-preferences";
+import { useAppTour } from "@/components/tours/AppTourProvider";
 import { CustomizationForm } from "./CustomizationForm";
 import { GamePreferencesForm } from "./GamePreferencesForm";
 import { PasswordForm } from "./PasswordForm";
@@ -34,6 +35,7 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 	const [deleteError, setDeleteError] = useState<string | null>(null);
 	const [deleting, setDeleting] = useState(false);
 	const router = useRouter();
+	const { restartTour } = useAppTour();
 	const { preferences: gamePreferences, setPreferences: setGamePreferences } =
 		useUserGamePreferences(user.id);
 
@@ -102,8 +104,15 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 	return (
 		<div className="h-full container mx-auto p-4">
 			<div className="mb-8">
-				<h1 className="text-3xl font-bold">Profile</h1>
-				<p className="text-gray-500 mt-2">Gérer vos paramètres de compte</p>
+				<div className="flex items-center justify-between gap-4">
+					<div>
+						<h1 className="text-3xl font-bold">Profile</h1>
+						<p className="text-gray-500 mt-2">Gérer vos paramètres de compte</p>
+					</div>
+					<Button variant="outline" onClick={restartTour}>
+						Revoir la visite guidée
+					</Button>
+				</div>
 			</div>
 
 			<Tabs defaultValue="general" className="space-y-6">

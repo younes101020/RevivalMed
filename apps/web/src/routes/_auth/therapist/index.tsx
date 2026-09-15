@@ -71,10 +71,10 @@ setPending(false);
 };
 
 return (
-<div className="container mx-auto p-8 space-y-6">
+<div className="container mx-auto p-8 space-y-6" data-tour="therapist-patients">
 <div className="flex items-center justify-between">
 <h1 className="text-3xl font-bold">Mes patients</h1>
-<div className="flex items-center gap-2">
+<div className="flex items-center gap-2" data-tour="therapist-view-switcher">
 <Button
 	variant={viewMode === 'grid' ? 'default' : 'outline'}
 	size="sm"
@@ -93,7 +93,7 @@ return (
 </Button>
 <Dialog open={open} onOpenChange={setOpen}>
 <DialogTrigger asChild>
-<Button className="text-secondary-foreground">
+<Button className="text-secondary-foreground" data-tour="therapist-add-patient">
 <UserPlus className="mr-2 h-4 w-4" />
 Ajouter un patient
 </Button>

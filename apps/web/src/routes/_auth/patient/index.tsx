@@ -115,7 +115,7 @@ function PatientDashboard() {
 	return (
 		<GamePreferencesProvider userId={user!.id}>
 		<section className="h-full container mx-auto p-4 flex items-center">
-			<Tabs defaultValue={visibleTabs[0].key} className="space-y-4 container">
+			<Tabs defaultValue={visibleTabs[0].key} className="space-y-4 container" data-tour="patient-exercises">
 				<div className="text-center">
 					<Badge variant="outline" className="text-sm px-3 py-1">
 						Semaine {weekData.weekNumber} / {weekData.totalWeeks}
@@ -142,7 +142,7 @@ function PatientDashboard() {
 						</TabsContent>
 					))}
 				</Card>
-				<TabsContent value="mission">
+				<TabsContent value="mission" data-tour="patient-mission">
 					{!weekData.missionUnlocked ? (
 						<Card>
 							<CardContent className="py-8 flex flex-col items-center gap-2 text-center">

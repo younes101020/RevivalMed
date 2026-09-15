@@ -3,7 +3,6 @@ import { useStore } from "@tanstack/react-store";
 import { useRouteContext, useNavigate, Link } from "@tanstack/react-router";
 import { LogOut, Users, BookOpen, UserPen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { authClient } from "@/lib/auth-client";
 import { getPatientXp } from "@/lib/progress";
@@ -64,7 +63,7 @@ export function AppSidebar() {
           }
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent data-tour={user?.role === "therapist" ? "therapist-navigation" : "patient-navigation"}>
         <SidebarGroup>
           <SidebarGroupContent>
             {user?.role === "therapist" && (
@@ -82,7 +81,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                      <Link to="/programmes">
+                      <Link to="/programmes" data-tour="therapist-programmes-link">
                         <BookOpen />
                         <span>Programmes</span>
                       </Link>
@@ -141,7 +140,7 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <div className="flex flex-col gap-3 px-2 py-2">
               {user && (
-                <div className="flex gap-4">
+                <div className="flex gap-4" data-tour={user.role === "patient" ? "patient-progress" : undefined}>
                   <div className="w-fit flex items-center">
                     <AvatarUpload
                       src={avatarUrl}

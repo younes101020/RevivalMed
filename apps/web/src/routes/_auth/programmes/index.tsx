@@ -55,7 +55,7 @@ function RouteComponent() {
 					<h1 className="text-3xl font-bold">Mes programmes</h1>
 					<Dialog open={open} onOpenChange={setOpen}>
 						<DialogTrigger asChild>
-							<Button className="text-secondary-foreground">
+							<Button className="text-secondary-foreground" data-tour="therapist-create-program">
 								<MapPlus />
 								Créer mon programme
 							</Button>
