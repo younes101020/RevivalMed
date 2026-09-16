@@ -29,7 +29,7 @@ function TourController({ role, restartToken }: { role: TourRole; restartToken: 
 	const steps = useMemo(() => getTourSteps(role, pathname), [role, pathname]);
 
 	useEffect(() => {
-		setSteps(steps);
+		setSteps?.(steps);
 	}, [setSteps, steps]);
 
 	useEffect(() => {
@@ -67,13 +67,17 @@ export function AppTourProvider({ children }: { children: ReactNode }) {
 				showBadge
 				showDots
 				showNavigation
-				closeOnClick
-				disableWhenSelectorFalsy
+				onClickMask={() => {}}
 				scrollSmooth
 				beforeClose={() => {
 					window.localStorage.setItem(TOUR_STORAGE_KEYS[role], "true");
 				}}
 				styles={{
+					badge: (base) => ({
+						...base,
+						backgroundColor: "var(--primary)",
+						color: "var(--primary-foreground)",
+					}),
 					popover: (base) => ({
 						...base,
 						backgroundColor: "var(--popover)",
