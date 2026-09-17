@@ -119,7 +119,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link to="/profile">
                       <UserPen />
-                      <span>Profile</span>
+                        <span>Paramètres</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
