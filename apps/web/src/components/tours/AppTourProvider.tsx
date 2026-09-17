@@ -78,6 +78,11 @@ export function AppTourProvider({ children }: { children: ReactNode }) {
 						backgroundColor: "var(--primary)",
 						color: "var(--primary-foreground)",
 					}),
+					dot: (base) => ({
+						...base,
+						backgroundColor: "var(--primary)",
+						borderColor: "var(--primary)",
+					}),
 					popover: (base) => ({
 						...base,
 						backgroundColor: "var(--popover)",

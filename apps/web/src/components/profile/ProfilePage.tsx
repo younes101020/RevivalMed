@@ -106,7 +106,7 @@ export function ProfilePage({ user, onUserUpdate }: ProfilePageProps) {
 			<div className="mb-8">
 				<div className="flex items-center justify-between gap-4">
 					<div>
-						<h1 className="text-3xl font-bold">Paramètres</h1>
+						<h1 className="text-3xl font-bold">Profile</h1>
 						<p className="text-gray-500 mt-2">Gérer vos paramètres de compte</p>
 					</div>
 					<Button variant="outline" onClick={restartTour}>

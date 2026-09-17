@@ -107,26 +107,56 @@ export function applyTheme(themeName: string) {
 	}
 
 	if (root) {
-		root.style.setProperty("--background", nextTheme.secondary);
-		root.style.setProperty("--foreground", nextTheme.primaryForeground);
-		root.style.setProperty("--card", nextTheme.secondary);
-		root.style.setProperty("--card-foreground", nextTheme.primaryForeground);
-		root.style.setProperty("--popover", nextTheme.secondary);
-		root.style.setProperty("--popover-foreground", nextTheme.primaryForeground);
-		root.style.setProperty("--sidebar", nextTheme.secondary);
-		root.style.setProperty("--sidebar-foreground", nextTheme.primaryForeground);
 		root.style.setProperty("--primary", nextTheme.primary);
-		root.style.setProperty("--secondary", nextTheme.secondary);
 		root.style.setProperty("--primary-foreground", nextTheme.primaryForeground);
-		root.style.setProperty("--secondary-foreground", nextTheme.secondaryForeground);
-		root.style.setProperty("--muted-foreground", nextTheme.secondaryForeground);
 		root.style.setProperty("--ring", nextTheme.primary);
 		root.style.setProperty("--sidebar-primary", nextTheme.primary);
 		root.style.setProperty("--sidebar-primary-foreground", nextTheme.primaryForeground);
-		root.style.setProperty("--accent", nextTheme.secondary);
-		root.style.setProperty("--accent-foreground", nextTheme.secondaryForeground);
-		root.style.setProperty("--sidebar-accent", nextTheme.secondary);
-		root.style.setProperty("--sidebar-accent-foreground", nextTheme.secondaryForeground);
+
+		const darkModeVariables = [
+			"--background",
+			"--foreground",
+			"--card",
+			"--card-foreground",
+			"--popover",
+			"--popover-foreground",
+			"--sidebar",
+			"--sidebar-foreground",
+			"--secondary",
+			"--secondary-foreground",
+			"--muted-foreground",
+			"--accent",
+			"--accent-foreground",
+			"--sidebar-accent",
+			"--sidebar-accent-foreground",
+		];
+
+		if (root.classList.contains("dark")) {
+			for (const variable of darkModeVariables) {
+				root.style.removeProperty(variable);
+			}
+
+			const darkModeValues = getComputedStyle(root);
+			for (const variable of darkModeVariables) {
+				root.style.setProperty(variable, darkModeValues.getPropertyValue(variable).trim());
+			}
+		} else {
+			root.style.setProperty("--background", nextTheme.secondary);
+			root.style.setProperty("--foreground", nextTheme.primaryForeground);
+			root.style.setProperty("--card", nextTheme.secondary);
+			root.style.setProperty("--card-foreground", nextTheme.primaryForeground);
+			root.style.setProperty("--popover", nextTheme.secondary);
+			root.style.setProperty("--popover-foreground", nextTheme.primaryForeground);
+			root.style.setProperty("--sidebar", nextTheme.secondary);
+			root.style.setProperty("--sidebar-foreground", nextTheme.primaryForeground);
+			root.style.setProperty("--secondary", nextTheme.secondary);
+			root.style.setProperty("--secondary-foreground", nextTheme.secondaryForeground);
+			root.style.setProperty("--muted-foreground", nextTheme.secondaryForeground);
+			root.style.setProperty("--accent", nextTheme.secondary);
+			root.style.setProperty("--accent-foreground", nextTheme.secondaryForeground);
+			root.style.setProperty("--sidebar-accent", nextTheme.secondary);
+			root.style.setProperty("--sidebar-accent-foreground", nextTheme.secondaryForeground);
+		}
 	}
 }
 

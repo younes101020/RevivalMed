@@ -5,6 +5,7 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ThemeProvider } from "@/components/theme-provider";
 import { getSession } from "@/lib/session";
 import type { RouterContext } from "@/router";
 
@@ -28,12 +29,18 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="fr" className="h-full dark bg-secondary text-secondary-foreground font-roboto">
+		<html
+			lang="fr"
+			className="h-full bg-secondary text-secondary-foreground font-roboto"
+			suppressHydrationWarning
+		>
 			<head>
 				<HeadContent />
 			</head>
 			<body className="h-full">
-				{children}
+				<ThemeProvider defaultTheme="dark">
+					{children}
+				</ThemeProvider>
 				{import.meta.env.DEV && (
 					<TanStackDevtools
 						config={{ position: "bottom-right" }}
