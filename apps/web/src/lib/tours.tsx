@@ -8,7 +8,7 @@ export const TOUR_STORAGE_KEYS: Record<TourRole, string> = {
 	therapist: "revivalmed-tour-therapist-seen",
 };
 
-type TourStep = StepType & { route?: string };
+type TourStep = StepType & { route?: string; exact?: boolean };
 
 const sharedSteps: Record<TourRole, TourStep[]> = {
 	patient: [
@@ -21,14 +21,38 @@ const sharedSteps: Record<TourRole, TourStep[]> = {
 			content: "Votre niveau et vos XP suivent votre progression dans les exercices.",
 		},
 		{
+			selector: '[data-tour="patient-parcours-link"]',
+			content: "Ouvrez votre parcours pour retrouver les exercices qui vous sont attribués.",
+		},
+		{
 			selector: '[data-tour="patient-exercises"]',
 			content: "Les onglets regroupent les exercices qui vous sont assignés cette semaine.",
 			route: "/patient",
+			exact: true,
 		},
 		{
 			selector: '[data-tour="patient-mission"]',
 			content: "La mission applique vos acquis dans une situation de la vie quotidienne.",
 			route: "/patient",
+			exact: true,
+		},
+		{
+			selector: '[data-tour="patient-missions-link"]',
+			content: "Retrouvez ici vos missions de la vie quotidienne et leur état d'avancement.",
+		},
+		{
+			selector: '[data-tour="patient-missions"]',
+			content: "Chaque mission présente son objectif et vous permet de la marquer comme terminée.",
+			route: "/patient/missions",
+		},
+		{
+			selector: '[data-tour="profile-link"]',
+			content: "Votre profil rassemble vos informations personnelles et vos préférences.",
+		},
+		{
+			selector: '[data-tour="profile-settings"]',
+			content: "Gérez ici vos informations, votre sécurité et vos préférences de jeu.",
+			route: "/profile",
 		},
 	],
 	therapist: [
@@ -70,6 +94,11 @@ const sharedSteps: Record<TourRole, TourStep[]> = {
 
 export function getTourSteps(role: TourRole, pathname: string): StepType[] {
 	return sharedSteps[role]
-		.filter((step) => !step.route || pathname.startsWith(step.route))
-		.map(({ route: _route, ...step }) => step);
+		.filter((step) => {
+			if (!step.route) return true;
+			return step.exact
+				? pathname === step.route
+				: pathname === step.route || pathname.startsWith(`${step.route}/`);
+		})
+		.map(({ route: _route, exact: _exact, ...step }) => step);
 }

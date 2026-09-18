@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@tanstack/react-store";
 import { useRouteContext, useNavigate, Link } from "@tanstack/react-router";
-import { LogOut, Users, BookOpen, UserPen } from "lucide-react";
+import { BookOpen, LogOut, RotateCcw, UserPen, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AvatarUpload } from "@/components/ui/avatar-upload";
 import { authClient } from "@/lib/auth-client";
@@ -12,6 +12,7 @@ import {
   getXpTowardNextLevel,
 } from "@/lib/patient-level";
 import { levelStore, setTotalXp } from "@/store/level";
+import { useAppTour } from "@/components/tours/AppTourProvider";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +28,7 @@ import {
 export function AppSidebar() {
   const { user } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
+  const { restartTour } = useAppTour();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(user?.image ?? null);
   const totalXp = useStore(levelStore, (state) => state.totalXp);
   const level = getPatientLevel(totalXp);
@@ -94,7 +96,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link to="/patient">
+                    <Link to="/patient" data-tour="patient-parcours-link">
                       <BookOpen />
                       <span>Parcours</span>
                     </Link>
@@ -106,7 +108,7 @@ export function AppSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link to="/patient/missions">
+                    <Link to="/patient/missions" data-tour="patient-missions-link">
                       <BookOpen />
                       <span>Mes missions</span>
                     </Link>
@@ -117,7 +119,7 @@ export function AppSidebar() {
             <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link to="/profile">
+                    <Link to="/profile" data-tour="profile-link">
                       <UserPen />
                       <span>Profile</span>
                     </Link>
@@ -185,6 +187,12 @@ export function AppSidebar() {
                 </div>
               )}
             </div>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="sm" onClick={restartTour} className="cursor-pointer" data-tour="restart-tour">
+              <RotateCcw className="h-4 w-4 mr-1" />
+              Revoir la visite guidée
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

@@ -66,7 +66,7 @@ function MissionsPage() {
   }
 
   return (
-    <section className="h-full container mx-auto p-4">
+    <section className="h-full container mx-auto p-4" data-tour="patient-missions">
       <div className="mb-4 text-center">
         <Badge variant="outline" className="text-sm px-3 py-1">
           Mes missions
