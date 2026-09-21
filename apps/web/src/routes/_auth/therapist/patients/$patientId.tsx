@@ -651,16 +651,18 @@ export function ProgramCreator({
 			return;
 		}
 
-		// Validate
-		if (weeks[0].exercises.size === 0) {
-			setError("Semaine 1 : au moins un exercice requis");
-			setExpandedWeek(0);
-			return;
-		}
-		if (!weeks[0].missionTitle.trim()) {
-			setError("Semaine 1 : titre de mission requis");
-			setExpandedWeek(0);
-			return;
+		// Validate every week because the patient can reach any week of the program.
+		for (const [index, week] of weeks.entries()) {
+			if (week.exercises.size === 0) {
+				setError(`Semaine ${index + 1} : au moins un exercice requis`);
+				setExpandedWeek(index);
+				return;
+			}
+			if (!week.missionTitle.trim()) {
+				setError(`Semaine ${index + 1} : titre de mission requis`);
+				setExpandedWeek(index);
+				return;
+			}
 		}
 
 		setSaving(true);

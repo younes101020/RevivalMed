@@ -70,11 +70,13 @@ async function saveProgram({
 	if (weeks.length !== 16) {
 		throw new Error("Un programme doit contenir exactement 16 semaines");
 	}
-	if (weeks[0].exercises.length === 0) {
-		throw new Error("La semaine 1 doit avoir au moins un exercice");
-	}
-	if (!weeks[0].missionTitle.trim()) {
-		throw new Error("La semaine 1 doit avoir une mission");
+	for (const [index, week] of weeks.entries()) {
+		if (week.exercises.length === 0) {
+			throw new Error(`La semaine ${index + 1} doit avoir au moins un exercice`);
+		}
+		if (!week.missionTitle.trim()) {
+			throw new Error(`La semaine ${index + 1} doit avoir une mission`);
+		}
 	}
 
 	const programId = crypto.randomUUID();
@@ -139,9 +141,9 @@ export const createProgram = createServerFn({ method: "POST" })
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 		const start = new Date(startDate);
-		if (start <= today) {
+		if (start < today) {
 			throw new Error(
-				"La date de début doit être supérieure à la date actuelle",
+				"La date de début ne peut pas être antérieure à la date actuelle",
 			);
 		}
 
